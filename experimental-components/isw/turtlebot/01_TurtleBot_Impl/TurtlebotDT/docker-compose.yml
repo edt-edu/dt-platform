@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  # DT
+  turtlebotdt:
+    container_name: turtlebotdt
+    hostname: localhost
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: turtlebotdt:latest
+    ports:
+      - "7000:7000"
+    restart: unless-stopped
+    networks:
+      - postgres
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres_tb
+    hostname: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: localhost
+      POSTGRES_PASSWORD: 1234
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5434"
+    ports:
+      - "5434:5434"
+    networks:
+      - postgres
+    restart: unless-stopped
+    command: -p 5434
+
+  pgadmin:
+    container_name: pgadmin_container_tb
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: 1234
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5052:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
+  pgadmin:
+networks:
+  postgres:
+    driver: bridge

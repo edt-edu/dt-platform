@@ -1,0 +1,14 @@
+.button-container {
+    display: flex;
+    justify-content: center;
+    width: 500px !important;
+}
+
+.red-button {
+    color:#ff0000;
+}
+
+::ng-deep .mat-list .mat-list-item .mdc-list-item__primary-text{
+    word-wrap: break-word;
+   white-space: pre-wrap;
+}

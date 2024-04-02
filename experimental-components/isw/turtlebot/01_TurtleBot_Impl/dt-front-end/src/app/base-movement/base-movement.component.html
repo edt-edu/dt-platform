@@ -1,0 +1,57 @@
+
+    <mat-grid-list cols="3">
+      <mat-grid-tile>
+        <div [style]="'width: 70px; margin-right: 40px'">
+        <mat-slider min="0" max="10" step="1">
+          <input matSliderThumb [(value)]="inputSpeed" (valueChange)="setForwardSpeed($event)">
+        </mat-slider>        
+        Set speed: <br> 
+        {{inputSpeed}} <br>
+      </div>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="example-button-container">
+          <button mat-icon-button (click)="moveUp($event)">
+            <mat-icon [ngClass]="{'red-button' : state?.wafflePiState?.movement?.linear == 'Forwards'}">arrow_upwards</mat-icon>
+          </button>
+        </div>
+        
+      </mat-grid-tile>
+      <mat-grid-tile [style]="'width: 150px'">
+        <mat-slide-toggle (change)="continuous($event)" [(ngModel)]="con">Continuous</mat-slide-toggle>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="example-button-container">
+        <button mat-icon-button (click)="moveLeft($event)">
+        <mat-icon [ngClass]="{'red-button' : state?.wafflePiState?.movement?.angular == 'Left'}">arrow_back</mat-icon>
+      </button>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="example-button-container">
+      <button mat-icon-button (click)="stop($event)">
+        <mat-icon [ngClass]="{'red-button' : state?.wafflePiState?.movement?.linear == 'Stop' && state?.wafflePiState?.movement?.angular == 'Stop'}">pause</mat-icon>
+      </button>
+      </div>
+    </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="example-button-container">
+        <button mat-icon-button (click)="moveRight($event)">
+          <mat-icon [ngClass]="{'red-button' : state?.wafflePiState?.movement?.angular == 'Right'}">arrow_forward</mat-icon>
+        </button>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile [style]="'width: 90px'">
+        
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <div class="example-button-container">
+        <button mat-icon-button  (click)="moveDown($event)">
+          <mat-icon [ngClass]="{'red-button' : state?.wafflePiState?.movement?.linear == 'Backwards'}">arrow_downwards</mat-icon>
+        </button>
+        </div>
+      </mat-grid-tile >
+      <mat-grid-tile [style]="'width: 90px'">
+        
+      </mat-grid-tile>
+    </mat-grid-list>

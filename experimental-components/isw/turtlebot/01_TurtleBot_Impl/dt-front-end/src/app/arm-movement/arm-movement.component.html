@@ -1,0 +1,63 @@
+
+<mat-grid-list cols="3">
+    <mat-grid-tile>
+        <div class="example-button-container">
+            <button mat-icon-button (click)="moveUp($event)">
+              <mat-icon>vertical_align_top</mat-icon>
+            </button>
+          </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="example-button-container">
+        <button mat-icon-button (click)="moveFront($event)">
+          <mat-icon>arrow_upwards</mat-icon>
+        </button>
+      </div>
+      
+    </mat-grid-tile>
+    <mat-grid-tile [style]="'width: 150px'">
+        <div class="example-button-container">
+            <button mat-icon-button  (click)="moveDown($event)">
+              <mat-icon>vertical_align_bottom</mat-icon>
+            </button>
+            </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="example-button-container">
+      <button mat-icon-button (click)="moveLeft($event)">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+      </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+   
+  </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="example-button-container">
+      <button mat-icon-button (click)="moveRight($event)">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+        <div class="example-button-container">
+            <button mat-icon-button (click)="moveGripperDown($event)">
+              <mat-icon>compare_arrows</mat-icon>
+            </button>
+          </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="example-button-container">
+      <button mat-icon-button  (click)="moveDown($event)">
+        <mat-icon>arrow_downwards</mat-icon>
+      </button>
+      </div>
+    </mat-grid-tile >
+    <mat-grid-tile>
+        <div class="example-button-container">
+            <button mat-icon-button (click)="moveGripperUp($event)">
+              <mat-icon>settings_ethernet</mat-icon>
+            </button>
+          </div>
+    </mat-grid-tile>
+  </mat-grid-list>

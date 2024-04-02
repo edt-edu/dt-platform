@@ -1,0 +1,64 @@
+<router-outlet />
+<h1> Turtlebot DT</h1>
+<mat-grid-list cols="3" [rowHeight]="'48vh'">
+  <mat-grid-tile>
+    <div [style]="'min-width:95%;'">
+      <app-base-movement [state]="state" [auto_stop]="stop"></app-base-movement>
+    </div>
+    
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div [style]="'min-width:95%;'">
+      <app-arm-movement></app-arm-movement>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+   <app-line-chart [batteryGraphData]="batteryGraphDataInput"></app-line-chart>
+   
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div [style]="'width: 70px; margin-right: 40px'">
+      <mat-slider min="0" max="1" step="0.1">
+        <input matSliderThumb [(value)]="distanceLimit" (valueChange)="limitDistance($event)">
+      </mat-slider>        
+      Set Distance Limit: <br> 
+      {{distanceLimit * 100}} cm <br>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div [style]="'min-width:95%;'">
+      <mat-list role="list">
+        <mat-list-item role="listitem">Speed: {{state?.wafflePiState!.movement!.speed * 100| number: '1.1'}}</mat-list-item>
+        <mat-list-item role="listitem">Distance: {{state!.wafflePiState!.distance * 100 | number: '1.1'}} cm</mat-list-item>
+        <mat-list-item role="listitem">Battery State: {{state?.wafflePiState?.batteryState?.percentage}}  <mat-progress-bar mode="determinate" [value]="state?.wafflePiState?.batteryState?.percentage"></mat-progress-bar></mat-list-item>
+        <mat-list-item role="listitem">Orientation: x:{{state?.wafflePiState?.orientation?.x | number: '1.2'}}, y:{{state?.wafflePiState?.orientation?.y | number: '1.2'}}, z:{{state?.wafflePiState!.orientation?.z | number: '1.2'}}, w:{{state?.wafflePiState?.orientation?.w | number: '1.2'}} </mat-list-item>
+        <mat-list-item role="listitem">Left Wheel: Position: {{state?.wafflePiState?.wheelState?.leftWheelPosition| number: '1.2'}}, Velocity: {{state?.wafflePiState?.wheelState?.leftWheelVelocity| number: '1.2'}} </mat-list-item>
+        <mat-list-item role="listitem">Right Wheel: Position: {{state?.wafflePiState?.wheelState?.rightWheelPosition| number: '1.2'}}, Velocity: {{state?.wafflePiState?.wheelState?.rightWheelVelocity| number: '1.2'}} </mat-list-item>
+       
+        <mat-list-item role="listitem"> <p [style]="'white-space: pre-wrap;'">Ros Message: {{state?.wafflePiState?.ros?.msg}}</p></mat-list-item>
+      </mat-list>
+      
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div [style]="'min-width:95%;overflow: auto;max-height: 500px;'">
+      <mat-list role="list">
+        <ul>
+          <li *ngFor="let jointState of state?.armState?.jointStates">
+            <mat-list-item role="listitem">Joint: {{jointState.joint}}</mat-list-item>
+            <mat-list-item role="listitem">Joint Position: {{jointState.jointPosition}}</mat-list-item>
+            <mat-list-item role="listitem">Joint Velocity: {{jointState.jointVelocity}}</mat-list-item>
+            <mat-list-item role="listitem">Joint Effort: {{jointState.jointEffort}}</mat-list-item>
+          </li>
+        </ul>
+       
+      </mat-list>
+      
+    </div>
+  </mat-grid-tile>
+
+</mat-grid-list>
+
+
+
+
