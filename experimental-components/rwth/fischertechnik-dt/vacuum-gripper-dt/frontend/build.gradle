@@ -1,0 +1,47 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id 'java-library'
+
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool-frontend' version "$mc_version"
+}
+
+node {
+  download = true
+  version = "${node_version}"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+
+genGUI {
+  domainModels = ["VacuumGripperDashboard"]
+  guiCreateModels = []
+}
+
+
+nodeSetup.dependsOn(frontendSetup)
+
+def prebuildTasks = [
+    npmInstall, generate
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+assemble.dependsOn(buildApp)
+
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task run(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}

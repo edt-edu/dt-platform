@@ -1,0 +1,109 @@
+plugins {
+  id("java-library")
+  id("application")
+  id("montiarc") version "$mc_version"
+  id("cd2pojo") version "$mc_version"
+
+  id 'de.rwth.se.umlp-tool-backend' version "${mc_version}"
+  id 'com.google.cloud.tools.jib' version '3.4.2'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+}
+
+repositories {
+  if (("true").equals(getProperty('useLocalRepo'))) {
+    mavenLocal()
+  }
+  maven { // For MontiArc Plugins
+    url = "https://nexus.se.rwth-aachen.de/content/groups/public/"
+  }
+  maven {
+    credentials.username mavenUser
+    credentials.password mavenPassword
+    url "https://nexus.se.rwth-aachen.de/content/groups/umlp"
+  }
+
+  mavenCentral()
+}
+
+configurations {
+  guiDefaultTypes
+}
+
+sourceSets {
+  main {
+    java {
+      srcDirs(buildDir.toString() + "/montiarc/main/java")
+      srcDirs(buildDir.toString() + "/cd2pojo/main/java")
+    }
+  }
+}
+
+application {
+  mainClass = 'vacuumgripperdashboard.VacuumGripperDashboardServerApplication'
+}
+
+dependencies {
+  // umlp
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+    exclude module: 'log4j-to-slf4j'
+  }
+
+  guiDefaultTypes "de.monticore.lang:guidsl:${mc_version}:default-types"
+  guiDefaultTypes "umlp.umlp-rte:client:${mc_version}"
+
+  api group: 'umlp', name: 'umlp-rte', version: mc_version, withoutSpringLogging
+  api 'com.h2database:h2:2.1.214'
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+
+  // Spring Boot Dependencies
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.shell', name: 'spring-shell-starter', version: spring_shell_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: spring_version, withoutSpringLogging
+
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+  // dependencies to write JUnit-tests against class diagrams and montiarc models
+  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testImplementation("de.monticore.lang:cd4analysis:$mc_version")
+  testImplementation("montiarc.languages:montiarc:$mc_version")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+}
+
+tasks.compileCd2pojo {
+  useClass2Mc.set(true)
+}
+
+tasks.compileMontiarc {
+  useClass2Mc.set(true)
+
+  def enableAttachDebugger = false
+  if (enableAttachDebugger) {
+    jvmArgs("-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,address=5005,suspend=y")
+  }
+}
+
+tasks.build.dependsOn(compileMontiarc)
+
+test {
+  useJUnitPlatform()
+}
+
+
+generateUmlpBackend {
+  input = file("../models/VacuumGripperDashboard.umlp")
+  symbolOutDir = file("${project.buildDir}/symbols")
+  useSpring.set(true)
+  useShell.set(true)
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}

@@ -1,0 +1,11 @@
+package gui;
+import mc.fenix.basic.GemText;
+import gui.visualization.VacuumGripperSvg;
+
+page Start(){
+  @GemText(value = "Hello World!");
+
+  @VacuumGripperSvg(rotationDeg=20, verticalPercentage=30, horizontalPercentage=40);
+  @VacuumGripperSvg(rotationDeg=0, verticalPercentage=0, horizontalPercentage=0);
+  @VacuumGripperSvg(rotationDeg=0, verticalPercentage=100, horizontalPercentage=100);
+}

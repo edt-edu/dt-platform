@@ -1,0 +1,41 @@
+pluginManagement {
+  pluginManagement {
+    repositories {
+      if(("true").equals(getProperty('useLocalRepo'))) {
+        println "Using local repo for plugins"
+        mavenLocal()
+      }
+      maven { // For MontiArc Plugins
+        url = "https://nexus.se.rwth-aachen.de/content/groups/public/"
+      }
+      maven { // For UMLP Plugin
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url = "https://nexus.se.rwth-aachen.de/content/groups/umlp"
+      }
+
+      // Only use jsweet repos for everything in org.jsweet*(excl jsweet-core which is in maven-central)
+      // since they throw 409 errors for dependencies in other groups
+      maven {
+        url "https://repository.jsweet.org/artifactory/libs-snapshot-local"
+        mavenContent {
+          includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+        }
+      }
+      maven {
+        url "https://repository.jsweet.org/artifactory/libs-release-local"
+        mavenContent {
+          includeModuleByRegex("org[.]jsweet.*", "(?!jsweet-core).*")
+        }
+      }
+
+      gradlePluginPortal()
+      mavenCentral()
+    }
+  }
+}
+
+rootProject.name = 'vacuum-gripper-dt'
+
+include(":backend")
+include(":frontend")

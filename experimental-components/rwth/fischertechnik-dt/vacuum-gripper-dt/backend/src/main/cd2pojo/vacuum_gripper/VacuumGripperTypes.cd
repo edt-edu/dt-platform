@@ -1,0 +1,21 @@
+package vacuum_gripper;
+
+classdiagram VacuumGripperTypes {
+  + enum MotorDirection{
+    FORWARD, REVERSE, STOP;
+  }
+
+  /**
+   * Each encoder has two signals: signal1, signal2.
+   * The edges of the signals encode the relevant information.
+   * If signal1 is changing(rising, falling) first, the direction is forward
+   * If signal2 is changing first, the direction is backward
+   */
+  + class EncoderPulses {
+    boolean stopped;
+    boolean signal1Leading;
+    boolean rising;
+    + EncoderPulses(boolean stopped, boolean signal1Leading, boolean rising);
+  }
+
+}
