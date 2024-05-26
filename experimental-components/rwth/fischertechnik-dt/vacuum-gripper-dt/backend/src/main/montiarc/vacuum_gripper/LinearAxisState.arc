@@ -2,7 +2,7 @@ package vacuum_gripper;
 
 import vacuum_gripper.VacuumGripperTypes.*;
 
-component LinearAxisState {
+component LinearAxisState(float min, float max) {
   port in MotorDirection direction;
   port out float position;
 
@@ -19,6 +19,13 @@ component LinearAxisState {
     }
 
     internalPosition = internalPosition + encoderDiff*posPerDiff;
+    if(internalPosition > max){
+      internalPosition = max;
+    }
+
+    if(internalPosition < min){
+      internalPosition = min;
+    }
 
     position = internalPosition;
   }

@@ -55,6 +55,7 @@ public class StepSimulator extends StepSimulatorTOP {
     output.getPositionHorizontal().setContent(simulator.getPositionHorizontal().getValue());
     output.getPositionVertical().setContent(simulator.getPositionVertical().getValue());
 
+    simulator.tick();
     // TODO: add values to function streams
   }
 }

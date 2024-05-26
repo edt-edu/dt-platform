@@ -13,60 +13,33 @@ import { VacuumGripperDashboardManager } from '@src/vacuumgripperdashboard/Vacuu
   styleUrls: config.styleUrls
 })
 export class SimulatorOverview extends SimulatorOverviewComponent {
+  simulatorRunning = false;
+
   public constructor(route: ActivatedRoute, protected router: Router) {
     super(route, router);
     this.router = router;
+    this.initAutoSimulator();
   }
 
-  public simulatorButtonLeftClick(): void {
+  public simulatorStepBtnLeftClick(): void {
     VacuumGripperDashboardManager.simulatorStepBuilder().then(step => step.build());
   }
 
-   /*public getVerticalUpInputEntry(){
-    return this.getApp().getSimulationInput().getVerticalUp().isContent().toString();
-   }
+  public simulatorStopBtnLeftClick(): void {
+    this.simulatorRunning = false;
+  }
 
-   public getVerticalDownInputEntry(){
-    return this.getApp().getSimulationInput().getVerticalDown().isContent().toString();
-   }
+  public simulatorStartBtnLeftClick(): void {
+    this.simulatorRunning = true;
+  }
 
-   public getHorizontalForwardInputEntry(){
-    return this.getApp().getSimulationInput().getHorizontalForward().isContent().toString();
-   }
+  public initAutoSimulator(){
+    setTimeout(() => {
+      if(this.simulatorRunning){
+        this.simulatorStepBtnLeftClick();
+      }
+      this.initAutoSimulator();
+    }, 1000);
+  }
 
-   public getHorizontalBackInputEntry(){
-    return this.getApp().getSimulationInput().getHorizontalBack().isContent().toString();
-   }
-
-   public getRotationClockwiseInputEntry(){
-    return this.getApp().getSimulationInput().getRotationClockwise().isContent().toString();
-   }
-
-   public getRotationCounterclockwiseInputEntry(){
-    return this.getApp().getSimulationInput().getRotationCounterclockwise().isContent().toString();
-   }
-
-   public setVerticalUpInputEntry(s: string){
-    this.getApp().getSimulationInput().getVerticalUp().setContent(s === "true");
-   }
-
-   public setVerticalDownInputEntry(s: string){
-    this.getApp().getSimulationInput().getVerticalDown().setContent(s === "true");
-   }
-
-   public setHorizontalForwardInputEntry(s: string){
-    this.getApp().getSimulationInput().getHorizontalForward().setContent(s === "true");
-   }
-
-   public setHorizontalBackInputEntry(s: string){
-    this.getApp().getSimulationInput().getHorizontalBack().setContent(s === "true");
-   }
-
-   public setRotationClockwiseInputEntry(s: string){
-    this.getApp().getSimulationInput().getRotationClockwise().setContent(s === "true");
-   }
-
-   public setRotationCounterclockwiseInputEntry(s: string){
-    this.getApp().getSimulationInput().getRotationCounterclockwise().setContent(s === "true");
-   }*/
 }

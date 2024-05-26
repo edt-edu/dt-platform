@@ -33,8 +33,8 @@ component VacuumGripper {
 
   // Subcomponents
   RotationalAxis axisRotate;
-  LinearAxis axisHorizontal;
-  LinearAxis axisVertical;
+  LinearAxis axisHorizontal(0, 100);
+  LinearAxis axisVertical(0, 100);
 
   // Connections
   SignalToMotorDirection convertRotate;

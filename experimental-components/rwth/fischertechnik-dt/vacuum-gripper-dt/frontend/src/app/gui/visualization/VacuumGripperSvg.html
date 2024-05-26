@@ -1,8 +1,9 @@
-<svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+<svg width="400" height="225" xmlns="http://www.w3.org/2000/svg">
     <g [attr.transform]= "'translate(100, 100) rotate(' + rotationDeg + '  0 0)'">
         <circle r="10" fill="#AAAAAA" />
         <line x1="0"  y1="0" x2="100" y2="0" stroke="green"/>
         <line [attr.x1]="horizontalPercentage"  y1="-10" [attr.x2]="horizontalPercentage" y2="10" stroke="red"/>
+        <circle r="100" stroke="grey" stroke-opacity="50%" fill-opacity="0" />
     </g>
     <g transform="translate(200, 0)">
         <g transform = "translate(100, 150) rotate(-90 0 0)">

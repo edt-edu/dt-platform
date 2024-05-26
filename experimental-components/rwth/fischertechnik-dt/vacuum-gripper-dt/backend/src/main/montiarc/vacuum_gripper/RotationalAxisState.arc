@@ -4,14 +4,14 @@ import vacuum_gripper.VacuumGripperTypes.*;
 
 component RotationalAxisState {
   port in MotorDirection direction;
-  port out float position;
+  port out float position; // in degrees
 
   // TODO: port to initially set internalPosition?
   float internalPosition = 0;
 
   compute {
     int encoderDiff = 0;
-    int posPerDiff = 1;
+    float posPerDiff = 360.0f / 32.0f;
     if(direction == MotorDirection.FORWARD){
       encoderDiff = 1;
     }else if(direction == MotorDirection.REVERSE){
@@ -19,9 +19,6 @@ component RotationalAxisState {
     }
 
     internalPosition = internalPosition + encoderDiff*posPerDiff;
-
-    float pi = 62832/20000; // approximation for pi
-    position = internalPosition % (2*pi);
+    position = internalPosition % 360.0f;
   }
-
 }

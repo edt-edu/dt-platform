@@ -28,8 +28,10 @@ page SimulatorOverview(App app){
         ])),
 
       @GemCard(title = "Simulate", component=@GemColumn(components=[
-        @GemRow(components=[
-          simulatorButton@GemButton(label = "Step", leftClick = app.stepSimulator())
+        @GemRow(height="4em", components=[
+          simulatorStepBtn@GemButton(label = "Step", leftClick = app.stepSimulator()),
+          simulatorStopBtn@GemButton(label = "Stop", leftClick = app.stepSimulator()),
+          simulatorStartBtn@GemButton(label = "Start", leftClick = app.stepSimulator())
         ]),
         @GemRow(components=[
           @VacuumGripperSvg(rotationDeg=app.simulationOutput.positionRotate.content,
