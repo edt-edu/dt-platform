@@ -1,0 +1,27 @@
+package gui.visualization;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import gui.visualization.FunctionStreamOverview;
+
+import VacuumGripperDashboard.FFunction;
+import VacuumGripperDashboard.Port;
+
+page FunctionInputOutputStreamOverview(FFunction f){
+  @GemRow(components=[
+    @iterate(Port p : f.in){
+      @GemColumn(components=[
+         @GemText(value=p.name),
+         @FunctionStreamOverview(fs=p.channel.functionStream)
+      ]);
+    },
+    @iterate(Port p : f.out){
+        @GemColumn(components=[
+           @GemText(value=p.name),
+           @FunctionStreamOverview(fs=p.channel.functionStream)
+        ]);
+    }
+  ]);
+
+}

@@ -25,7 +25,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.NotificationScope;
-import vacuumgripperdashboard.commands.StepSimulator;
 
 import static vacuumgripperdashboard.VacuumGripperDashboardManager.*;
 
@@ -43,7 +42,10 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
   @javax.annotation.PostConstruct
   public void init() throws IOException {
     super.init();
+    initSimulator();
+  }
 
+  private void initSimulator() throws IOException {
     createFunctionsFromSimulationModel();
 
     FFunction vacuumGripperFunction = VacuumGripperDashboardManager.getFFunctionList().stream()
@@ -68,12 +70,12 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
     getApp().setSimulationInput(input);
     getApp().setSimulationOutput(output);
     getApp().setVacuumGripperSimulation(vacuumGripperFunction);
-
+    StepSimulator simulator = new StepSimulator(vacuumGripperFunction);
 
     VacuumGripperDashboardManager.addObserver(new VacuumGripperDashboardObserver(){
       @Override
       public void maybeNotifySimulatorStepAdded(SimulatorStep simulatorStep, NotificationScope scope) {
-        new StepSimulator().doAction();
+        simulator.step();
       }
     });
   }

@@ -1,0 +1,34 @@
+package gui;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+import mc.fenix.navigation.GemNavItem;
+import gui.visualization.FunctionInputOutputStreamOverview;
+
+
+import VacuumGripperDashboard.FFunction;
+import VacuumGripperDashboard.Port;
+
+page FunctionOverview(FFunction function){
+  @GemText(value = "Name: " + function.name);
+  @GemCard(title="Input Ports", component=
+    @GemColumn(components=[
+      @iterate(Port p : function.in){
+        inPortNavItem@GemNavItem(title=p.name, target=null /*hwc*/);
+      }
+    ])
+  );
+
+  @GemCard(title="Output Ports", component=
+      @GemColumn(components=[
+        @iterate(Port p : function.out){
+          outPortNavItem@GemNavItem(title=p.name, target=null /*hwc*/);
+        }
+      ])
+    );
+
+  @GemCard(title="Values", component=
+    @FunctionInputOutputStreamOverview(f=function)
+  );
+}

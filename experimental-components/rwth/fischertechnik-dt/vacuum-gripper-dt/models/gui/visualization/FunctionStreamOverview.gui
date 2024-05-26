@@ -1,0 +1,15 @@
+package gui.visualization;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import VacuumGripperDashboard.FunctionStream;
+import VacuumGripperDashboard.Value;
+
+page FunctionStreamOverview(FunctionStream fs){
+  @GemColumn(components=[
+    @iterate(Value v : fs.value){
+      valueText@GemText(value = null /*hwc*/);
+    }
+  ]);
+}
