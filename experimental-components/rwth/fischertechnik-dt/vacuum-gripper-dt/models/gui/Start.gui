@@ -1,11 +1,22 @@
 package gui;
+
 import mc.fenix.basic.GemText;
 import gui.visualization.VacuumGripperSvg;
 
-page Start(){
+import VacuumGripperDashboard.FFunction;
+import VacuumGripperDashboard.App;
+
+page Start(List<FFunction> functions, App app){
   @GemText(value = "Hello World!");
 
-  @VacuumGripperSvg(rotationDeg=20, verticalPercentage=30, horizontalPercentage=40);
-  @VacuumGripperSvg(rotationDeg=0, verticalPercentage=0, horizontalPercentage=0);
-  @VacuumGripperSvg(rotationDeg=0, verticalPercentage=100, horizontalPercentage=100);
+  @GemText(value = "Functions");
+  @iterate(FFunction f : functions){
+    @GemText(value = f.name);
+  }
+
+  @guard(app != null){
+    @GemText(value="notNull");
+  }else{
+    @GemText(value="isNull");
+  }
 }

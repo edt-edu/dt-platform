@@ -1,0 +1,10 @@
+{
+  "adapters": [
+    "umlp.jsweet.extension.UMLPJSweetAdapter",
+    "umlp.jsweet.extension.domainAdapters.VacuumGripperDashboardImportAdapter"
+  ],
+  "domainName": "VacuumGripperDashboard",
+  "excludes":[
+    ".*"
+  ]
+}

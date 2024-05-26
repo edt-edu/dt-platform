@@ -14,17 +14,43 @@ node {
 }
 nodeSetup.dependsOn(frontendSetup)
 
+dependencies {
+  //if(j2ts) {
+  //  println("Hello WOrld!")
+  //  domainSources project(":backend")
+  //  implementation project(":backend")
+  //}
+
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+  implementation group: "de.monticore.lang", name: 'guidsl', version: mc_version
+}
 
 genGUI {
   domainModels = ["VacuumGripperDashboard"]
   guiCreateModels = []
 }
 
+if(j2ts) {
+  translateJava2TSDomain {
+    domainModel = 'VacuumGripperDashboard'
+    verbose = true
+  }
+
+  translateJava2TSGUI {
+    domainModel = 'VacuumGripperDashboard'
+    verbose = true
+  }
+}
+
+task tmpCopyUmlpPackages(type: Copy){
+  from("C:\\Users\\Hellwig\\projects\\umlp\\umlp-rte\\client\\build\\dist\\umlp\\mc\\fenix")
+  into("$buildDir/frontendGen/node_modules/@umlp/")
+}
 
 nodeSetup.dependsOn(frontendSetup)
 
 def prebuildTasks = [
-    npmInstall, generate
+    npmInstall, generate, tasks.tmpCopyUmlpPackages
 ]
 
 task buildApp(type: NpxTask) {

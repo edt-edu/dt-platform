@@ -1,0 +1,48 @@
+package gui;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+
+import gui.visualization.VacuumGripperSvg;
+
+import VacuumGripperDashboard.App;
+import VacuumGripperDashboard.VacuumGripperInput;
+import VacuumGripperDashboard.VacuumGripperOutput;
+
+page SimulatorOverview(App app){
+  @GemRow(
+    components=[
+      @GemCard(title = "Inputs", component=@GemColumn(components=[
+          verticalUpInput@GemCheckBoxInput(labelText="Up", checked=app.simulationInput.verticalUp.content),
+          verticalDownInput@GemCheckBoxInput(labelText="Down", checked=app.simulationInput.verticalDown.content),
+          horizontalForwardInput@GemCheckBoxInput(labelText="Forward", checked=app.simulationInput.horizontalForward.content),
+          horizontalBackInput@GemCheckBoxInput(labelText="Backward", checked=app.simulationInput.horizontalBack.content),
+          rotationClockwiseInput@GemCheckBoxInput(labelText="Clockwise", checked=app.simulationInput.rotationClockwise.content),
+          rotationCounterclockwiseInput@GemCheckBoxInput(labelText="Counterclockwise", checked=app.simulationInput.rotationCounterclockwise.content)
+        ])),
+
+      @GemCard(title = "Simulate", component=@GemColumn(components=[
+        @GemRow(components=[
+          simulatorButton@GemButton(label = "Step", leftClick = app.stepSimulator())
+        ]),
+        @GemRow(components=[
+          @VacuumGripperSvg(rotationDeg=app.simulationOutput.positionRotate.content,
+                            verticalPercentage=app.simulationOutput.positionVertical.content,
+                            horizontalPercentage=app.simulationOutput.positionHorizontal.content)
+        ])
+      ])),
+
+      @GemCard(title = "Outputs", component=@GemColumn(components=[
+        @GemText(value = "Vertical position: " + app.simulationOutput.positionVertical.content),
+        @GemText(value = "Horizontal position: " + app.simulationOutput.positionHorizontal.content),
+        @GemText(value = "Rotation: " + app.simulationOutput.positionRotate.content)
+      ]))
+    ]
+  );
+}

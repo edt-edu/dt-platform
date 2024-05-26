@@ -39,3 +39,4 @@ rootProject.name = 'vacuum-gripper-dt'
 
 include(":backend")
 include(":frontend")
+// include(":simulator")
