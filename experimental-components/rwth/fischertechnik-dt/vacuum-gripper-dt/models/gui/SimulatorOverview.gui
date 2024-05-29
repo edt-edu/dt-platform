@@ -44,7 +44,30 @@ page SimulatorOverview(App app){
         @GemText(value = "Vertical position: " + app.simulationOutput.positionVertical.content),
         @GemText(value = "Horizontal position: " + app.simulationOutput.positionHorizontal.content),
         @GemText(value = "Rotation: " + app.simulationOutput.positionRotate.content)
-      ]))
+      ])),
+
+       @GemCard(title = "Payload position Service", component=@GemColumn(components=[
+            @GemRow(components=[
+              @GemText(value = "In loading zone:"),
+              @GemText(value = app.simulationOutput.inLoadingZone)
+            ]),
+            @GemRow(components=[
+              @GemText(value = "In dropoff zone:"),
+              @GemText(value = app.simulationOutput.inDropoffZone)
+            ]),
+            @GemRow(components=[
+              @GemText(value = "Payload position: " + app.payloadPosition),
+              @guard(app.payloadPosition == 0){
+                @GemText(value = "Loading area");
+              },
+              @guard(app.payloadPosition == 1){
+                @GemText(value = "In transit");
+              },
+              @guard(app.payloadPosition == 2){
+                @GemText(value = "Dropoff area");
+              }
+            ])
+        ]))
     ]
   );
 }

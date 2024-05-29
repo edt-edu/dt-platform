@@ -8,23 +8,23 @@ import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import arcbasis._ast.ASTComponentType;
 import de.monticore.io.paths.MCPath;
+import de.se_rwth.commons.logging.Log;
 import ma2fenix.MA2FenixTransformer;
 import montiarc.MontiArcMill;
 import montiarc.MontiArcTool;
 import montiarc._ast.ASTMACompilationUnit;
 import montiarc._symboltable.IMontiArcArtifactScope;
+import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import umlp.backendrte.common.NotificationScope;
+import vacuumgripperdashboard.util.SimpleMqtt;
 
 import static vacuumgripperdashboard.VacuumGripperDashboardManager.*;
 
@@ -72,12 +72,97 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
     getApp().setVacuumGripperSimulation(vacuumGripperFunction);
     StepSimulator simulator = new StepSimulator(vacuumGripperFunction);
 
-    VacuumGripperDashboardManager.addObserver(new VacuumGripperDashboardObserver(){
+    VacuumGripperDashboardManager.addObserver(new VacuumGripperDashboardObserver() {
       @Override
       public void maybeNotifySimulatorStepAdded(SimulatorStep simulatorStep, NotificationScope scope) {
         simulator.step();
       }
     });
+
+    PositionService positionService = new PositionService();
+
+    output.getPositionRotate().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        positionService.updatePayloadPosition();
+      }
+    });
+
+    output.getPositionVertical().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        positionService.updatePayloadPosition();
+      }
+    });
+
+    output.getPositionHorizontal().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        positionService.updatePayloadPosition();
+      }
+    });
+
+    //getApp().addObserver(new AppObserver() {
+    //  @Override
+    //  public void notifySetPayloadPosition(App app, PayloadPosition oldValue, PayloadPosition o) {
+    //    System.out.println("### Changed payload position from " + oldValue + " to " + o);
+    //  }
+    //});
+
+    try {
+      initMqttConnector(simulator);
+    } catch (MqttException e) {
+      Log.warn("Can not connect to MQTT", e);
+    }
+  }
+
+  private void initMqttConnector(StepSimulator simulator) throws MqttException {
+    MqttClient client = new MqttClient(
+        System.getenv().getOrDefault("MQTT_BROKER_ADDRESS", "tcp://localhost:1883"),
+        "VacuumGripperDt-" + Math.abs(new Random().nextInt())
+    );
+
+    SimpleMqtt callbacks = new SimpleMqtt(client);
+    client.setCallback(callbacks);
+    client.connect();
+
+    App app = getApp();
+    VacuumGripperInput input = app.getSimulationInput();
+    VacuumGripperOutput output = app.getSimulationOutput();
+
+    String prefix = "/vacuum-gripper/2.5-Vac";
+    callbacks.subscribeBool(prefix + "/verticalUp", b -> input.getVerticalUp().setContent(b));
+    callbacks.subscribeBool(prefix + "/verticalDown", b -> input.getVerticalDown().setContent(b));
+    callbacks.subscribeBool(prefix + "/horizontalForward", b -> input.getHorizontalForward().setContent(b));
+    callbacks.subscribeBool(prefix + "/horizontalBack", b -> input.getHorizontalBack().setContent(b));
+    callbacks.subscribeBool(prefix + "/rotationClockwise", b -> input.getRotationClockwise().setContent(b));
+    callbacks.subscribeBool(prefix + "/rotationCounterclockwise", b -> input.getRotationCounterclockwise().setContent(b));
+
+    callbacks.subscribeLong(prefix + "/counterHorizontal", i -> {
+      float content = i / 20f;
+      output.getPositionHorizontal().setContent(content);
+      simulator.setHorizontalPosition(content);
+    });
+    callbacks.subscribeLong(prefix + "/counterVertical", i -> {
+      float content = 100f - (i / 20f);
+      output.getPositionVertical().setContent(content);
+      simulator.setVerticalPosition(content);
+    });
+    callbacks.subscribeLong(prefix + "/counterRotation", i -> {
+      float content = 180f - (i / 10f);
+      content = Math.abs(content);
+      content = content % 360f;
+      output.getPositionRotate().setContent(content);
+      simulator.setRotationPosition(content);
+    });
+
+    // TODO: if position is in either
+    // - loading zone
+    // - dropoff zone
+    // the dt should send status packages to topic /vacuum-gripper/payload/position:
+    // - "loading zone",
+    // - "dropoff zone",
+    // - "in transit"
   }
 
   private void createFunctionsFromSimulationModel() throws IOException {

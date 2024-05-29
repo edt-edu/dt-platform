@@ -7,7 +7,12 @@ umlp VacuumGripperDashboard{
     -> (vacuumGripperSimulation) FFunction [0..1];
     -> (simulationInput) VacuumGripperInput [0..1];
     -> (simulationOutput) VacuumGripperOutput [0..1];
+    int payloadPosition;
   }
+
+  //enum PayloadPosition {
+  //  LOADING_ZONE, IN_TRANSIT, DROPOFF_ZONE;
+  //}
 
   class SimulatorStep {
 
@@ -26,6 +31,9 @@ umlp VacuumGripperDashboard{
     FloatValue positionRotate;
     FloatValue positionHorizontal;
     FloatValue positionVertical;
+
+    / boolean inLoadingZone;
+    / boolean inDropoffZone;
   }
 
   // ##########################################################

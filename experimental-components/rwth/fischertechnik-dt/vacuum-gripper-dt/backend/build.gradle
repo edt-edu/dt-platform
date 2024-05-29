@@ -8,6 +8,18 @@ plugins {
   id 'com.google.cloud.tools.jib' version '3.4.2'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
   id 'org.springframework.boot' version "${spring_version}"
+
+  id "com.github.mrsarm.jshell.plugin" version "1.2.1"
+}
+
+task saveRuntimeClasspathInFile {
+  def runtimeClasspath = sourceSets.main.runtimeClasspath
+  def outFile = buildDir.toPath().resolve("runtimeClasspath").toFile()
+  inputs.files( runtimeClasspath )
+  outputs.files(outFile)
+  doLast {
+    outFile.write(runtimeClasspath.join( File.pathSeparator ))
+  }
 }
 
 repositories {
@@ -82,6 +94,9 @@ dependencies {
   api group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: spring_version, withoutSpringLogging
 
   implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+  // mqtt
+  implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
   // dependencies to write JUnit-tests against class diagrams and montiarc models
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")

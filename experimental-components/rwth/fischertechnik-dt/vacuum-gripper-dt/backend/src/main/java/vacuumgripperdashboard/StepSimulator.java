@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 public class StepSimulator {
     private VacuumGripper simulator;
-    protected Category booleanCategory;
     AtomicInteger step = new AtomicInteger(0);
 
     public StepSimulator(FFunction vacuumGripperFunction) {
@@ -100,6 +99,18 @@ public class StepSimulator {
 
         simulator.tick();
         step.incrementAndGet();
+    }
+
+    public void setVerticalPosition(float f){
+        simulator.getComponentAxisVertical().getComponentLinearAxisState().setInternalPosition(f);
+    }
+
+    public void setHorizontalPosition(float f){
+        simulator.getComponentAxisHorizontal().getComponentLinearAxisState().setInternalPosition(f);
+    }
+
+    public void setRotationPosition(float f){
+        simulator.getComponentAxisRotate().getComponentRotationalAxisState().setInternalPosition(f);
     }
 
     static class BooleanInPortConsumer extends BooleanInPort {
