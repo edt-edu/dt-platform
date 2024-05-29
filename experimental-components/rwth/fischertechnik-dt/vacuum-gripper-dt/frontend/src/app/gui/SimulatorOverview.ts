@@ -33,6 +33,22 @@ export class SimulatorOverview extends SimulatorOverviewComponent {
     this.simulatorRunning = true;
   }
 
+  public payloadUnknownBtnLeftClick(): void {
+    this.getApp().setPayloadPosition(3);
+  }
+
+  public payloadLoadingZoneBtnLeftClick(): void {
+    this.getApp().setPayloadPosition(0);
+  }
+
+  public payloadInTransitBtnLeftClick(): void {
+    this.getApp().setPayloadPosition(1);
+  }
+
+  public payloadDropoffZoneBtnLeftClick(): void {
+    this.getApp().setPayloadPosition(2);
+  }
+
   public initAutoSimulator(){
     setTimeout(() => {
       if(this.simulatorRunning){

@@ -119,7 +119,7 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
     SimpleMqtt callbacks = new SimpleMqtt(client);
     client.setCallback(callbacks);
     client.connect().waitForCompletion();
-    client.publish("/vacuum-gripper-dt/payload/position", new MqttMessage("UNKOWN".getBytes(StandardCharsets.UTF_8)));
+    client.publish("/vacuum-gripper-dt/payload/position", new MqttMessage("UNKNOWN".getBytes(StandardCharsets.UTF_8)));
 
     App app = getApp();
     VacuumGripperInput input = app.getSimulationInput();
@@ -191,7 +191,7 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
     } else if(o == 0){
       payload = "LOADING_ZONE";
     } else {
-      payload = "UNKOWN";
+      payload = "UNKNOWN";
     }
     return payload;
   }

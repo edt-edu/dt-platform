@@ -28,7 +28,8 @@ page SimulatorOverview(App app){
         ])),
 
       @GemCard(title = "Simulate", component=@GemColumn(components=[
-        @GemRow(height="4em", components=[
+        @GemText(value = "Movement"),
+        @GemRow(height="4em", colGap="8px", components=[
           simulatorStepBtn@GemButton(label = "Step", leftClick = app.emptyFunc()),
           simulatorStopBtn@GemButton(label = "Stop", leftClick = app.emptyFunc()),
           simulatorStartBtn@GemButton(label = "Start", leftClick = app.emptyFunc())
@@ -40,13 +41,21 @@ page SimulatorOverview(App app){
         ])
       ])),
 
-      @GemCard(title = "Outputs", component=@GemColumn(components=[
+      outputsCard@GemCard(title = "Outputs", component=@GemColumn(components=[
         @GemText(value = "Vertical position: " + app.simulationOutput.positionVertical.content),
         @GemText(value = "Horizontal position: " + app.simulationOutput.positionHorizontal.content),
         @GemText(value = "Rotation: " + app.simulationOutput.positionRotate.content)
       ])),
 
-       @GemCard(title = "Payload position Service", component=@GemColumn(components=[
+       @GemCard(title = "Payload position service", component=@GemColumn(components=[
+            @GemText(value = "Set payload position"),
+            @GemRow(height="4em", colGap="8px", components=[
+              payloadUnknownBtn@GemButton(label = "Unknown", leftClick = app.emptyFunc()),
+              payloadLoadingZoneBtn@GemButton(label = "Loading zone", leftClick = app.emptyFunc()),
+              payloadInTransitBtn@GemButton(label = "In transit", leftClick = app.emptyFunc()),
+              payloadDropoffZoneBtn@GemButton(label = "Dropoff zone", leftClick = app.emptyFunc())
+            ]),
+            @GemText(value = "Service state", size = "2em"),
             @GemRow(components=[
               @GemText(value = "In loading zone:"),
               @GemText(value = app.simulationOutput.inLoadingZone)

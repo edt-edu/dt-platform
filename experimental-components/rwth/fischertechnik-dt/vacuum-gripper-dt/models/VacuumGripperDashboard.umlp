@@ -1,21 +1,12 @@
 import java.time.LocalDate;
 
-umlp VacuumGripperDashboard{
+umlp VacuumGripperDT{
   <<singleton>>
   class App {
-    void emptyFunc(); // Workaround, remove
     -> (vacuumGripperSimulation) FFunction [0..1];
     -> (simulationInput) VacuumGripperInput [0..1];
     -> (simulationOutput) VacuumGripperOutput [0..1];
     int payloadPosition;
-  }
-
-  //enum PayloadPosition {
-  //  LOADING_ZONE, IN_TRANSIT, DROPOFF_ZONE;
-  //}
-
-  class SimulatorStep {
-
   }
 
   class VacuumGripperInput {
@@ -35,6 +26,11 @@ umlp VacuumGripperDashboard{
     / boolean inLoadingZone;
     / boolean inDropoffZone;
   }
+
+  class SimulatorStep {
+
+  }
+
 
   // ##########################################################
   // Function Structure Model
