@@ -12,13 +12,26 @@ import java.util.function.Consumer;
 public class SimpleMqtt implements MqttCallback {
   private Multimap<String, Consumer<MqttMessage>> actions = ArrayListMultimap.create();
   final MqttClient client;
+  final MqttAsyncClient asyncClient;
+  final boolean isAsync;
 
   public SimpleMqtt(MqttClient client) {
     this.client = client;
+    this.asyncClient = null;
+    isAsync = false;
+  }
+  public SimpleMqtt(MqttAsyncClient client) {
+    this.asyncClient = client;
+    this.client = null;
+    isAsync = true;
   }
 
   public Closeable subscribe(String topic, Consumer<MqttMessage> action) throws MqttException {
-    client.subscribe(topic);
+    if(isAsync){
+      asyncClient.subscribe(topic, 1);
+    }else {
+      client.subscribe(topic);
+    }
     actions.put(topic, action);
     return () -> actions.remove(topic, action);
   }

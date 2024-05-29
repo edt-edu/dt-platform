@@ -65,6 +65,9 @@ page SimulatorOverview(App app){
               },
               @guard(app.payloadPosition == 2){
                 @GemText(value = "Dropoff zone");
+              },
+              @guard(app.payloadPosition == 3){
+                @GemText(value = "Unknown");
               }
             ])
         ]))

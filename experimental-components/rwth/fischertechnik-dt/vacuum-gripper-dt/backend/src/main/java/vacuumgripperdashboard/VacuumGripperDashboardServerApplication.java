@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -102,13 +103,6 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
       }
     });
 
-    //getApp().addObserver(new AppObserver() {
-    //  @Override
-    //  public void notifySetPayloadPosition(App app, PayloadPosition oldValue, PayloadPosition o) {
-    //    System.out.println("### Changed payload position from " + oldValue + " to " + o);
-    //  }
-    //});
-
     try {
       initMqttConnector(simulator);
     } catch (MqttException e) {
@@ -117,14 +111,15 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
   }
 
   private void initMqttConnector(StepSimulator simulator) throws MqttException {
-    MqttClient client = new MqttClient(
+    MqttAsyncClient client = new MqttAsyncClient(
         System.getenv().getOrDefault("MQTT_BROKER_ADDRESS", "tcp://localhost:1883"),
         "VacuumGripperDt-" + Math.abs(new Random().nextInt())
     );
 
     SimpleMqtt callbacks = new SimpleMqtt(client);
     client.setCallback(callbacks);
-    client.connect();
+    client.connect().waitForCompletion();
+    client.publish("/vacuum-gripper-dt/payload/position", new MqttMessage("UNKOWN".getBytes(StandardCharsets.UTF_8)));
 
     App app = getApp();
     VacuumGripperInput input = app.getSimulationInput();
@@ -156,13 +151,58 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
       simulator.setRotationPosition(content);
     });
 
-    // TODO: if position is in either
-    // - loading zone
-    // - dropoff zone
-    // the dt should send status packages to topic /vacuum-gripper/payload/position:
-    // - "loading zone",
-    // - "dropoff zone",
-    // - "in transit"
+    app.addObserver(new AppObserver() {
+      @Override
+      public void notifySetPayloadPosition(App app, Integer oldValue, Integer o) {
+        if(Objects.equals(o, oldValue)){
+          return;
+        }
+
+        String payload;
+        payload = payloadPositionToStr(o);
+
+        try {
+          System.out.println("Pre publish");
+          MqttMessage msg = new MqttMessage(payload.getBytes(StandardCharsets.UTF_8));
+          System.out.println("Msg created");
+          client.publish("/vacuum-gripper-dt/payload/position", msg);
+          System.out.println("Post publish");
+        } catch (MqttException e) {
+          System.out.println("Error while publishing!");
+          throw new RuntimeException(e);
+        }
+      }
+
+      @Override
+      public NotificationScope getScope() {
+        return NotificationScope.MINIMAL;
+      }
+    });
+
+    callbacks.subscribeStr("/vacuum-gripper-dt/payload/position/update", str -> app.setPayloadPosition(strToPayloadPosition(str)));
+  }
+
+  private static String payloadPositionToStr(Integer o) {
+    String payload;
+    if(o == 1){
+      payload = "IN_TRANSIT";
+    } else if(o == 2){
+      payload = "DROPOFF_ZONE";
+    } else if(o == 0){
+      payload = "LOADING_ZONE";
+    } else {
+      payload = "UNKOWN";
+    }
+    return payload;
+  }
+
+  private static int strToPayloadPosition(String str){
+    switch (str){
+      case "IN_TRANSIT": return 1;
+      case "DROPOFF_ZONE": return 2;
+      case "LOADING_ZONE": return 0;
+      default: return 3;
+    }
   }
 
   private void createFunctionsFromSimulationModel() throws IOException {
