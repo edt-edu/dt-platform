@@ -4,6 +4,6 @@ public class AppBuilder extends AppBuilderTOP {
 
   public AppBuilder(long gemId) {
     super(gemId);
-    setPayloadPosition(0);
+    setPayloadPosition(VacuumGripperDashboardManager.integerValueBuilder().content(0).build().get());
   }
 }

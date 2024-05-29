@@ -1,0 +1,15 @@
+package gui.visualization;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.basic.GemText;
+
+import VacuumGripperDashboard.VacuumGripperOutput;
+
+component OutputCard(VacuumGripperOutput output){
+  outputsCard@GemCard(title = "Outputs", component=@GemColumn(components=[
+          @GemText(value = "Vertical position: " + output.positionVertical.content),
+          @GemText(value = "Horizontal position: " + output.positionHorizontal.content),
+          @GemText(value = "Rotation: " + output.positionRotate.content)
+        ]));
+}

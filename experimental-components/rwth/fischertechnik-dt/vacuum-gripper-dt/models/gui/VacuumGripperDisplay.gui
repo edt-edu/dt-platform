@@ -1,0 +1,57 @@
+package gui;
+
+import mc.fenix.basic.GemButton;
+import mc.fenix.basic.GemText;
+import mc.fenix.input.GemTextInput;
+import mc.fenix.input.GemCheckBoxInput;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+
+import gui.visualization.VacuumGripperSvg;
+import gui.visualization.InputCard;
+import gui.visualization.OutputCard;
+import gui.visualization.PayloadPositionLabel;
+
+import VacuumGripperDashboard.VacuumGripperInput;
+import VacuumGripperDashboard.VacuumGripperOutput;
+import VacuumGripperDashboard.IntegerValue;
+
+component VacuumGripperDisplay(VacuumGripperInput input, VacuumGripperOutput output, IntegerValue payloadPosition){
+  @GemRow(
+      components=[
+        @InputCard(input = input),
+        @GemCard(title = "Visualization", component=@GemColumn(components=[
+          @GemRow(components=[
+            @VacuumGripperSvg(rotationDeg=output.positionRotate.content,
+                              verticalPercentage=output.positionVertical.content,
+                              horizontalPercentage=output.positionHorizontal.content)
+          ])
+        ])),
+         outputsCard@OutputCard(output=output),
+         @GemCard(title = "Payload position service", component=@GemColumn(rowGap="1em", components=[
+              @GemRow(height="4em", colGap="8px", components=[
+                payloadUnknownBtn@GemButton(label = "Unknown", leftClick = emptyFunc()),
+                payloadLoadingZoneBtn@GemButton(label = "Loading zone", leftClick = emptyFunc()),
+                payloadInTransitBtn@GemButton(label = "In transit", leftClick = emptyFunc()),
+                payloadDropoffZoneBtn@GemButton(label = "Dropoff zone", leftClick = emptyFunc())
+              ]),
+              @GemText(value = "Service state", size = "2em"),
+              @GemRow(height="4em", components=[
+                @GemText(value = "In loading zone:"),
+                @GemText(value = output.inLoadingZone)
+              ]),
+              @GemRow(height="4em", components=[
+                @GemText(value = "In dropoff zone:"),
+                @GemText(value = output.inDropoffZone)
+              ]),
+              @GemRow(height="4em", components=[
+                @GemText(value = "Payload position: "),
+                @PayloadPositionLabel(payloadPosition=payloadPosition.content)
+              ])
+          ]))
+      ]
+    );
+
+}

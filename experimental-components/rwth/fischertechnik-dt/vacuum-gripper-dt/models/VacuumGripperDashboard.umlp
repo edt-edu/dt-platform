@@ -1,12 +1,16 @@
 import java.time.LocalDate;
 
-umlp VacuumGripperDT{
+umlp VacuumGripperDashboard{
   <<singleton>>
   class App {
+    void emptyFunc();
     -> (vacuumGripperSimulation) FFunction [0..1];
     -> (simulationInput) VacuumGripperInput [0..1];
     -> (simulationOutput) VacuumGripperOutput [0..1];
-    int payloadPosition;
+    -> (physicalTwinInput) VacuumGripperInput [0..1];
+    -> (physicalTwinOutput) VacuumGripperOutput [0..1];
+    IntegerValue payloadPosition;
+    // TODO: position for sim and pt
   }
 
   class VacuumGripperInput {

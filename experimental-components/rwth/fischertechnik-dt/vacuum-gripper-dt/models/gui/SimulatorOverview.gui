@@ -9,77 +9,31 @@ import mc.fenix.arrange.GemCard;
 import mc.fenix.arrange.GemColumn;
 import mc.fenix.arrange.GemRow;
 
+import gui.VacuumGripperDisplay;
 import gui.visualization.VacuumGripperSvg;
+import gui.visualization.InputCard;
+import gui.visualization.OutputCard;
+import gui.visualization.PayloadPositionLabel;
 
 import VacuumGripperDashboard.App;
 import VacuumGripperDashboard.VacuumGripperInput;
 import VacuumGripperDashboard.VacuumGripperOutput;
 
 page SimulatorOverview(App app){
-  @GemRow(
-    components=[
-      @GemCard(title = "Inputs", component=@GemColumn(components=[
-          verticalUpInput@GemCheckBoxInput(labelText="Up", checked=app.simulationInput.verticalUp.content),
-          verticalDownInput@GemCheckBoxInput(labelText="Down", checked=app.simulationInput.verticalDown.content),
-          horizontalForwardInput@GemCheckBoxInput(labelText="Forward", checked=app.simulationInput.horizontalForward.content),
-          horizontalBackInput@GemCheckBoxInput(labelText="Backward", checked=app.simulationInput.horizontalBack.content),
-          rotationClockwiseInput@GemCheckBoxInput(labelText="Clockwise", checked=app.simulationInput.rotationClockwise.content),
-          rotationCounterclockwiseInput@GemCheckBoxInput(labelText="Counterclockwise", checked=app.simulationInput.rotationCounterclockwise.content)
-        ])),
-
-      @GemCard(title = "Simulate", component=@GemColumn(components=[
-        @GemText(value = "Movement"),
-        @GemRow(height="4em", colGap="8px", components=[
-          simulatorStepBtn@GemButton(label = "Step", leftClick = app.emptyFunc()),
-          simulatorStopBtn@GemButton(label = "Stop", leftClick = app.emptyFunc()),
-          simulatorStartBtn@GemButton(label = "Start", leftClick = app.emptyFunc())
-        ]),
-        @GemRow(components=[
-          @VacuumGripperSvg(rotationDeg=app.simulationOutput.positionRotate.content,
-                            verticalPercentage=app.simulationOutput.positionVertical.content,
-                            horizontalPercentage=app.simulationOutput.positionHorizontal.content)
-        ])
-      ])),
-
-      outputsCard@GemCard(title = "Outputs", component=@GemColumn(components=[
-        @GemText(value = "Vertical position: " + app.simulationOutput.positionVertical.content),
-        @GemText(value = "Horizontal position: " + app.simulationOutput.positionHorizontal.content),
-        @GemText(value = "Rotation: " + app.simulationOutput.positionRotate.content)
-      ])),
-
-       @GemCard(title = "Payload position service", component=@GemColumn(components=[
-            @GemText(value = "Set payload position"),
-            @GemRow(height="4em", colGap="8px", components=[
-              payloadUnknownBtn@GemButton(label = "Unknown", leftClick = app.emptyFunc()),
-              payloadLoadingZoneBtn@GemButton(label = "Loading zone", leftClick = app.emptyFunc()),
-              payloadInTransitBtn@GemButton(label = "In transit", leftClick = app.emptyFunc()),
-              payloadDropoffZoneBtn@GemButton(label = "Dropoff zone", leftClick = app.emptyFunc())
-            ]),
-            @GemText(value = "Service state", size = "2em"),
-            @GemRow(components=[
-              @GemText(value = "In loading zone:"),
-              @GemText(value = app.simulationOutput.inLoadingZone)
-            ]),
-            @GemRow(components=[
-              @GemText(value = "In dropoff zone:"),
-              @GemText(value = app.simulationOutput.inDropoffZone)
-            ]),
-            @GemRow(components=[
-              @GemText(value = "Payload position: "),
-              @guard(app.payloadPosition == 0){
-                @GemText(value = "Loading zone");
-              },
-              @guard(app.payloadPosition == 1){
-                @GemText(value = "In transit");
-              },
-              @guard(app.payloadPosition == 2){
-                @GemText(value = "Dropoff zone");
-              },
-              @guard(app.payloadPosition == 3){
-                @GemText(value = "Unknown");
-              }
-            ])
-        ]))
-    ]
-  );
+  @GemColumn(components=[
+    @GemCard(title="Physical twin", component=
+      @VacuumGripperDisplay(input=app.physicalTwinInput, output=app.physicalTwinOutput, payloadPosition=app.payloadPosition)
+    ),
+    @GemCard(title="Simulator", component=@GemRow(components=[
+      @VacuumGripperDisplay(input=app.simulationInput, output=app.simulationOutput, payloadPosition=app.payloadPosition),
+      @GemCard(title="Control", component=
+            @GemColumn(rowGap="4px", components=[
+                      simulatorStepBtn@GemButton(label = "Step", leftClick = app.emptyFunc()),
+                      simulatorStopBtn@GemButton(label = "Stop", leftClick = app.emptyFunc()),
+                      simulatorStartBtn@GemButton(label = "Start", leftClick = app.emptyFunc())
+                    ])
+      )
+    ])
+  )
+  ]);
 }

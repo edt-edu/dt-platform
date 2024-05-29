@@ -1,0 +1,18 @@
+package gui.visualization;
+
+import mc.fenix.arrange.GemCard;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.input.GemCheckBoxInput;
+
+import VacuumGripperDashboard.VacuumGripperInput;
+
+component InputCard(VacuumGripperInput input){
+  @GemCard(title = "Inputs", component=@GemColumn(components=[
+            verticalUpInput@GemCheckBoxInput(labelText="Up", checked=input.verticalUp.content),
+            verticalDownInput@GemCheckBoxInput(labelText="Down", checked=input.verticalDown.content),
+            horizontalForwardInput@GemCheckBoxInput(labelText="Forward", checked=input.horizontalForward.content),
+            horizontalBackInput@GemCheckBoxInput(labelText="Backward", checked=input.horizontalBack.content),
+            rotationClockwiseInput@GemCheckBoxInput(labelText="Clockwise", checked=input.rotationClockwise.content),
+            rotationCounterclockwiseInput@GemCheckBoxInput(labelText="Counterclockwise", checked=input.rotationCounterclockwise.content)
+          ]));
+}

@@ -1,0 +1,18 @@
+package gui.visualization;
+
+import mc.fenix.basic.GemText;
+
+component PayloadPositionLabel(int payloadPosition){
+  @guard(payloadPosition == 0){
+    @GemText(value = "Loading zone");
+  };
+  @guard(payloadPosition == 1){
+    @GemText(value = "In transit");
+  };
+  @guard(payloadPosition == 2){
+    @GemText(value = "Dropoff zone");
+  };
+  @guard(payloadPosition == 3){
+    @GemText(value = "Unknown");
+  }
+}

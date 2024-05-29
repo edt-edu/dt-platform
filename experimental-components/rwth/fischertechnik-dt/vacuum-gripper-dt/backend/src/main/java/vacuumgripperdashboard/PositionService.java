@@ -7,7 +7,7 @@ public class PositionService {
     App app = VacuumGripperDashboardManager.getApp();
     VacuumGripperOutput output = app.getSimulationOutput();
 
-    Integer payloadPosition = app.getPayloadPosition();
+    Integer payloadPosition = app.getPayloadPosition().getContent();
     if (output.isInLoadingZone()) {
       System.out.println("In loading zone, with payload position " + payloadPosition);
       if (0 == payloadPosition) {
@@ -15,7 +15,7 @@ public class PositionService {
         if (!payloadGrabbed) {
           System.out.println("No payload grabbed");
           payloadGrabbed = true;
-          app.setPayloadPosition(1);
+          app.getPayloadPosition().setContent(1);
         }
       }
     }
@@ -27,7 +27,7 @@ public class PositionService {
         if (payloadGrabbed) {
           System.out.println("Payload was grabbed");
           payloadGrabbed = false;
-          app.setPayloadPosition(2);
+          app.getPayloadPosition().setContent(2);
         }
       }
     }

@@ -53,7 +53,7 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
         .filter(f -> f.getName().equals("vacuumgripper"))
         .findFirst().get();
 
-    VacuumGripperInput input = vacuumGripperInputBuilder()
+    VacuumGripperInput physicalTwinInput = vacuumGripperInputBuilder()
         .verticalUp(booleanValueBuilder().content(false).build().get())
         .verticalDown(booleanValueBuilder().content(false).build().get())
         .horizontalForward(booleanValueBuilder().content(false).build().get())
@@ -62,14 +62,36 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
         .rotationCounterclockwise(booleanValueBuilder().content(false).build().get())
         .build().get();
 
-    VacuumGripperOutput output = vacuumGripperOutputBuilder()
+    VacuumGripperOutput physicalTwinOutput = vacuumGripperOutputBuilder()
         .positionRotate(floatValueBuilder().content(0.0f).build().get())
         .positionHorizontal(floatValueBuilder().content(0.0f).build().get())
         .positionVertical(floatValueBuilder().content(0.0f).build().get())
         .build().get();
 
-    getApp().setSimulationInput(input);
-    getApp().setSimulationOutput(output);
+    getApp().setPhysicalTwinInput(physicalTwinInput);
+    getApp().setPhysicalTwinOutput(physicalTwinOutput);
+
+
+    VacuumGripperInput simulatorInput = vacuumGripperInputBuilder()
+        .verticalUp(booleanValueBuilder().content(false).build().get())
+        .verticalDown(booleanValueBuilder().content(false).build().get())
+        .horizontalForward(booleanValueBuilder().content(false).build().get())
+        .horizontalBack(booleanValueBuilder().content(false).build().get())
+        .rotationClockwise(booleanValueBuilder().content(false).build().get())
+        .rotationCounterclockwise(booleanValueBuilder().content(false).build().get())
+        .build().get();
+
+    VacuumGripperOutput simulatorOutput = vacuumGripperOutputBuilder()
+        .positionRotate(floatValueBuilder().content(0.0f).build().get())
+        .positionHorizontal(floatValueBuilder().content(0.0f).build().get())
+        .positionVertical(floatValueBuilder().content(0.0f).build().get())
+        .build().get();
+
+    getApp().setSimulationInput(simulatorInput);
+    getApp().setSimulationOutput(simulatorOutput);
+
+
+
     getApp().setVacuumGripperSimulation(vacuumGripperFunction);
     StepSimulator simulator = new StepSimulator(vacuumGripperFunction);
 
@@ -82,21 +104,21 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
 
     PositionService positionService = new PositionService();
 
-    output.getPositionRotate().addObserver(new FloatValueObserver() {
+    physicalTwinOutput.getPositionRotate().addObserver(new FloatValueObserver() {
       @Override
       public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
         positionService.updatePayloadPosition();
       }
     });
 
-    output.getPositionVertical().addObserver(new FloatValueObserver() {
+    physicalTwinOutput.getPositionVertical().addObserver(new FloatValueObserver() {
       @Override
       public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
         positionService.updatePayloadPosition();
       }
     });
 
-    output.getPositionHorizontal().addObserver(new FloatValueObserver() {
+    physicalTwinOutput.getPositionHorizontal().addObserver(new FloatValueObserver() {
       @Override
       public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
         positionService.updatePayloadPosition();
@@ -122,8 +144,8 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
     client.publish("/vacuum-gripper-dt/payload/position", new MqttMessage("UNKNOWN".getBytes(StandardCharsets.UTF_8)));
 
     App app = getApp();
-    VacuumGripperInput input = app.getSimulationInput();
-    VacuumGripperOutput output = app.getSimulationOutput();
+    VacuumGripperInput input = app.getPhysicalTwinInput();
+    VacuumGripperOutput output = app.getPhysicalTwinOutput();
 
     String prefix = "/vacuum-gripper/2.5-Vac";
     callbacks.subscribeBool(prefix + "/verticalUp", b -> input.getVerticalUp().setContent(b));
@@ -151,9 +173,9 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
       simulator.setRotationPosition(content);
     });
 
-    app.addObserver(new AppObserver() {
+    app.getPayloadPosition().addObserver(new IntegerValueObserver() {
       @Override
-      public void notifySetPayloadPosition(App app, Integer oldValue, Integer o) {
+      public void notifySetContent(IntegerValue value, Integer oldValue, Integer o) {
         if(Objects.equals(o, oldValue)){
           return;
         }
@@ -179,7 +201,10 @@ public class VacuumGripperDashboardServerApplication extends VacuumGripperDashbo
       }
     });
 
-    callbacks.subscribeStr("/vacuum-gripper-dt/payload/position/update", str -> app.setPayloadPosition(strToPayloadPosition(str)));
+    callbacks.subscribeStr(
+        "/vacuum-gripper-dt/payload/position/update",
+        str -> app.getPayloadPosition().setContent(strToPayloadPosition(str))
+    );
   }
 
   private static String payloadPositionToStr(Integer o) {
