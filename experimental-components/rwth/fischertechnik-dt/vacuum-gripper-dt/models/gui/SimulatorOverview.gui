@@ -56,15 +56,15 @@ page SimulatorOverview(App app){
               @GemText(value = app.simulationOutput.inDropoffZone)
             ]),
             @GemRow(components=[
-              @GemText(value = "Payload position: " + app.payloadPosition),
+              @GemText(value = "Payload position: "),
               @guard(app.payloadPosition == 0){
-                @GemText(value = "Loading area");
+                @GemText(value = "Loading zone");
               },
               @guard(app.payloadPosition == 1){
                 @GemText(value = "In transit");
               },
               @guard(app.payloadPosition == 2){
-                @GemText(value = "Dropoff area");
+                @GemText(value = "Dropoff zone");
               }
             ])
         ]))
