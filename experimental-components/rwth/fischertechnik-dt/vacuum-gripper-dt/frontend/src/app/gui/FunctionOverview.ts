@@ -16,11 +16,6 @@ import { Port } from '@src/vacuumgripperdashboard/Port';
 })
 export class FunctionOverview extends FunctionOverviewComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    this.router = router;
-  }
-
  public  getInPortNavItemTarget (p: Port): string {
   return "/gui/visualization/FunctionStreamOverview/" + p.getChannel()?.getFunctionStream()?.getGemId();
  }

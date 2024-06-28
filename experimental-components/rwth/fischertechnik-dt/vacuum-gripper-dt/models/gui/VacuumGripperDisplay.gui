@@ -40,11 +40,11 @@ component VacuumGripperDisplay(VacuumGripperInput input, VacuumGripperOutput out
               @GemText(value = "Service state", size = "2em"),
               @GemRow(height="4em", components=[
                 @GemText(value = "In loading zone:"),
-                @GemText(value = output.inLoadingZone)
+                @GemText(value = "" + output.inLoadingZone)
               ]),
               @GemRow(height="4em", components=[
                 @GemText(value = "In dropoff zone:"),
-                @GemText(value = output.inDropoffZone)
+                @GemText(value = "" + output.inDropoffZone)
               ]),
               @GemRow(height="4em", components=[
                 @GemText(value = "Payload position: "),

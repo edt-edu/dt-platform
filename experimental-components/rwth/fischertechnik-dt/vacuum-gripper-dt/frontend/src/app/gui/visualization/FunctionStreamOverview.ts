@@ -29,10 +29,6 @@ styleUrls: config.styleUrls
 })
 export  class FunctionStreamOverview extends FunctionStreamOverviewComponent  {
 
-  public constructor(route: ActivatedRoute, router: Router) {
-    super(route, router);
-  }
-
  public  getValueTextValue (v: Value): string {
   let tmp = (v as any);
   if("getContent" in tmp){

@@ -15,12 +15,6 @@ import { VacuumGripperDashboardManager } from '@src/vacuumgripperdashboard/Vacuu
 export class SimulatorOverview extends SimulatorOverviewComponent {
   simulatorRunning = false;
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    this.router = router;
-    this.initAutoSimulator();
-  }
-
   public simulatorStepBtnLeftClick(): void {
     VacuumGripperDashboardManager.simulatorStepBuilder().then(step => step.build());
   }
