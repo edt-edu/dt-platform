@@ -1,0 +1,30 @@
+import org.eclipse.paho.client.mqttv3.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MultiMqttCallback implements MqttCallback{
+
+  protected List<MqttCallback> callbacks = new ArrayList<>();
+
+  public void addCallback(MqttCallback mqttCallback) {
+    callbacks.add(mqttCallback);
+  }
+
+  @Override
+  public void connectionLost(Throwable throwable) {
+    //Called when the client lost the connection to the broker
+  }
+
+  @Override
+  public void messageArrived(String topic, MqttMessage message) throws Exception {
+    for (MqttCallback callback : callbacks) {
+      callback.messageArrived(topic, message);
+    }
+  }
+
+  @Override
+  public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
+    //Called when an outgoing publish is complete
+  }
+}
