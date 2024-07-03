@@ -14,6 +14,9 @@ public class MultiMqttCallback implements MqttCallback{
   @Override
   public void connectionLost(Throwable throwable) {
     //Called when the client lost the connection to the broker
+    for (MqttCallback callback : callbacks) {
+      callback.connectionLost(throwable);
+    }
   }
 
   @Override
@@ -26,5 +29,8 @@ public class MultiMqttCallback implements MqttCallback{
   @Override
   public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
     //Called when an outgoing publish is complete
+    for (MqttCallback callback : callbacks) {
+      callback.deliveryComplete(deliveryToken);
+    }
   }
 }
