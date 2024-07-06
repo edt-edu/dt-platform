@@ -2,7 +2,7 @@
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../RectShape.js';
-
+import { ShapeHelper } from '../ShapeHelper.js';
 
 /**
  * SVG generator for the Multi Processing station with Oven
@@ -48,6 +48,7 @@ export class MPOSvgGenerator {
     this.generateSensorZones(machineGroup);
     this.generateArmAccessibleZone(machineGroup);
     this.generateTurntableAccessibleZone(machineGroup);
+    this.generateTurntableAxis(machineGroup);
     this.generateSlideAccessibleZone(machineGroup);
     this.generateMilingAxis(machineGroup);
   }
@@ -89,6 +90,15 @@ export class MPOSvgGenerator {
     mask.rect(this.turnTableAxisMaxRadius,this.turnTableAxisMaxRadius).move( this.turnTableAxisXPos-this.turnTableAxisMaxRadius, this.turnTableAxisYPos-this.turnTableAxisMaxRadius);
     //mask.polygon([[0, 0], [this.turnTableAxisMaxRadius, 0], [this.turnTableAxisMaxRadius, this.turnTableAxisMaxRadius]]).fill('black').move( this.turnTableAxisXPos, this.turnTableAxisYPos);
     mainShape.maskWith(mask);
+  }
+
+  generateTurntableAxis(machineGroup: G) {
+    // accessible zone
+    var group = machineGroup.group();
+    group.id("turntableAxis"+this.id_postfix)
+    const helper = new ShapeHelper();
+    helper.generateAxisCross(group, this.turnTableAxisXPos, this.turnTableAxisYPos,5 );
+
   }
   generateSlideAccessibleZone(machineGroup: G) {
     // arm accessible zone

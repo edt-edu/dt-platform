@@ -3,6 +3,7 @@
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { REFUSED } from 'dns';
 import { RectShape } from '../RectShape.js';
+import { ShapeHelper } from '../ShapeHelper.js';
 
 export class VgrSvgGenerator {
 
@@ -47,15 +48,8 @@ export class VgrSvgGenerator {
     const crossSize = 5;
     const axisGroup = machineGroup.group();
     axisGroup.id('vgrRotationAxis'+this.id_postfix);
-    axisGroup.circle(crossSize * 2).translate(this.axisXPos - crossSize, this.axisYPos - crossSize).stroke('black').fill('none');
-    axisGroup.line(this.axisXPos - crossSize,
-      this.axisYPos + crossSize,
-      this.axisXPos + crossSize,
-      this.axisYPos - crossSize).stroke({ width: 1, color: 'black' });
-    axisGroup.line(this.axisXPos - crossSize,
-      this.axisYPos - crossSize,
-      this.axisXPos + crossSize,
-      this.axisYPos + crossSize).stroke({ width: 1, color: 'black' });
+    const helper = new ShapeHelper();
+    helper.generateAxisCross(axisGroup, this.axisMinRadius, this.axisYPos,5 );
   }
 
   generateWoodBase(machineGroup: G) {
