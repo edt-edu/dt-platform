@@ -16,10 +16,14 @@ install dependancies
 `npm install`
 
 
-build etc (see script section in package.json)
+build etc (see script section in `package.json`)
 
 for example
 
 `npm run watch`
+
+`npm run generate`
+
+`npm run watch:generate`
 
 
