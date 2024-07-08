@@ -29,8 +29,8 @@ export class MPOSvgGenerator {
   turnTableAxisMinRadius = 40;
   turnTableAxisMaxRadius = 64;
 
-  millingAxisXPos = 156;
-  millingAxisYPos = 180;
+  sawAxisXPos = 156;
+  sawAxisYPos = 180;
 
   id_postfix = '';
 
@@ -50,7 +50,7 @@ export class MPOSvgGenerator {
     this.generateTurntableAccessibleZone(machineGroup);
     this.generateTurntableAxis(machineGroup);
     this.generateSlideAccessibleZone(machineGroup);
-    this.generateMilingAxis(machineGroup);
+    this.generateSaw(machineGroup);
   }
 
   generateConveyor(machineGroup: G) {
@@ -108,19 +108,14 @@ export class MPOSvgGenerator {
       .move(this.ovenSlideAccessibleZone.xPos, this.ovenSlideAccessibleZone.yPos).addClass('accessZone');
   }
 
-  generateMilingAxis(machineGroup: G) {
+  generateSaw(machineGroup: G) {
+
+
+    const helper = new ShapeHelper();
     const crossSize = 7;
-    const axisGroup = machineGroup.group();
-    axisGroup.id('milingAxis'+this.id_postfix);
-    axisGroup.circle(crossSize * 2).translate(this.millingAxisXPos - crossSize, this.millingAxisYPos - crossSize).stroke('black').fill('none');
-    axisGroup.line(this.millingAxisXPos - crossSize,
-      this.millingAxisYPos + crossSize,
-      this.millingAxisXPos + crossSize,
-      this.millingAxisYPos - crossSize).stroke({ width: 1, color: 'black' });
-    axisGroup.line(this.millingAxisXPos - crossSize,
-      this.millingAxisYPos - crossSize,
-      this.millingAxisXPos + crossSize,
-      this.millingAxisYPos + crossSize).stroke({ width: 1, color: 'black' });
+    const group = machineGroup.group();
+    group.id('saw'+this.id_postfix);
+    group.polygon(helper.drawStar(this.sawAxisXPos, this.sawAxisYPos, 7, 15, 10)).stroke('black').fill('none');
   }
 
   generateSensorZones(machineGroup: G) {

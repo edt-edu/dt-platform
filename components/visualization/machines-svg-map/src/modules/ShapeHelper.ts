@@ -19,8 +19,7 @@ export class ShapeHelper {
         var y = cy;
         var step = Math.PI / spikes;
     
-        var pointArray : PointArray = new PointArray()
-        pointArray.push([cx, cy - outerRadius])
+        var pointArray : PointArray = new PointArray([cx, cy - outerRadius]);
         
         for (var i = 0; i < spikes; i++) {
             x = cx + Math.cos(rot) * outerRadius;
