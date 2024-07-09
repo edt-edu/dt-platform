@@ -120,20 +120,18 @@ export class SvgGenerator {
 
   generateFromConfigFile(fileName: string) {
 
-    // TODO load from configuration file 
+    // load from configuration file 
     const content = readFileSync(fileName,'utf-8')
     const factoryLayout : FactoryLayout =JSON.parse(content);
 
-    this.canvasXSize = 1500
-    this.canvasYSize = 2000
+    this.canvasXSize = factoryLayout.xSize
+    this.canvasYSize = factoryLayout.xSize
 
     this.createSVGCanvas(this.canvasXSize, this.canvasYSize);
 
     // add rulers
     this.createSVGRulers(this.canvasXSize, this.canvasYSize);
 
-    
-   
     this.generateFromLayout(factoryLayout);
 
     // Serialize to JSON
@@ -204,7 +202,7 @@ export class SvgGenerator {
     const mpo1 = new MachinePosition('hbw1', 460, 470, 90, MachineKind.MPO, 'MultiProcessingStation1');
     const vgr1 = new MachinePosition('vgr1', 750, 810, 180, MachineKind.VGR, 'VacuumGripper1');
     const vgr2 = new MachinePosition('vgr2', 660, 1020, 90, MachineKind.VGR, 'VacuumGripper2');
-    const factoryLayout = new FactoryLayout('RennesFactory_Setup1', [cb1, hbw1, slc1, mpo1, vgr1, vgr2]);
+    const factoryLayout = new FactoryLayout('RennesFactory_Setup1', 1500, 2000, [cb1, hbw1, slc1, mpo1, vgr1, vgr2]);
     // Serialize to JSON
     const jsonFactoryLayout = JSON.stringify(factoryLayout, null, 2);
     console.log(jsonFactoryLayout);

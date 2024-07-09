@@ -1,5 +1,7 @@
 {
     "name": "RennesFactory_Setup1",
+    "xSize": 1500,
+    "ySize": 2000,
     "positions": [
       {
         "x": 730,

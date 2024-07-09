@@ -28,10 +28,14 @@ export class MachinePosition {
 
 export class FactoryLayout {
     name: string;
+    xSize: number;
+    ySize: number;
     positions: MachinePosition[];
 
-    constructor(name: string, positions: MachinePosition[]) {
+    constructor(name: string,  xSize: number,  ySize: number, positions: MachinePosition[]) {
         this.name = name;
+        this.xSize = xSize;
+        this.ySize = ySize;
         this.positions = positions;
     }
 }
