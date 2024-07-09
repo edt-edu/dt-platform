@@ -2,12 +2,13 @@
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../RectShape.js';
+import { IMachineGenerator } from './IMachineGenerator.js';
 
 
 /**
  * SVG generator for the Sorting Line with Color
  */
-export class SLCSvgGenerator {
+export class SLCSvgGenerator implements IMachineGenerator{
  
   woodBase = new RectShape(440, 310, 0, 0);
   plasticBase = new RectShape(380, 258, 0, 12 );
@@ -36,7 +37,12 @@ export class SLCSvgGenerator {
     this.id_postfix = id_postfix;
   }
 
-  generateAll(machineGroup: G) {
+  generateAll(machineGroup: G) {  
+    this.generateAllStatic(machineGroup);
+  }
+
+  generateAllStatic(machineGroup: G) {
+    
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateConveyor(machineGroup);

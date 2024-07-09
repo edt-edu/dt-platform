@@ -4,8 +4,9 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { REFUSED } from 'dns';
 import { RectShape } from '../RectShape.js';
 import { ShapeHelper } from '../ShapeHelper.js';
+import { IMachineGenerator } from './IMachineGenerator.js';
 
-export class VGRSvgGenerator {
+export class VGRSvgGenerator implements IMachineGenerator{
 
   woodBase = new RectShape (257,186, 0,0);
   electronicCard =  new RectShape(86,126, 0,60); // to be verified
@@ -21,7 +22,12 @@ export class VGRSvgGenerator {
     this.id_postfix = id_postfix;
   }
 
-  generateAll(machineGroup: G) {
+  generateAll(machineGroup: G) {  
+    this.generateAllStatic(machineGroup);
+  }
+
+  generateAllStatic(machineGroup: G) {
+    
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateElectronicCard(machineGroup);

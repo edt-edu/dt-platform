@@ -2,8 +2,9 @@
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../RectShape.js';
+import { IMachineGenerator } from './IMachineGenerator.js';
 
-export class CbSvgGenerator {
+export class CBSvgGenerator implements IMachineGenerator{
 
   woodBase = new RectShape(260,186,0,0);
   plasticBase = new RectShape(257, 186, 0,0);
@@ -26,6 +27,10 @@ export class CbSvgGenerator {
   }
 
   generateAll(machineGroup: G) {
+    this.generateAllStatic(machineGroup);
+  }
+
+  generateAllStatic(machineGroup: G) {
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateElectronicCard(machineGroup);

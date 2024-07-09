@@ -3,11 +3,12 @@
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../RectShape.js';
 import { ShapeHelper } from '../ShapeHelper.js';
+import { IMachineGenerator } from './IMachineGenerator.js';
 
 /**
  * SVG generator for the Multi Processing station with Oven
  */
-export class MPOSvgGenerator {
+export class MPOSvgGenerator implements IMachineGenerator{
  
   woodBase = new RectShape(438, 310, 0, 0);
   plasticBase = new RectShape(410, 258, 25, 25 );
@@ -39,6 +40,11 @@ export class MPOSvgGenerator {
   }
 
   generateAll(machineGroup: G) {
+      
+    this.generateAllStatic(machineGroup);
+  }
+
+  generateAllStatic(machineGroup: G) {
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateConveyor(machineGroup);

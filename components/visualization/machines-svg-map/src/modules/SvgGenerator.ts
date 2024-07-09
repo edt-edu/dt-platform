@@ -7,7 +7,7 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { readFileSync, writeFileSync } from 'fs';
 
 import { VGRSvgGenerator } from './machines/VGRSvgGenerator.js';
-import { CbSvgGenerator } from './machines/CBSvgGenerator.js';
+import { CBSvgGenerator } from './machines/CBSvgGenerator.js';
 import { SLCSvgGenerator } from './machines/SLCSvgGenerator.js';
 import { HBWSvgGenerator } from './machines/HBWSvgGenerator.js';
 import { MPOSvgGenerator } from './machines/MPOSvgGenerator.js';
@@ -150,7 +150,7 @@ export class SvgGenerator {
       group.id(machine.id);
       switch (machine.kind) {
         case MachineKind.CB:
-          new CbSvgGenerator('_'+machine.id).generateAll(group);
+          new CBSvgGenerator('_'+machine.id).generateAll(group);
           break;
         case MachineKind.HBW:
            new HBWSvgGenerator('_'+machine.id).generateAll(group);

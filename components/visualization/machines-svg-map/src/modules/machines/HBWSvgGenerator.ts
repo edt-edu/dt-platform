@@ -2,12 +2,13 @@
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../RectShape.js';
+import { IMachineGenerator } from './IMachineGenerator.js';
 
 
 /**
  * SVG generator for the High Bay Ware House
  */
-export class HBWSvgGenerator {
+export class HBWSvgGenerator  implements IMachineGenerator{
  
   woodBase = new RectShape(690, 440, 0, 0);
   plasticBase = new RectShape(576, 258, 57, 84 );
@@ -28,7 +29,11 @@ export class HBWSvgGenerator {
     this.id_postfix = id_postfix;
   }
 
-  generateAll(machineGroup: G) {
+  generateAll(machineGroup: G) {  
+    this.generateAllStatic(machineGroup);
+  }
+
+  generateAllStatic(machineGroup: G) {
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateConveyor(machineGroup);
