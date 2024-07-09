@@ -7,7 +7,7 @@ import { RectShape } from '../RectShape.js';
 /**
  * SVG generator for the Sorting Line with Color
  */
-export class SlcSvgGenerator {
+export class SLCSvgGenerator {
  
   woodBase = new RectShape(440, 310, 0, 0);
   plasticBase = new RectShape(380, 258, 0, 12 );

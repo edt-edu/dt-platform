@@ -6,11 +6,13 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 
 import { readFileSync, writeFileSync } from 'fs';
 
-import { VgrSvgGenerator } from './machines/VGRSvgGenerator.js';
+import { VGRSvgGenerator } from './machines/VGRSvgGenerator.js';
 import { CbSvgGenerator } from './machines/CBSvgGenerator.js';
-import { SlcSvgGenerator } from './machines/SLCSvgGenerator.js';
+import { SLCSvgGenerator } from './machines/SLCSvgGenerator.js';
 import { HBWSvgGenerator } from './machines/HBWSvgGenerator.js';
 import { MPOSvgGenerator } from './machines/MPOSvgGenerator.js';
+
+import { FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
 
 
 export class SvgGenerator {
@@ -115,9 +117,12 @@ export class SvgGenerator {
     return formatted.substring(1, formatted.length-3);
   }
 
-  generate(fileName: string) {
+
+  generateFromConfigFile(fileName: string) {
 
     // TODO load from configuration file 
+    const content = readFileSync(fileName,'utf-8')
+    const factoryLayout : FactoryLayout =JSON.parse(content);
 
     this.canvasXSize = 1500
     this.canvasYSize = 2000
@@ -127,53 +132,58 @@ export class SvgGenerator {
     // add rulers
     this.createSVGRulers(this.canvasXSize, this.canvasYSize);
 
-
-    // add conveyor belts
-    const cb1Group = this.svg.group();
-    const cb1Gen = new CbSvgGenerator('_cb1');
-    cb1Gen.generateAll(cb1Group);
-    cb1Group.rotate(180, 0, 0).translate(730,1010);
-
-    // add sorting line
-
-    const slc1Group = this.svg.group();
-    const slc1Gen= new SlcSvgGenerator('_slc1');
-    slc1Gen.generateAll(slc1Group);
-    slc1Group.rotate(270, 0, 0).translate(150,1350);
-
-    // add high bay warehouse
-
-    const hbw1Group = this.svg.group();
-    const hbw1Gen= new HBWSvgGenerator('_hbw1');
-    hbw1Gen.generateAll(hbw1Group);
-    hbw1Group.translate(460,150);
-
-
-    // add multi processing station with oven
-    const mpo1Group = this.svg.group();
-    const mpo1Gen= new MPOSvgGenerator('_mpo1');
-    mpo1Gen.generateAll(mpo1Group);
-    mpo1Group.rotate(90, 0, 0).translate(460,470);
-
-
-    // add Vacuum Grippers
-    const vgrGenerator = new VgrSvgGenerator('_vgr1');
     
-    const vgr1Group = this.svg.group();
-    // vgrGenerator.generateWoodBase(vgr1Group);
-    // vgrGenerator.generatePlasticBase(vgr1Group);
-    // vgrGenerator.generateAxis(vgr1Group);
-    // vgrGenerator.generateArmAccessibleZone(vgr1Group);
-    vgrGenerator.generateAll(vgr1Group);
-    vgr1Group.rotate(180, 0, 0).translate(750,810);//.translate(450,610);
+   
+    this.generateFromLayout(factoryLayout);
 
-    const vgr2Group = this.svg.group();
-    const vgr2Generator = new VgrSvgGenerator('_vgr2');
-    vgr2Generator.generateAll(vgr2Group);
-    vgr2Group.rotate(90, 0, 0).translate(660,1020);
-
+    // Serialize to JSON
+    //const jsonFactoryLayout = JSON.stringify(factoryLayout, null, 2);
+    //console.log(jsonFactoryLayout);
   }
- 
+
+  /**
+   * generate the SVG for the given FactoryLayout configuration
+   * @param fLayout  
+   */
+  generateFromLayout(fLayout : FactoryLayout) {
+    for (let index = 0; index < fLayout.positions.length; index++) {
+      const machine = fLayout.positions[index];
+      const group = this.svg.group();
+      group.id(machine.id);
+      switch (machine.kind) {
+        case MachineKind.CB:
+          new CbSvgGenerator('_'+machine.id).generateAll(group);
+          break;
+        case MachineKind.HBW:
+           new HBWSvgGenerator('_'+machine.id).generateAll(group);
+          break;
+        case MachineKind.SLC:
+            new SLCSvgGenerator('_'+machine.id).generateAll(group);
+          break;
+        case MachineKind.MPO:
+            new MPOSvgGenerator('_'+machine.id).generateAll(group);
+          break;
+        case MachineKind.VGR:
+            new VGRSvgGenerator('_'+machine.id).generateAll(group);
+          break;
+    
+        default:
+          throw new Error(`Non-existent machine kind : ${machine.kind}`);
+      }
+      if(machine.degrees != 0 ) {
+        group.rotate(machine.degrees, 0, 0);
+      }
+      if(machine.x != 0 || machine.y != 0) {
+        group.translate(machine.x, machine.y);
+      }
+    }
+  }
+
+  /**
+   * save the SVG content in a file
+   * applies some formatting to make the svg readable by human
+   * @param fileName 
+   */
   writeToFile(fileName: string) {
 
     console.log('writing '+fileName);
@@ -181,5 +191,28 @@ export class SvgGenerator {
     const svgString = this.svg.svg();
     writeFileSync(fileName, this.formatXml(svgString));
   }
+
+  /**
+   * for testing purpose: create and print the json of a sample FactoryLayout
+   * @returns 
+   */
+  createSampleFactoryLayout() : FactoryLayout {
+
+    const cb1 = new MachinePosition('cb1', 730, 1010, 180, MachineKind.CB, 'ConveyorBelt1');
+    const slc1 = new MachinePosition('slc1', 150, 1350, 270, MachineKind.SLC, 'SortingLine1');
+    const hbw1 = new MachinePosition('hbw1', 460, 150, 0, MachineKind.HBW, 'HighBayWarehouse1');
+    const mpo1 = new MachinePosition('hbw1', 460, 470, 90, MachineKind.MPO, 'MultiProcessingStation1');
+    const vgr1 = new MachinePosition('vgr1', 750, 810, 180, MachineKind.VGR, 'VacuumGripper1');
+    const vgr2 = new MachinePosition('vgr2', 660, 1020, 90, MachineKind.VGR, 'VacuumGripper2');
+    const factoryLayout = new FactoryLayout('RennesFactory_Setup1', [cb1, hbw1, slc1, mpo1, vgr1, vgr2]);
+    // Serialize to JSON
+    const jsonFactoryLayout = JSON.stringify(factoryLayout, null, 2);
+    console.log(jsonFactoryLayout);
+
+    return factoryLayout;
+
+  }
+ 
+  
   
 }

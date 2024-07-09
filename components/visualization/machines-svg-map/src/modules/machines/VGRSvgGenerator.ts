@@ -5,7 +5,7 @@ import { REFUSED } from 'dns';
 import { RectShape } from '../RectShape.js';
 import { ShapeHelper } from '../ShapeHelper.js';
 
-export class VgrSvgGenerator {
+export class VGRSvgGenerator {
 
   woodBase = new RectShape (257,186, 0,0);
   electronicCard =  new RectShape(86,126, 0,60); // to be verified

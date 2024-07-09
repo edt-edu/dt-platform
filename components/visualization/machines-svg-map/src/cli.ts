@@ -16,7 +16,7 @@ if (!outFilename) {
 
 console.log('reading '+fileName + ' -> '+outFilename);
 const svgGenerator = new SvgGenerator();
-svgGenerator.generate(fileName);
+svgGenerator.generateFromConfigFile(fileName);
 svgGenerator.writeToFile(outFilename);
 
 //generateSVG(fileName);

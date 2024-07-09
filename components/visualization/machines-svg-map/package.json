@@ -6,8 +6,8 @@
   "scripts": {
     "build:ts": "tsc -p .",
     "watch": "tsc -w -p .",
-    "generate": "node ./dist/cli.js ./machine_config.json dist/machine_config.svg",
-    "watch:generate": "onchange 'src/**/*.ts' -- sh -c 'npm run build:ts && npm run generate'",
+    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg",
+    "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Didier Vojtisek",
