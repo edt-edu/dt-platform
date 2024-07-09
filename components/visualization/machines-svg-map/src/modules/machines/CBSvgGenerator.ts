@@ -13,12 +13,8 @@ export class CBSvgGenerator implements IMachineGenerator{
 
   electronicCard =  new RectShape(108,80, 75,100); // to be verified
   
-  sensorXSize = 20;
-  sensorYSize = 100;
-  sensor1XPos = 30;
-  sensor1YPos = -10;
-  sensor2XPos = 220;
-  sensor2YPos = -10;
+  sensor1 = new RectShape(20, 100, 30, -10);
+  sensor2 = new RectShape(20, 100, 220, -10);
 
   id_postfix = '';
 
@@ -50,13 +46,12 @@ export class CBSvgGenerator implements IMachineGenerator{
   generateSensorZones(machineGroup: G) {
     const crossSize = 5;
     const sensorsGroup = machineGroup.group();
-    sensorsGroup.rect(this.sensorXSize, this.sensorYSize)
-      .move(this.sensor1XPos, this.sensor1YPos)
+    sensorsGroup.rect(this.sensor1.xSize, this.sensor1.ySize)
+      .move(this.sensor1.xPos, this.sensor1.yPos)
       .addClass("lightBarrier");
-    sensorsGroup.rect(this.sensorXSize, this.sensorYSize)
-      .move(this.sensor2XPos, this.sensor2YPos)
+    sensorsGroup.rect(this.sensor2.xSize, this.sensor2.ySize)
+      .move(this.sensor2.xPos, this.sensor2.yPos)
       .addClass("lightBarrier")
-    // TODO
   }
 
   generateWoodBase(machineGroup: G) {
