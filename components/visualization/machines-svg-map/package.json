@@ -1,0 +1,29 @@
+{
+  "name": "machines-svg-map",
+  "version": "1.0.0",
+  "description": "A SVG map for FischerTechnik Factory Machines configuration",
+  "main": "app.ts",
+  "scripts": {
+    "build:ts": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg",
+    "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Didier Vojtisek",
+  "license": "EPL-2.0",
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "@types/snapsvg": "^0.5.8",
+    "@types/svgdom": "^0.1.2",
+    "onchange": "^7.1.0",
+    "typescript": "^5.4.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.0",
+    "snapsvg": "^0.5.1",
+    "svgdom": "^0.1.19",
+    "xml-formatter": "^3.6.2"
+  }
+}

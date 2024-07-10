@@ -16,12 +16,8 @@ import { FFunction } from '@src/vacuumgripperdashboard/FFunction';
 })
 export class Start extends StartComponent {
 
-  public constructor(route: ActivatedRoute, protected router: Router) {
-    super(route, router);
-    this.router = router;
-  }
-
  public  getFuncNavItemTarget (f: FFunction): string {
   return "/gui/FunctionOverview/" + f.getGemId();
  }
+
 }

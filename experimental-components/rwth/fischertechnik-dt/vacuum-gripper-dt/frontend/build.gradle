@@ -30,7 +30,7 @@ genGUI {
   guiCreateModels = []
 }
 
-if(j2ts) {
+/*if(j2ts) {
   translateJava2TSDomain {
     domainModel = 'VacuumGripperDashboard'
     verbose = true
@@ -40,7 +40,7 @@ if(j2ts) {
     domainModel = 'VacuumGripperDashboard'
     verbose = true
   }
-}
+}*/
 
 task tmpCopyUmlpPackages(type: Copy){
   from("C:\\Users\\Hellwig\\projects\\umlp\\umlp-rte\\client\\build\\dist\\umlp\\mc\\fenix")

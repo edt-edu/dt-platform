@@ -29,10 +29,6 @@ styleUrls: config.styleUrls
 })
 export  class VacuumGripperSvg extends VacuumGripperSvgComponent  {
 
-  public constructor(route: ActivatedRoute, router: Router) {
-    super(route, router);
-  }
-
 }
 
 

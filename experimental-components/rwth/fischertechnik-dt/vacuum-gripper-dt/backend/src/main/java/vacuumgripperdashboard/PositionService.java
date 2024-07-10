@@ -32,4 +32,27 @@ public class PositionService {
       }
     }
   }
+
+  public void connectTo(VacuumGripperOutput physicalTwinOutput) {
+    physicalTwinOutput.getPositionRotate().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        updatePayloadPosition();
+      }
+    });
+
+    physicalTwinOutput.getPositionVertical().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        updatePayloadPosition();
+      }
+    });
+
+    physicalTwinOutput.getPositionHorizontal().addObserver(new FloatValueObserver() {
+      @Override
+      public void notifySetContent(FloatValue floatValue, Float oldValue, Float o) {
+        updatePayloadPosition();
+      }
+    });
+  }
 }
