@@ -1,5 +1,5 @@
 {
-  "name": "machines-svg-map",
+  "name": "@mbdo/machines-svg-map",
   "version": "1.0.0",
   "description": "A SVG map for FischerTechnik Factory Machines configuration",
   "main": "app.ts",
