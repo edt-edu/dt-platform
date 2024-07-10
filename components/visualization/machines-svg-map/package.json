@@ -2,8 +2,10 @@
   "name": "@mbdo/machines-svg-map",
   "version": "1.0.0",
   "description": "A SVG map for FischerTechnik Factory Machines configuration",
-  "main": "app.ts",
+  "main": "dist/cli.js",
+  "types": "dist/cli.d.ts",
   "scripts": {
+    "prepublish": "tsc",
     "build:ts": "tsc -p .",
     "watch": "tsc -w -p .",
     "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg",
