@@ -48,3 +48,36 @@ for example
 `npm run watch:generate`
 
 
+## Notes about installing the tool
+
+https://git.rwth-aachen.de/help/user/packages/npm_registry/index
+and https://git.rwth-aachen.de/help/user/packages/npm_registry/index#authenticate-to-the-package-registry
+
+
+in our case the project Id is :
+
+
+you can add in your $HOME/.npmrc
+```
+@mbdo:registry=https://git.rwth-aachen.de/api/v4/groups/109111/-/packages/npm/
+//git.rwth-aachen/api/v4/groups/109111/-/packages/npm/:_authToken=YOUR_ACCESS_TOKEN
+```
+or 
+
+```
+@mbdo:registry=https://git.rwth-aachen.de/api/v4/groups/109111/-/packages/npm/
+//git.rwth-aachen/api/v4/groups/109111/-/packages/npm/:_authToken=${NPM_TOKEN}
+```
+
+and make sure to export the var
+```
+export NPM_TOKEN=YOUR_ACCESS_TOKEN
+```
+
+
+then
+`npm i @mbdo/machines-svg-map`   should work in your node projects
+
+
+
+
