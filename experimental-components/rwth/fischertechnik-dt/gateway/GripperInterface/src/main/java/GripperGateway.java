@@ -111,19 +111,18 @@ public class GripperGateway {
   }
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    //client.connect();
+    
     // TODO: Quality of service ggfs ändern
     client.subscribe(topic, 2);
   }
 
   public static void main(String[] args) throws MqttException, InterruptedException {
+
+    // create gateway
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
 
     // create MultiCallback list
     MultiMqttCallback clientOneCallbacks = new MultiMqttCallback();
-
-
-    List<String> client1Msgs = new ArrayList<>();
 
     // create first client
     MqttClient client1 = new MqttClient(
@@ -142,7 +141,6 @@ public class GripperGateway {
       @Override
       public void messageArrived(String topic, MqttMessage message) throws Exception {
         System.out.println("client1 received message on topic: " + topic + ", Msg:" + new String(message.getPayload(), StandardCharsets.UTF_8));
-        client1Msgs.add(new String(message.getPayload(), StandardCharsets.UTF_8));
       }
 
       @Override
@@ -194,7 +192,6 @@ public class GripperGateway {
     publisher.connect();
     System.out.println("Publisher connected");
 
-    //publisher.publish("/vacuum-gripper/ref-switch-vertical", "true".getBytes(StandardCharsets.UTF_8), 0, true);
     while(true) {
       System.out.println("Publishing");
       MqttMessage msg = new MqttMessage("true".getBytes(StandardCharsets.UTF_8));
@@ -202,7 +199,5 @@ public class GripperGateway {
       publisher.publish("/vacuum-gripper/ref-switch-vertical", msg);
       Thread.sleep(5000);
     }
-
-    //assertEquals(1, client1ReceivedMsgs)
   }
 }
