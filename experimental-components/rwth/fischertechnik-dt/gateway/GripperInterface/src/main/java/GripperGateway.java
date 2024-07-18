@@ -32,6 +32,7 @@ public class GripperGateway {
 
           if(topic.equals("/" + machineId + "/ref-switch-vertical")){
             observers.forEach(o -> o.onRefSwitchVertical(msgStr.equals("true")));
+
           }else if(topic.equals("/" + machineId + "/ref-switch-horizontal")){
             observers.forEach(o -> o.onRefSwitchHorizontal(msgStr.equals("true")));
 
@@ -110,33 +111,98 @@ public class GripperGateway {
   }
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    client.connect();
+    //client.connect();
     // TODO: Quality of service ggfs ändern
     client.subscribe(topic, 2);
-
-    // todo: subscribe topics
   }
 
-  public static void main(String[] args) throws MqttException {
-    String clientId = "client1";
-
+  public static void main(String[] args) throws MqttException, InterruptedException {
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
 
-    MqttClient client = new MqttClient(
+    // create MultiCallback list
+    MultiMqttCallback clientOneCallbacks = new MultiMqttCallback();
+
+
+    List<String> client1Msgs = new ArrayList<>();
+
+    // create first client
+    MqttClient client1 = new MqttClient(
         "tcp://localhost:1883",
-        clientId); // TODO: move me up 1 level
+        "client1"); // TODO: move me up 1 level
+    client1.setCallback(clientOneCallbacks);
 
-    // todo: wie komme ich an die callbacks Liste aus der MultiMqttCallback.java ?
-    client = gateway.createNewMqttClient(callbacks ,client);
+    client1 = gateway.createNewMqttClient(clientOneCallbacks ,client1);
 
-    gateway.connectMqttClient("/vacuum-gripper/ref-switch-vertical", client);
+    clientOneCallbacks.addCallback(new MqttCallback() {
+      @Override
+      public void connectionLost(Throwable throwable) {
+        System.out.print("Connection lost: client1");
+      }
 
+      @Override
+      public void messageArrived(String topic, MqttMessage message) throws Exception {
+        System.out.println("client1 received message on topic: " + topic + ", Msg:" + new String(message.getPayload(), StandardCharsets.UTF_8));
+        client1Msgs.add(new String(message.getPayload(), StandardCharsets.UTF_8));
+      }
+
+      @Override
+      public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+      }
+    });
+
+    client1.connect();
+
+    gateway.connectMqttClient("/vacuum-gripper/ref-switch-vertical", client1);
+    System.out.println("Client1 connected");
+
+    // create second client
+    MultiMqttCallback clientTwoCallbacks = new MultiMqttCallback();
+
+    MqttClient client2 = new MqttClient(
+        "tcp://localhost:1883",
+        "client2"); // TODO: move me up 1 level
+    client2.setCallback(clientTwoCallbacks);
+
+    client2.connect();
+
+    clientTwoCallbacks.addCallback(new MqttCallback() {
+      @Override
+      public void connectionLost(Throwable throwable) {
+
+      }
+
+      @Override
+      public void messageArrived(String topic, MqttMessage message) throws Exception {
+        System.out.println("client2 received message on topic: " + topic + ", Msg:" + new String(message.getPayload(), StandardCharsets.UTF_8));
+      }
+
+      @Override
+      public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+      }
+    });
+
+    gateway.connectMqttClient("/vacuum-gripper/ref-switch-vertical", client2);
+    System.out.println("Client2 connected");
+
+    // create publisher
     MqttClient publisher = new MqttClient(
         "tcp://localhost:1883",
         "publisher");
 
     publisher.connect();
+    System.out.println("Publisher connected");
 
-    publisher.publish("/vacuum-gripper/ref-switch-vertical", "true".getBytes(StandardCharsets.UTF_8), 2, false);
+    //publisher.publish("/vacuum-gripper/ref-switch-vertical", "true".getBytes(StandardCharsets.UTF_8), 0, true);
+    while(true) {
+      System.out.println("Publishing");
+      MqttMessage msg = new MqttMessage("true".getBytes(StandardCharsets.UTF_8));
+      msg.setQos(2);
+      publisher.publish("/vacuum-gripper/ref-switch-vertical", msg);
+      Thread.sleep(5000);
+    }
+
+    //assertEquals(1, client1ReceivedMsgs)
   }
 }
