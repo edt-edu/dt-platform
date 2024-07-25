@@ -116,7 +116,7 @@ public class GripperGateway {
     client.subscribe(topic, 2);
   }
 
-  public static void main(String[] args) throws MqttException, InterruptedException {
+  /* public static void main(String[] args) throws MqttException, InterruptedException {
 
     // create gateway
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
@@ -192,12 +192,5 @@ public class GripperGateway {
     publisher.connect();
     System.out.println("Publisher connected");
 
-    while(true) {
-      System.out.println("Publishing");
-      MqttMessage msg = new MqttMessage("true".getBytes(StandardCharsets.UTF_8));
-      msg.setQos(2);
-      publisher.publish("/vacuum-gripper/ref-switch-vertical", msg);
-      Thread.sleep(5000);
-    }
-  }
+  }*/
 }

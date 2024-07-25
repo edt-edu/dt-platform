@@ -7,6 +7,7 @@ public class MultiMqttCallback implements MqttCallback{
 
   protected List<MqttCallback> callbacks = new ArrayList<>();
 
+  // add callback to MultiMqttCallback list
   public void addCallback(MqttCallback mqttCallback) {
     callbacks.add(mqttCallback);
   }
@@ -21,6 +22,7 @@ public class MultiMqttCallback implements MqttCallback{
 
   @Override
   public void messageArrived(String topic, MqttMessage message) throws Exception {
+    //Called when the client received a message
     for (MqttCallback callback : callbacks) {
       callback.messageArrived(topic, message);
     }
