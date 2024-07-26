@@ -32,8 +32,6 @@ class MultiMqttCallbackTest {
         "client" + r.nextInt());
     client.setCallback(clientOneCallbacks);
 
-    client = gateway.createNewMqttClient(clientOneCallbacks ,client);
-
     // first callback
     clientOneCallbacks.addCallback(new MqttCallback() {
       @Override
