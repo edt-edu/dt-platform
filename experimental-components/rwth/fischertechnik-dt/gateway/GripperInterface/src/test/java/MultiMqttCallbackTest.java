@@ -97,16 +97,6 @@ class MultiMqttCallbackTest {
 
     Thread.sleep(100L);
 
-    System.out.println("callback 1 received messages:");
-    for(String s : clientMsgs1){
-      System.out.println(s);
-    }
-
-    System.out.println("callback 2 received messages:");
-    for(String s : clientMsgs2){
-      System.out.println(s);
-    }
-
     // check if both callbacks received the same massages
     assertEquals(clientMsgs1.get(0), clientMsgs2.get(0));
     assertEquals(clientMsgs1.get(1), clientMsgs2.get(1));

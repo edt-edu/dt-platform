@@ -63,10 +63,11 @@ public class GripperGateway implements MqttCallback {
 
       }else if(topic.equals("/" + machineId + "/motor-rotation-pos")){
         observers.forEach(o -> o.onMotorRotationPos(Integer.parseInt(msgStr)));
+      }
 
-        // Inputs of the machine
+      // Inputs of the machine
 
-      }else if(topic.equals("/" + machineId + "/move-vertical-up")){
+      else if(topic.equals("/" + machineId + "/move-vertical-up")){
         observers.forEach(o -> o.onMoveVerticalUp(msgStr.equals("true")));
 
       }else if(topic.equals("/" + machineId + "/move-vertical-down")){
@@ -89,13 +90,7 @@ public class GripperGateway implements MqttCallback {
 
       }else if(topic.equals("/" + machineId + "/enable-valve")){
         observers.forEach(o -> o.onEnableValve(msgStr.equals("true")));
-
-      }else{
-        //System.out.println("Message arrived at client " + client.getClientId() + ": No match for topic");
-
       }
-    }else{
-      //System.out.println("Message arrived at client " + client.getClientId() + ": Invalid topic");
     }
   }
 
@@ -105,8 +100,6 @@ public class GripperGateway implements MqttCallback {
   }
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    
-    // TODO: Quality of service ggfs ändern
     client.subscribe(topic, 2);
   }
 }
