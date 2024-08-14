@@ -1,2 +1,10 @@
-rootProject.name = 'GripperInterface'
+pluginManagement {
+  repositories {
+    maven {
+      url = uri("https://nexus.se.rwth-aachen.de/content/groups/public/")
+    }
+    gradlePluginPortal()
+  }
+}
 
+rootProject.name = 'GripperInterface'

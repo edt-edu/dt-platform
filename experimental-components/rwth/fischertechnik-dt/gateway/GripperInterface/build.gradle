@@ -1,11 +1,17 @@
 plugins {
-    id 'java'
+  id 'java'
+  id("cd2pojo") version "7.7.0-SNAPSHOT"
+  id("montiarc-jsim") version "7.7.0-SNAPSHOT"
+
 }
 
 group = 'org.example'
 version = '1.0-SNAPSHOT'
 
 repositories {
+    maven {
+        url = uri("https://nexus.se.rwth-aachen.de/content/groups/public/")
+    }
     mavenCentral()
     maven { // Eclipse Paho
         url = "https://repo.eclipse.org/content/repositories/paho-releases/"
@@ -15,9 +21,16 @@ repositories {
 dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
+    implementation("montiarc.libraries:simulator-rte:7.7.0-SNAPSHOT")
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
+
+tasks.compileMontiarc {
+  useClass2Mc.set(true)
+}
+
 
 test {
     useJUnitPlatform()
