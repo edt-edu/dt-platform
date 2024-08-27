@@ -4,12 +4,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThreeDGirpperGateway implements MqttCallback {
+public class ThreeDGripperGateway implements MqttCallback {
 
   protected final String machineId;
-  protected List<ThreeDGirpperObserver> observers = new ArrayList<>();
+  protected List<ThreeDGripperObserver> observers = new ArrayList<>();
 
-  public ThreeDGirpperGateway(String machineId = machineId) {
+  public ThreeDGripperGateway(String machineId) {
     this.machineId = machineId;
   }
 

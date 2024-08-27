@@ -26,7 +26,7 @@ public interface MultiprocessingObserver {
 
     default void onMoveTurnTableCounterclockwise(boolean bool){ }
 
-    default void onMoveConveryorForward(boolean bool){ }
+    default void onMoveConveyorForward(boolean bool){ }
 
     default void onEnableSaw(boolean bool){ }
 

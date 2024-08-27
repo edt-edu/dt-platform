@@ -34,7 +34,7 @@ public class MultiprocessingGateway implements MqttCallback {
         observers.forEach(o -> o.onRefSwitchRotationAtBelt(Integer.parseInt(msgStr)));
 
       } else if (topic.equals("/" + machineId + "/light-barrier-conveyor-end")) {
-        observers.forEach(o -> o.onLightBarrierConveyerEnd(msgStr.equals("true")));
+        observers.forEach(o -> o.onLightBarrierConveyorEnd(msgStr.equals("true")));
 
       } else if (topic.equals("/" + machineId + "/ref-switch-turn-table-at-saw")) {
         observers.forEach(o -> o.onRefSwitchTurnTableAtSaw(Integer.parseInt(msgStr)));
@@ -63,8 +63,8 @@ public class MultiprocessingGateway implements MqttCallback {
       } else if (topic.equals("/" + machineId + "/move-turn-table-counterclockwise")) {
         observers.forEach(o -> o.onMoveTurnTableCounterclockwise(msgStr.equals("true")));
 
-      } else if (topic.equals("/" + machineId + "/move-converyor-forward")) {
-        observers.forEach(o -> o.onMoveConveryorForward(msgStr.equals("true")));
+      } else if (topic.equals("/" + machineId + "/move-conveyor-forward")) {
+        observers.forEach(o -> o.onMoveConveyorForward(msgStr.equals("true")));
 
       } else if (topic.equals("/" + machineId + "/enable-saw")) {
         observers.forEach(o -> o.onEnableSaw(msgStr.equals("true")));
@@ -107,7 +107,7 @@ public class MultiprocessingGateway implements MqttCallback {
       //Called when an outgoing publish is complete
   }
 
-  public void connectMqttClient(String topic, Mqtt client) {
+  public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
   }
 }
