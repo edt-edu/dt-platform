@@ -232,4 +232,45 @@ public class VacuumGripperControllerTest {
             () -> assertThat(oc.rotationCounterclockwise.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedRotationCounterclockwise)
     );
   }
+
+  @Test
+  void complexMovement() {
+
+    // Test data
+    List<Message<Number>> verticalPos =
+            List.of(msg(1), tk(), msg(0), tk(), msg(0), tk());
+    List<Message<Number>> verticalPosGoal =
+            List.of(msg(2), tk(), msg(0), tk(), msg(0), tk());
+    List<Message<Boolean>> expectedVerticalUp =
+            List.of(msg(true), tk(), tk(), tk());
+    List<Message<Boolean>> expectedVerticalDown =
+            List.of(msg(false), tk(), tk(), tk());
+    List<Message<Number>> horizontalPos =
+            List.of(msg(0), tk(), msg(1), tk(), msg(0), tk());
+    List<Message<Number>> horizontalPosGoal =
+            List.of(msg(0), tk(), msg(2), tk(), msg(0), tk());
+    List<Message<Boolean>> expectedHorizontalForward =
+            List.of(tk(), msg(true), tk(), tk());
+    List<Message<Boolean>> expectedHorizontalBack =
+            List.of(tk(), msg(false), tk(), tk());
+    List<Message<Number>> rotationPos =
+            List.of(msg(0), tk(), msg(0), tk(), msg(1), tk());
+    List<Message<Number>> rotationPosGoal =
+            List.of(msg(0), tk(), msg(0), tk(), msg(2), tk());
+    List<Message<Boolean>> expectedRotationClockwise =
+            List.of(tk(), tk(), msg(true), tk());
+    List<Message<Boolean>> expectedRotationCounterclockwise =
+            List.of(tk(), tk(), msg(false), tk());
+
+    ObserverCollection oc = doTest(verticalPos, verticalPosGoal, horizontalPos, horizontalPosGoal, rotationPos, rotationPosGoal);
+    
+    Assertions.assertAll(
+            () -> assertThat(oc.verticalUp.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedVerticalUp),
+            () -> assertThat(oc.verticalDown.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedVerticalDown),
+            () -> assertThat(oc.horizontalForward.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedHorizontalForward),
+            () -> assertThat(oc.horizontalBack.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedHorizontalBack),
+            () -> assertThat(oc.rotationClockwise.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedRotationClockwise),
+            () -> assertThat(oc.rotationCounterclockwise.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedRotationCounterclockwise)
+    );
+  }
 }
