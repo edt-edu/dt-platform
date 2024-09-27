@@ -1,3 +1,5 @@
+package vacuum_gripper;
+
 public interface GripperObserver {
 
   // Outputs of the machine --------------

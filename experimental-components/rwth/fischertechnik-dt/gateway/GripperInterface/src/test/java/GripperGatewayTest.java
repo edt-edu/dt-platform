@@ -1,5 +1,7 @@
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
+import vacuum_gripper.GripperGateway;
+import vacuum_gripper.GripperObserver;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

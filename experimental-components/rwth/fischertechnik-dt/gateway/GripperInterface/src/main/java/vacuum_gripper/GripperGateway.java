@@ -1,3 +1,5 @@
+package vacuum_gripper;
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;

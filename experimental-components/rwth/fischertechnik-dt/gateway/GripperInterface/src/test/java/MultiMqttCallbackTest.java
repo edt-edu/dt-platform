@@ -1,5 +1,7 @@
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
+import vacuum_gripper.GripperGateway;
+import vacuum_gripper.MultiMqttCallback;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ class MultiMqttCallbackTest {
     // create gateway
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
 
-    // create MultiMqttCallback list
+    // create vacuum_gripper.MultiMqttCallback list
     MultiMqttCallback clientOneCallbacks = new MultiMqttCallback();
 
     // list for messages received by client
