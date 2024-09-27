@@ -3,13 +3,19 @@ package monitarc.tmp;
 import montiarc.rte.msg.Message;
 import montiarc.rte.port.PortObserver;
 import montiarc.rte.tests.JSimTest;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tmp.VacuumGripperControllerComp;
 import tmp.VacuumGripperControllerCompBuilder;
+import vacuum_gripper.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Random;
 
 import static montiarc.rte.msg.MessageFactory.msg;
 import static montiarc.rte.msg.MessageFactory.tk;
@@ -150,7 +156,7 @@ public class VacuumGripperControllerTest {
   }
 
   @Test
-  void moveHorizontalBackward() {
+  void moveHorizontalBack() {
 
     // Test data
     List<Message<Number>> horizontalPos =
@@ -271,6 +277,84 @@ public class VacuumGripperControllerTest {
             () -> assertThat(oc.horizontalBack.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedHorizontalBack),
             () -> assertThat(oc.rotationClockwise.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedRotationClockwise),
             () -> assertThat(oc.rotationCounterclockwise.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedRotationCounterclockwise)
+    );
+  }
+
+  @Test
+  void mqttConnection() throws MqttException, InterruptedException {
+
+    // setting up system under test
+    ObserverCollection oc = new ObserverCollection();
+
+    VacuumGripperControllerComp sut = new VacuumGripperControllerCompBuilder().setName("sut").build();
+    sut.port_verticalUp().connect(oc.verticalUp);
+    sut.port_verticalDown().connect(oc.verticalDown);
+    sut.port_horizontalForward().connect(oc.horizontalForward);
+    sut.port_horizontalBack().connect(oc.horizontalBack);
+    sut.port_rotationClockwise().connect(oc.rotationClockwise);
+    sut.port_rotationCounterclockwise().connect(oc.rotationCounterclockwise);
+
+    sut.init();
+
+    // dummy data for other ports
+    List<Message<Number>> verticalPos = List.of(msg(0), tk());
+    List<Message<Number>> verticalPosGoal = List.of(msg(0), tk());
+    List<Message<Number>> rotationPos = List.of(msg(0), tk());
+    List<Message<Number>> rotationPosGoal = List.of(msg(0), tk());
+
+    List<Message<Number>> horizontalPosGoal = List.of(msg(2), tk());
+
+    // expected output
+    List<Message<Boolean>> expectedHorizontalForward = List.of(msg(true), tk());
+
+
+    // setting up gateway + observers
+    GripperGateway gateway = new GripperGateway("vacuum-gripper");
+
+    GripperObserver observer1 = new GripperObserver() {
+      @Override
+      public void onMotorHorizontalPos(int motorHorizontalPos) {
+        List<Message<Number>> horizontalPos = List.of(msg(motorHorizontalPos), tk());
+        for (int i = 0; i < horizontalPos.size(); i++) {
+          sut.port_horizontalPos().receive(horizontalPos.get(i));
+        }
+      }
+    };
+
+    gateway.observers.add(observer1);
+
+    // client
+    Random r = new Random();
+
+    MqttClient client = new MqttClient(
+      "tcp://localhost:1883",
+      // Client id is randomized, such that existing qos 2 messages are not delivered from a previous run
+      "client" + r.nextInt());
+    client.setCallback(gateway);
+
+    client.connect();
+
+    gateway.connectMqttClient("vacuum-gripper/motor-horizontal-pos", client);
+    System.out.println("Client connected");
+
+    // publisher
+    MqttClient publisher = new MqttClient(
+            "tcp://localhost:1883",
+            "publisher1");
+
+    publisher.connect();
+    System.out.println("Publisher connected");
+
+    // send current horizontal position
+    System.out.println("Publishing");
+    MqttMessage msg1 = new MqttMessage("1".getBytes(StandardCharsets.UTF_8));
+    msg1.setQos(2);
+    publisher.publish("/vacuum-gripper/motor-horizontal-pos", msg1);
+
+    Thread.sleep(100);
+
+    Assertions.assertAll(
+            () -> assertThat(oc.horizontalForward.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedHorizontalForward)
     );
   }
 }
