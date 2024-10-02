@@ -104,4 +104,12 @@ public class GripperGateway implements MqttCallback {
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
   }
+
+  public void addObserver(GripperObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(GripperObserver observer){
+    observers.remove(observer);
+  }
 }

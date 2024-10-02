@@ -40,8 +40,8 @@ class GripperGatewayTest{
       }
     };
 
-    gripperGateway.observers.add(observer1);
-    gripperGateway.observers.add(observer2);
+    gripperGateway.addObserver(observer1);
+    gripperGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -113,7 +113,7 @@ class GripperGatewayTest{
       }
     };
 
-    gripperGateway.observers.add(observer1);
+    gripperGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -170,7 +170,7 @@ class GripperGatewayTest{
 
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -219,7 +219,7 @@ class GripperGatewayTest{
 
     GripperGateway gateway = new GripperGateway("vacuum-gripper");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

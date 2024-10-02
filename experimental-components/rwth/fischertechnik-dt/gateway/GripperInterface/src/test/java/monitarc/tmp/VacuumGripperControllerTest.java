@@ -321,7 +321,7 @@ public class VacuumGripperControllerTest {
       }
     };
 
-    gateway.observers.add(observer1);
+    gateway.addObserver(observer1);
 
     // client
     Random r = new Random();
