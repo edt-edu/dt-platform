@@ -299,13 +299,26 @@ public class VacuumGripperControllerTest {
     // dummy data for other ports
     List<Message<Number>> verticalPos = List.of(msg(0), tk());
     List<Message<Number>> verticalPosGoal = List.of(msg(0), tk());
-    List<Message<Number>> rotationPos = List.of(msg(0), tk());
-    List<Message<Number>> rotationPosGoal = List.of(msg(0), tk());
 
     List<Message<Number>> horizontalPosGoal = List.of(msg(2), tk());
 
+    List<Message<Number>> rotationPos = List.of(msg(0), tk());
+    List<Message<Number>> rotationPosGoal = List.of(msg(0), tk());
+
+
+
     // expected output
     List<Message<Boolean>> expectedHorizontalForward = List.of(msg(true), tk());
+
+    for (int i = 0; i < verticalPos.size(); i++) {
+      sut.port_verticalPos().receive(verticalPos.get(i));
+      sut.port_verticalPosGoal().receive(verticalPosGoal.get(i));
+
+      sut.port_horizontalPosGoal().receive(horizontalPosGoal.get(i));
+
+      sut.port_rotationPos().receive(rotationPos.get(i));
+      sut.port_rotationPosGoal().receive(rotationPosGoal.get(i));
+    }
 
 
     // setting up gateway + observers
@@ -334,7 +347,7 @@ public class VacuumGripperControllerTest {
 
     client.connect();
 
-    gateway.connectMqttClient("vacuum-gripper/motor-horizontal-pos", client);
+    gateway.connectMqttClient("/vacuum-gripper/motor-horizontal-pos", client);
     System.out.println("Client connected");
 
     // publisher
@@ -352,6 +365,8 @@ public class VacuumGripperControllerTest {
     publisher.publish("/vacuum-gripper/motor-horizontal-pos", msg1);
 
     Thread.sleep(100);
+
+    sut.run();
 
     Assertions.assertAll(
             () -> assertThat(oc.horizontalForward.getObservedMessages()).as("booleans").containsExactlyElementsOf(expectedHorizontalForward)
