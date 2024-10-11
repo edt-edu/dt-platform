@@ -1,5 +1,7 @@
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
+import three_d_gripper.ThreeDGripperGateway;
+import three_d_gripper.ThreeDGripperObserver;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,8 +40,8 @@ class ThreeDGripperGatewayTest {
       }
     };
 
-    threeDGripperGateway.observers.add(observer1);
-    threeDGripperGateway.observers.add(observer2);
+    threeDGripperGateway.addObserver(observer1);
+    threeDGripperGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class ThreeDGripperGatewayTest {
       }
     };
 
-    threeDGripperGateway.observers.add(observer1);
+    threeDGripperGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -169,7 +171,7 @@ class ThreeDGripperGatewayTest {
 
     ThreeDGripperGateway gateway = new ThreeDGripperGateway("3D-gripper");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -218,7 +220,7 @@ class ThreeDGripperGatewayTest {
 
     ThreeDGripperGateway gateway = new ThreeDGripperGateway("3D-gripper");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

@@ -1,3 +1,5 @@
+package multiprocessing;
+
 public interface MultiprocessingObserver {
 
     // Outputs of the machine --------------

@@ -1,3 +1,5 @@
+package three_d_gripper;
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
@@ -99,5 +101,13 @@ public class ThreeDGripperGateway implements MqttCallback {
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(ThreeDGripperObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(ThreeDGripperObserver observer){
+    observers.remove(observer);
   }
 }

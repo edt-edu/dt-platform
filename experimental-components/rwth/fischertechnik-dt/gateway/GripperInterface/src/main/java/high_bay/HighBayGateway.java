@@ -1,5 +1,6 @@
-import org.eclipse.paho.client.mqttv3.*;
+package high_bay;
 
+import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -107,5 +108,13 @@ public class HighBayGateway implements MqttCallback{
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(HighBayObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(HighBayObserver observer){
+    observers.remove(observer);
   }
 }

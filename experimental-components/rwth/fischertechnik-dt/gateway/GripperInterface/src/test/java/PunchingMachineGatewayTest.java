@@ -1,5 +1,7 @@
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
+import punching_machine.PunchingMachineGateway;
+import punching_machine.PunchingMachineObserver;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,8 +40,8 @@ class PunchingMachineGatewayTest {
       }
     };
 
-    punchingMachineGateway.observers.add(observer1);
-    punchingMachineGateway.observers.add(observer2);
+    punchingMachineGateway.addObserver(observer1);
+    punchingMachineGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class PunchingMachineGatewayTest {
       }
     };
 
-    punchingMachineGateway.observers.add(observer1);
+    punchingMachineGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class PunchingMachineGatewayTest {
 
     PunchingMachineGateway gateway = new PunchingMachineGateway("punching-machine");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class PunchingMachineGatewayTest {
 
     PunchingMachineGateway gateway = new PunchingMachineGateway("punching-machine");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

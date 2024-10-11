@@ -1,3 +1,5 @@
+package three_d_gripper;
+
 public interface ThreeDGripperObserver {
 
   // Outputs of the machine --------------

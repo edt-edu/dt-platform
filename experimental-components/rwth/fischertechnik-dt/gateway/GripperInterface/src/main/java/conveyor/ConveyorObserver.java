@@ -1,3 +1,5 @@
+package conveyor;
+
 public interface ConveyorObserver {
 
   // Outputs of the machine --------------

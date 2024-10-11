@@ -1,3 +1,5 @@
+package multiprocessing;
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
@@ -109,5 +111,13 @@ public class MultiprocessingGateway implements MqttCallback {
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(MultiprocessingObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(MultiprocessingObserver observer){
+    observers.remove(observer);
   }
 }

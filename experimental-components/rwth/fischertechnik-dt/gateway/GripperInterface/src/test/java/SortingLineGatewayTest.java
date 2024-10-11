@@ -1,5 +1,7 @@
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
+import sorting_line.SortingLineGateway;
+import sorting_line.SortingLineObserver;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,8 +40,8 @@ class SortingLineGatewayTest {
       }
     };
 
-    sortingLineGateway.observers.add(observer1);
-    sortingLineGateway.observers.add(observer2);
+    sortingLineGateway.addObserver(observer1);
+    sortingLineGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class SortingLineGatewayTest {
       }
     };
 
-    sortingLineGateway.observers.add(observer1);
+    sortingLineGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class SortingLineGatewayTest {
 
     SortingLineGateway gateway = new SortingLineGateway("sorting-line");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class SortingLineGatewayTest {
 
     SortingLineGateway gateway = new SortingLineGateway("sorting-line");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

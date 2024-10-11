@@ -1,3 +1,5 @@
+import high_bay.HighBayGateway;
+import high_bay.HighBayObserver;
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +40,8 @@ class HighBayGatewayTest {
       }
     };
 
-    highBayGateway.observers.add(observer1);
-    highBayGateway.observers.add(observer2);
+    highBayGateway.addObserver(observer1);
+    highBayGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class HighBayGatewayTest {
       }
     };
 
-    highBayGateway.observers.add(observer1);
+    highBayGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class HighBayGatewayTest {
 
     HighBayGateway gateway = new HighBayGateway("high-bay");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class HighBayGatewayTest {
 
     HighBayGateway gateway = new HighBayGateway("high-bay");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

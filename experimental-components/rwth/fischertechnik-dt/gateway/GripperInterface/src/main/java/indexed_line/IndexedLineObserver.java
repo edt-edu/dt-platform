@@ -1,3 +1,5 @@
+package indexed_line;
+
 public interface IndexedLineObserver {
 
   // Outputs of the machine --------------

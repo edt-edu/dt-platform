@@ -14,7 +14,7 @@ component PunchingMachineController {
        out boolean movePunchingMachineDown;
 
   <<sync>> automaton {
-    initital state S;
+    initial state S;
     state GoodsAtInputOutput;
     state GoodsAtPunchingMachine;
     state PunchingMachineDown;
@@ -162,3 +162,5 @@ component PunchingMachineController {
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
     };
+  }
+}

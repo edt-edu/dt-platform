@@ -1,3 +1,5 @@
+package sorting_line;
+
 public interface SortingLineObserver {
 
   // Outputs of the machine --------------

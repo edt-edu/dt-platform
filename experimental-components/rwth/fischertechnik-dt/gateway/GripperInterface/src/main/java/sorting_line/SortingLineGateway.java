@@ -1,3 +1,5 @@
+package sorting_line;
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
@@ -76,5 +78,13 @@ public class SortingLineGateway implements MqttCallback {
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(SortingLineObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(SortingLineObserver observer){
+    observers.remove(observer);
   }
 }

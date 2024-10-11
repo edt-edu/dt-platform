@@ -1,3 +1,5 @@
+package indexed_line;
+
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
@@ -97,5 +99,13 @@ public class IndexedLineGateway implements MqttCallback{
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(IndexedLineObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(IndexedLineObserver observer){
+    observers.remove(observer);
   }
 }

@@ -1,5 +1,6 @@
-import org.eclipse.paho.client.mqttv3.*;
+package conveyor;
 
+import org.eclipse.paho.client.mqttv3.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -56,5 +57,13 @@ public class ConveyorGateway implements MqttCallback{
 
   public void connectMqttClient(String topic, MqttClient client) throws MqttException {
     client.subscribe(topic, 2);
+  }
+
+  public void addObserver(ConveyorObserver observer){
+    observers.add(observer);
+  }
+
+  public void removeObserver(ConveyorObserver observer){
+    observers.remove(observer);
   }
 }

@@ -1,3 +1,5 @@
+import indexed_line.IndexedLineGateway;
+import indexed_line.IndexedLineObserver;
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +40,8 @@ class IndexedLineGatewayTest {
       }
     };
 
-    indexedLineGateway.observers.add(observer1);
-    indexedLineGateway.observers.add(observer2);
+    indexedLineGateway.addObserver(observer1);
+    indexedLineGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class IndexedLineGatewayTest {
       }
     };
 
-    indexedLineGateway.observers.add(observer1);
+    indexedLineGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class IndexedLineGatewayTest {
 
     IndexedLineGateway gateway = new IndexedLineGateway("indexed-line");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class IndexedLineGatewayTest {
 
     IndexedLineGateway gateway = new IndexedLineGateway("indexed-line");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

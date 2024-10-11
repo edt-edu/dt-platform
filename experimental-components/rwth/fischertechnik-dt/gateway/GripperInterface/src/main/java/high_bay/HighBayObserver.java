@@ -1,3 +1,5 @@
+package high_bay;
+
 public interface HighBayObserver {
 
   // Outputs of the machine --------------

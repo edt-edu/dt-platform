@@ -1,3 +1,5 @@
+package punching_machine;
+
 public interface PunchingMachineObserver {
 
   // Outputs of the machine --------------

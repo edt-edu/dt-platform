@@ -1,3 +1,5 @@
+import multiprocessing.MultiprocessingGateway;
+import multiprocessing.MultiprocessingObserver;
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +40,8 @@ class MultiprocessingGatewayTest{
       }
     };
 
-    multiprocessingGateway.observers.add(observer1);
-    multiprocessingGateway.observers.add(observer2);
+    multiprocessingGateway.addObserver(observer1);
+    multiprocessingGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class MultiprocessingGatewayTest{
       }
     };
 
-    multiprocessingGateway.observers.add(observer1);
+    multiprocessingGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class MultiprocessingGatewayTest{
 
     MultiprocessingGateway gateway = new MultiprocessingGateway("multiprocessing-station");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class MultiprocessingGatewayTest{
 
     MultiprocessingGateway gateway = new MultiprocessingGateway("multiprocessing-station");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(

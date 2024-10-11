@@ -1,3 +1,5 @@
+import conveyor.ConveyorGateway;
+import conveyor.ConveyorObserver;
 import org.eclipse.paho.client.mqttv3.*;
 import org.junit.jupiter.api.Test;
 
@@ -38,8 +40,8 @@ class ConveyorGatewayTest {
       }
     };
 
-    conveyorGateway.observers.add(observer1);
-    conveyorGateway.observers.add(observer2);
+    conveyorGateway.addObserver(observer1);
+    conveyorGateway.addObserver(observer2);
 
     // client
     MqttClient client = new MqttClient(
@@ -111,7 +113,7 @@ class ConveyorGatewayTest {
       }
     };
 
-    conveyorGateway.observers.add(observer1);
+    conveyorGateway.addObserver(observer1);
 
     // client
     MqttClient client = new MqttClient(
@@ -168,7 +170,7 @@ class ConveyorGatewayTest {
 
     ConveyorGateway gateway = new ConveyorGateway("conveyor-belt");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
@@ -217,7 +219,7 @@ class ConveyorGatewayTest {
 
     ConveyorGateway gateway = new ConveyorGateway("conveyor-belt");
 
-    gateway.observers.add(observer);
+    gateway.addObserver(observer);
 
     // client
     MqttClient client = new MqttClient(
