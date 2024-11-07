@@ -1,7 +1,15 @@
 package org.gemoc.mbdo.gateway.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
 import org.gemoc.mbdo.gateway.GatewayApplicationEnvironment;
 import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration;
+import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.DtEvent;
+import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.DtEventGroup;
+import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.MqttInfluxdbRecording;
 import org.gemoc.mbdo.gateway.utils.YamlUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -35,5 +43,25 @@ public class GatewayService {
      */
 	protected GatewayServiceConfiguration loadGatewayServiceConfiguration() {
 		return YamlUtils.convertYamlToObject(applicationContext, gatewayApplicationEnvironment.getConfigurationFilePath(), GatewayServiceConfiguration.class);
+	}
+	
+	/**
+	 * compute form configuration the list of Mqtt topics that the gateway must listen
+	 * @return
+	 */
+	public List<String> getMonitoredMqttTopics() {
+		HashSet<String> monitoredTopics = new HashSet<String>();
+		for ( MqttInfluxdbRecording influxRecording : this.getGatewayServiceConfiguration().mqttInfluxdbRecordings()) {
+			monitoredTopics.add(influxRecording.mqttSourceTopic());
+		}
+		for (DtEventGroup dtEventGroup : this.getGatewayServiceConfiguration().dtEventGroups()) {
+			for (DtEvent dtEvent : dtEventGroup.dtEvents()) {
+				monitoredTopics.add(dtEventGroup.mqttSourcePrefix()+dtEvent.mqttSourceTopic());
+			}
+		}
+		// TODO remove useless sub rules (for example when using mqtt topic wildcard "." or "#"
+		List<String> result = new ArrayList<>(monitoredTopics); 
+		Collections.sort(result);
+		return result;
 	}
 }

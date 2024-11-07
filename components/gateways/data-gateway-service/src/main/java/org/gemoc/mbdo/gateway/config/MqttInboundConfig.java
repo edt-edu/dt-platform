@@ -13,6 +13,9 @@ import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class MqttInboundConfig {
 
@@ -30,9 +33,11 @@ public class MqttInboundConfig {
 
     @Bean
     public MessageProducer inbound() {
+    	String[] topics = this.gatewayService.getMonitoredMqttTopics().toArray(new String[0]);
+    	log.debug("listenning mqqt topics:\n "+ String.join("\n ", topics));
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter("tcp://localhost:1883", "gatewayClient",
-                		"PLC/#", "FactorySCADA/#"); // list of statically subscribed topics  
+                		topics); // list of statically subscribed topics  
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
