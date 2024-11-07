@@ -1,0 +1,21 @@
+
+== DigitalTwin Gateway application
+
+
+=== Overview
+The gateway application is in charge of adapting data coming from the physical system to be used by the digital twin model.
+
+
+It currently has the following features:
+- **MQTT topic mapping**,  allows to listen to MQTT messages from the physical model with their own topics and copy them to topics with names that relates to the digital twin model.
+
+
+=== Configuration
+
+The gateway uses a small yaml based dsl for configuration.
+
+The default configuration file is located in `src/main/resources`. 
+In production, it can be replaced by your own using the following argument when calling the application `--configuration.path=/app/config/configuration.yml`
+
+
+=== Build info
