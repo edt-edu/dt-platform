@@ -45,7 +45,7 @@ public class MqttInboundConfig {
         connectionOptions.setConnectionTimeout(30000);
         connectionOptions.setMaxReconnectDelay(1000);
         connectionOptions.setAutomaticReconnect(true);
-        Mqttv3ClientManager clientManager = new Mqttv3ClientManager(connectionOptions, "gatewayClient-"+UUID.randomUUID().toString());
+        Mqttv3ClientManager clientManager = new Mqttv3ClientManager(connectionOptions, "gatewayInboundClient-"+UUID.randomUUID().toString());
         clientManager.setPersistence(new MqttDefaultFilePersistence());
         return clientManager;
     }

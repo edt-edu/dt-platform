@@ -1,5 +1,7 @@
 package org.gemoc.mbdo.gateway.config;
 
+import java.util.UUID;
+
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.gemoc.mbdo.gateway.service.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,8 @@ public class MqttOutboundConfig {
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
         MqttPahoMessageHandler messageHandler =
-                       new MqttPahoMessageHandler("gatewayClient", mqttClientFactory());
+                       new MqttPahoMessageHandler("gatewayOutboundClient"+UUID.randomUUID().toString(), 
+                    		   mqttClientFactory());
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic("gateway");
         return messageHandler;
