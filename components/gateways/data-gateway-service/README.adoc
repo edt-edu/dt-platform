@@ -19,3 +19,13 @@ In production, it can be replaced by your own using the following argument when 
 
 
 === Build info
+
+Manual build
+```
+gradle build
+```
+
+Buid of the docker image (for use in the docker compose)
+```
+docker build -t registry.git.rwth-aachen.de/mbdo/mbdo-impl/dt-support-gateway:latest .
+```

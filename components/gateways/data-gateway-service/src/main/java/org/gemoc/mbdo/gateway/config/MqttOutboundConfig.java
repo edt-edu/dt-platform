@@ -1,6 +1,8 @@
 package org.gemoc.mbdo.gateway.config;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.gemoc.mbdo.gateway.service.GatewayService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.MessagingGateway;
@@ -15,12 +17,19 @@ import org.springframework.messaging.handler.annotation.Header;
 
 @Configuration
 public class MqttOutboundConfig {
-
+	
+	private final GatewayService gatewayService;
+	
+	@Autowired
+	public MqttOutboundConfig(GatewayService gatewayService) {
+		this.gatewayService = gatewayService;
+	}
+	
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setServerURIs(new String[] { "tcp://localhost:1883" });
+        options.setServerURIs(new String[] { this.gatewayService.getGatewayServiceConfiguration().mqttTargetBrokerUrl() });
         options.setUserName("username");
         options.setPassword("password".toCharArray());
         options.setAutomaticReconnect(true);
