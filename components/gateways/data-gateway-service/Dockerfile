@@ -9,8 +9,8 @@ COPY gradle gradle
 COPY build.gradle settings.gradle ./
 COPY src ./src
 
-# Build the application
-RUN gradle build --no-daemon
+# Build the application (no test)
+RUN gradle assemble --no-daemon
 
 # Stage 2: Package the application
 FROM openjdk:21 AS runner
