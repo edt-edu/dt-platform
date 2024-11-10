@@ -1,9 +1,12 @@
 package org.gemoc.mbdo.gateway.handlers;
 
+import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.gemoc.mbdo.gateway.config.MqttOutboundConfig.MqttOutBoundGateway;
 import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.DtEvent;
 import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.DtEventGroup;
+import org.gemoc.mbdo.gateway.dto.GatewayServiceConfiguration.MqttInfluxdbRecording;
 import org.gemoc.mbdo.gateway.service.GatewayService;
+import org.gemoc.mbdo.gateway.service.MqttToInfluxdbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
@@ -23,11 +26,13 @@ public class MqttMessageHandler implements MessageHandler {
 
 	private final GatewayService gatewayService;
 	private final MqttOutBoundGateway mqttOutbound;
+	private final MqttToInfluxdbService mqttToInfluxdbService;
 	
 	@Autowired 
-	public MqttMessageHandler(GatewayService gatewayService, MqttOutBoundGateway mqttOutbound) { 
+	public MqttMessageHandler(GatewayService gatewayService, MqttOutBoundGateway mqttOutbound, MqttToInfluxdbService mqttToInfluxdbService) { 
 		this.gatewayService = gatewayService;
 		this.mqttOutbound = mqttOutbound;
+		this.mqttToInfluxdbService = mqttToInfluxdbService;
 	}
 	
 	@Override
@@ -39,6 +44,7 @@ public class MqttMessageHandler implements MessageHandler {
 			log.info("dtEventGroups() loop "+dtEventGroup.name());
 		}
 		this.applyCloneRules(topic, payload);
+		this.applyMqttToInfluxDBRules(topic, payload);
 	}
 	
 	
@@ -59,6 +65,19 @@ public class MqttMessageHandler implements MessageHandler {
 						this.mqttOutbound.sendToMqtt(targetTopic, payload);
 					}
 				}
+			}
+		}
+	}
+	
+	protected void applyMqttToInfluxDBRules(@NotNull String topic, String payload) {
+		for ( MqttInfluxdbRecording recording : this.gatewayService.getGatewayServiceConfiguration().mqttInfluxdbRecordings()) {
+			if(MqttTopic.isMatched(recording.mqttSourceTopic(), topic)) {
+				log.debug("applying MqttToInfluxDB rule for topic " + topic);
+				mqttToInfluxdbService.processAndStoreMessage(recording.name(),
+						topic, 
+						payload, 
+						"extract-json-timestamp".equals(recording.timeProcess()), 
+						"extract-json-value".equals(recording.dataProcess()));
 			}
 		}
 	}
