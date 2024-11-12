@@ -59,7 +59,7 @@ public class MqttMessageHandler implements MessageHandler {
 			if(dtEventGroup.dataTransformation().equals("clone")) {
 				for (DtEvent dtEvent : dtEventGroup.dtEvents()) {
 					String ruleSourceTopic = dtEventGroup.mqttSourcePrefix()+dtEvent.mqttSourceTopic();
-					if(topic.equals(ruleSourceTopic)) {
+					if(MqttTopic.isMatched(ruleSourceTopic, topic)) {
 						log.debug("applying clone rule for topic " + topic);						
 						String targetTopic = dtEventGroup.mqttTargetPrefix()+dtEvent.mqttTargetTopic();
 						this.mqttOutbound.sendToMqtt(targetTopic, payload);
