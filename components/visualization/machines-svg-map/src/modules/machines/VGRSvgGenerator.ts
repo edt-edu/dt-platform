@@ -55,7 +55,7 @@ export class VGRSvgGenerator implements IMachineGenerator{
     const axisGroup = machineGroup.group();
     axisGroup.id('vgrRotationAxis'+this.id_postfix);
     const helper = new ShapeHelper();
-    helper.generateAxisCross(axisGroup, this.axisMinRadius, this.axisYPos,5 );
+    helper.generateAxisCross(axisGroup, this.axisXPos, this.axisYPos, crossSize );
   }
 
   generateWoodBase(machineGroup: G) {

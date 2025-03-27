@@ -39,7 +39,7 @@ export class ShapeHelper {
 
     /**
      * 
-     * @param container Generate an axis cross if the provided container (suggestion  a : G group )
+     * @param container Generate an axis cross in the provided container (suggestion  a : G group )
      * @param xPos 
      * @param yPos 
      * @param crossSize 

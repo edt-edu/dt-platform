@@ -15,7 +15,7 @@ Features:
 - use of css styling (embedded in the svg) 
 
 
-Note: the reference point (ie. x = 0, y = 0) of each machine is the upper left corner of each machine when the machine is place in a way we can read the Fischertechnik sticker (I suppose that for a given model this sticker is always at the same place)
+Note: the reference point (ie. x = 0, y = 0) of each machine is the upper left corner of each machine when the machine is positionned in a way we can read the Fischertechnik sticker (I suppose that for a given model this sticker is always at the same place)
 
 TODO: 
 
