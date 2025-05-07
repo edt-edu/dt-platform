@@ -2,27 +2,39 @@ package fischertechnik_gateway.machines.conveyorBelt;
 
 import fischertechnik_gateway.machines.Direction;
 import fischertechnik_gateway.machines.Machine;
+import fischertechnik_gateway.machines.message.Command;
 
-// TODO: in MontiArc/SysMLv2 the messages might not be relevant,
-//  maybe change return type to void and add a Consumer<Message> for outgoing messages
+import java.util.function.Consumer;
+
 public class ConveyorBelt extends Machine {
-  public ConveyorBelt(String topic) {
+  private final Consumer<Command> messageChannel;
+
+  public ConveyorBelt(String topic, Consumer<Command> messageChannel) {
     super(topic);
+    this.messageChannel = messageChannel;
   }
 
   public MoveOut moveOut(Direction direction){
-    return new MoveOut(topic, System.currentTimeMillis(), msgId++, direction);
+    MoveOut moveOut = new MoveOut(topic, System.currentTimeMillis(), msgId++, direction);
+    messageChannel.accept(moveOut);
+    return moveOut;
   }
 
   public MoveNbSteps moveNbSteps(int number, Direction direction){
-    return new MoveNbSteps(topic, System.currentTimeMillis(), msgId++, number, direction);
+    MoveNbSteps moveNbSteps = new MoveNbSteps(topic, System.currentTimeMillis(), msgId++, number, direction);
+    messageChannel.accept(moveNbSteps);
+    return moveNbSteps;
   }
 
   public MoveToSensor moveToSensor(Direction direction){
-    return new MoveToSensor(topic, System.currentTimeMillis(), msgId++, direction);
+    MoveToSensor moveToSensor = new MoveToSensor(topic, System.currentTimeMillis(), msgId++, direction);
+    messageChannel.accept(moveToSensor);
+    return moveToSensor;
   }
 
   public Stop stop(){
-    return new Stop(topic, System.currentTimeMillis(), msgId++);
+    Stop stop = new Stop(topic, System.currentTimeMillis(), msgId++);
+    messageChannel.accept(stop);
+    return stop;
   }
 }
