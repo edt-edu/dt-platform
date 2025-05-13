@@ -62,6 +62,7 @@ dependencies {
   implementation 'org.apache.poi:poi-ooxml:5.0.0'
 
   implementation "de.se-rwth.fischertechnik:gripper-interface:$mc_version"
+  implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 }
 
 test {
