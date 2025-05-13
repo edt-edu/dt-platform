@@ -1,0 +1,79 @@
+plugins {
+  id 'java'
+  id 'java-library'
+  id 'de.rwth.se.umlp-tool-backend' version "$mc_version"
+
+  id 'application'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+  id 'org.springframework.boot' version "${spring_version}"
+
+  id 'com.google.cloud.tools.jib' version '3.2.1'
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(11)
+  }
+}
+
+String domainName = project.findProperty("domainModel") ?: "Domain"
+def packageName = domainName.toLowerCase()
+def domainNameUpperCase = domainName.substring(0, 1).toUpperCase() + domainName.substring(1)
+
+application {
+  mainClass = "${packageName}.${domainNameUpperCase}ServerApplication"
+}
+
+jib {
+  container.mainClass = application.mainClass.get()
+}
+
+task runServer {
+  dependsOn(bootRun {
+    systemProperty "spring.shell.interactive.enabled", "false"
+  })
+}
+
+dependencies {
+  api group: 'umlp', name: 'umlp-rte', version: mc_version
+  api group: 'umlp', name: 'umlp-test-rte', version: mc_version
+
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+  // Spring Boot Dependencies
+  def withoutSpringLogging = {
+    exclude module: 'spring-boot-starter-logging'
+    exclude module: 'logback-classic'
+  }
+  compileOnly group: 'org.springframework.boot', name: 'spring-boot-devtools', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: spring_version, withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: spring_version, withoutSpringLogging
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.10"
+
+
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: spring_version, withoutSpringLogging
+  // implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', withoutSpringLogging
+  api group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: spring_version, withoutSpringLogging
+  // implementation group: 'org.springframework.security', name: 'spring-security-test', withoutSpringLogging
+
+  implementation 'com.h2database:h2:2.1.214'  // ToDo: Remove from production code
+  implementation 'org.apache.poi:poi:5.0.0'
+  implementation 'org.apache.poi:poi-ooxml:5.0.0'
+
+  implementation "de.se-rwth.fischertechnik:gripper-interface:$mc_version"
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    showStandardStreams = true
+    events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+  }
+}
+
+// Task is created by umlp-backend plugin (with very sensible default values)
+generateUmlpBackend{
+  input = file("../models/")
+  useSpring = true
+}

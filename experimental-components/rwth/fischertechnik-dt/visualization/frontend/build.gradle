@@ -1,0 +1,58 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+  id 'java'
+  id "com.github.node-gradle.node" version "5.0.0"
+  id 'de.rwth.se.umlp-tool-frontend' version "$mc_version"
+}
+
+node {
+  download = true
+  version = "18.13.0"
+  nodeProxySettings = ProxySettings.OFF
+  nodeProjectDir = file("${buildDir}/frontendGen")
+}
+nodeSetup.dependsOn(frontendSetup)
+
+dependencies {
+  domainSources project(":backend")
+  implementation project(":backend")
+}
+
+def domainName = project.findProperty("domainModel") ?: "Domain"
+
+genGUI {
+  domainModels = ["${domainName}"]
+}
+
+def prebuildTasks = [
+        npmInstall, generate
+]
+
+task buildApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["build"]
+}
+
+task buildAppNoGen(type: NpxTask) {
+  command = "ng"
+  args = ["build"]
+}
+
+task testApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["test"]
+}
+
+task runApp(type: NpxTask) {
+  dependsOn(prebuildTasks)
+  command = "ng"
+  args = ["serve"]
+}
+task run {
+  dependsOn(runApp)
+}
+
+assemble.dependsOn(buildApp)

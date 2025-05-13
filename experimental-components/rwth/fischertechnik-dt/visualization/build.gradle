@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+plugins {
+  id 'base'
+}
+
+subprojects {
+  repositories {
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url "https://nexus.se.rwth-aachen.de/content/groups/umlp"
+      mavenCentral()
+    }
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.warnings = false
+  }
+
+  configurations {
+    all {
+      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+      exclude group: 'ch.qos.logback', module: 'logback-classic'
+      exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+  }
+}
+
+clean.dependsOn(subprojects.collect { it.getTasksByName("clean", false) })
+
+build.dependsOn(subprojects.collect { it.getTasksByName("build", false) })

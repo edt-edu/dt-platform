@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+umlp FischertechnikVisualization {
+  class SomeClass {
+    String someAttribute;
+  }
+}

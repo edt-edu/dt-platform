@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package gui;
+
+import mc.fenix.arrange.GemRow;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemGrid;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemButton;
+import mc.fenix.input.GemTextareaInput;
+import mc.fenix.input.GemCheckBoxInput;
+import mc.fenix.input.GemRadioInput;
+import mc.fenix.basic.GemImage;
+import gui.navigation.NavContainer;
+
+import mc.fenix.fischertechnik.VacuumGripper;
+
+page Start() {
+  /* component usages, control statements, etc. */
+  @VacuumGripper(rotationDeg=90, verticalPercentage=50, horizontalPercentage=50, pumpRunning=false);
+}
