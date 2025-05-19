@@ -4,6 +4,12 @@ plugins {
 }
 group = "de.se-rwth.fischertechnik"
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(11))
+  }
+}
+
 repositories {
   if (("true").equals(getProperty('useLocalRepo'))) {
     mavenLocal()
