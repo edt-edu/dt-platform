@@ -1,8 +1,8 @@
-package fischertechnik_gateway.machines.parameters;
+package fischertechnik_gateway.parameters;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
-import fischertechnik_gateway.machines.message.JsonFactory;
+import fischertechnik_gateway.message.JsonFactory;
 
 public class NumberNaturalParameter implements Parameter {
   private final int number;

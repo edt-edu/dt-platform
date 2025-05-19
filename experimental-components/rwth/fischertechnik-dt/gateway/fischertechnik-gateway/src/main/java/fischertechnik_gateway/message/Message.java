@@ -1,7 +1,7 @@
-package fischertechnik_gateway.machines.message;
+package fischertechnik_gateway.message;
 
 import de.monticore.symboltable.serialization.json.*;
-import fischertechnik_gateway.machines.parameters.Parameter;
+import fischertechnik_gateway.parameters.Parameter;
 
 import java.util.List;
 

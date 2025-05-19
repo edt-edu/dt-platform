@@ -1,0 +1,54 @@
+import de.se_rwth.commons.logging.Log;
+
+import fischertechnik_gateway.util.Direction;
+import fischertechnik_gateway.machines.Machine;
+import fischertechnik_gateway.machines.conveyorBelt.ConveyorBelt;
+import fischertechnik_gateway.machines.message.Command;
+import fischertechnik_gateway.machines.tcp.TcpPLCConnection;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+Log.enableFailQuick(false);
+
+TcpPLCConnection connection = new TcpPLCConnection(
+    new InetSocketAddress("192.168.178.201", 6001),
+    new InetSocketAddress("192.168.178.201", 6011)
+);
+
+Consumer<Command> defaultHandler = command -> {
+  try {
+    System.out.println("Sending: " + command.toJson().toString());
+    connection.sendCommand(command);
+  } catch (IOException e) {
+    throw new RuntimeException(e);
+  }
+};
+
+
+List<Machine> machines = new ArrayList<>();
+
+connection.addNotificationListener(notification -> {
+  System.out.println("Received notification:" + notification);
+  if (notification.isMachineFeedback()) {
+
+    for (Machine machine : machines) {
+      if (machine.getTopic().equals(notification.asMachineFeedback().getTopicName())) {
+        machine.setStatus(notification.getStatus());
+      }
+    }
+  } else if(notification.isCommandFeedback()){
+    System.out.println("[DEBUG] notification handling not implemented for commandFeedback");
+  }
+});
+
+connection.connect();
+
+
+ConveyorBelt conveyor = new ConveyorBelt("ConveyorBelt01", defaultHandler);
+machines.add(conveyor);
