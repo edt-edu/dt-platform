@@ -1,11 +1,12 @@
 package fischertechnik_gateway.machines.conveyorBelt;
 
-import fischertechnik_gateway.machines.*;
-import fischertechnik_gateway.machines.message.Command;
-import fischertechnik_gateway.machines.message.JsonType;
-import fischertechnik_gateway.machines.message.Message;
-import fischertechnik_gateway.machines.message.Type;
-import fischertechnik_gateway.machines.parameters.*;
+import fischertechnik_gateway.message.Command;
+import fischertechnik_gateway.message.JsonType;
+import fischertechnik_gateway.message.Message;
+import fischertechnik_gateway.message.Type;
+import fischertechnik_gateway.parameters.DirectionParameter;
+import fischertechnik_gateway.parameters.NumberNaturalParameter;
+import fischertechnik_gateway.util.Direction;
 
 import java.util.List;
 

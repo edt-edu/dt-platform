@@ -1,5 +1,6 @@
-package fischertechnik_gateway.machines.message;
+package fischertechnik_gateway.message;
 
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
 
@@ -15,6 +16,7 @@ public class Command {
   }
 
   public JsonObject toJson(){
+    JsonPrinter.setSerializeDefaults(true);
     JsonObject res = new JsonObject();
 
     res.putMember("topicName", new UserJsonString(topicName));

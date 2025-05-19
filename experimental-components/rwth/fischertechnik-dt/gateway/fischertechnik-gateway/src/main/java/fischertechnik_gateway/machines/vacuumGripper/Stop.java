@@ -1,4 +1,4 @@
-package fischertechnik_gateway.machines.conveyorBelt;
+package fischertechnik_gateway.machines.vacuumGripper;
 
 import fischertechnik_gateway.message.Command;
 import fischertechnik_gateway.message.JsonType;
@@ -15,7 +15,7 @@ public class Stop extends Command {
   private static Message createMsg(int outputId) {
     return new Message(
         JsonType.COMMAND,
-        Type.CONVEYOR,
+        Type.VACUUM,
         outputId,
         "STOP",
         List.of()

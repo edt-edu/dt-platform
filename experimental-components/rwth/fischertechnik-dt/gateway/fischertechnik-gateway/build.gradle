@@ -27,3 +27,29 @@ dependencies {
 test {
   useJUnitPlatform()
 }
+
+task jshell(type:Exec){
+  def classpath = sourceSets.main.runtimeClasspath.filter { File f -> f.exists() }.asPath
+  String startupScript = getProjectDir().toString() + "/Demo.jshell"
+  commandLine("jshell", "--class-path", classpath, "--startup", startupScript)
+  standardInput = System.in
+  standardOutput = System.out
+  errorOutput = System.err
+  dependsOn(tasks.jar)
+}
+
+task printJshellCommand(){
+  doFirst {
+    def classpath = sourceSets.main.runtimeClasspath.filter { File f -> f.exists() }.asPath
+    String startupScript = getProjectDir().toString() + "/Demo.jshell"
+    print("jshell")
+    print(" ")
+    print("--class-path")
+    print(" ")
+    print("\"$classpath\"")
+    print(" ")
+    print("--startup")
+    print(" ")
+    println(startupScript)
+  }
+}

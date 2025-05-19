@@ -1,4 +1,4 @@
-package fischertechnik_gateway.machines.message;
+package fischertechnik_gateway.message;
 
 import de.monticore.symboltable.serialization.json.JsonNumber;
 

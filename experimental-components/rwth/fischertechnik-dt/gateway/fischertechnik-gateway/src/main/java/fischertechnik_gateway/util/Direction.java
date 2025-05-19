@@ -1,4 +1,4 @@
-package fischertechnik_gateway.machines;
+package fischertechnik_gateway.util;
 
 public enum Direction {
   FORWARD, BACKWARD

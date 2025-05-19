@@ -1,6 +1,8 @@
-package fischertechnik_gateway.machines.tcp;
+package fischertechnik_gateway.tcp;
 
-import fischertechnik_gateway.machines.message.Command;
+import de.monticore.symboltable.serialization.JsonParser;
+import fischertechnik_gateway.message.Command;
+import fischertechnik_gateway.notifications.Notification;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
@@ -12,6 +14,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class TcpPLCConnection {
@@ -19,8 +22,9 @@ public class TcpPLCConnection {
   protected final InetSocketAddress notificationAddress;
   protected Socket notificationSocket;
   protected Socket commandSocket;
-  protected List<Consumer<String>> notificationListeners = new ArrayList<>();
+  protected List<Consumer<Notification>> notificationListeners = new ArrayList<>();
   protected Thread workerThread;
+  protected AtomicBoolean workerRunning = new AtomicBoolean(false);
 
   public TcpPLCConnection(InetSocketAddress commandAddress, InetSocketAddress notificationAddress) {
     this.commandAddress = commandAddress;
@@ -33,29 +37,46 @@ public class TcpPLCConnection {
     startWorker();
   }
 
-  private void startWorker() {
+  private void startWorker() throws IOException {
     if(workerThread != null && workerThread.isAlive()){
-      workerThread.stop();
+      workerRunning.set(false);
+      while (workerThread.isAlive()){
+          try {
+              Thread.sleep(1L);
+          } catch (InterruptedException e) {
+              throw new IOException(e);
+          }
+      }
     }
 
     workerThread = new Thread(() -> {
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(notificationSocket.getInputStream()))) {
         String line;
-        while ((line = reader.readLine()) != null) {
-          for (Consumer<String> notificationListener : notificationListeners) {
-            notificationListener.accept(line);
+        while (((line = reader.readLine()) != null) && workerRunning.get()) {
+          Notification n;
+          try{
+            n = Notification.fromJson(JsonParser.parseJsonObject(line));
+          } catch (Exception e){
+            System.out.println("Can not parse notification from following line\n" + line);
+            continue;
+          }
+
+          for (Consumer<Notification> notificationListener : notificationListeners) {
+            notificationListener.accept(n);
           }
         }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     });
+
+    workerRunning.set(true);
     workerThread.start();
   }
 
   public void close() throws IOException {
     if(workerThread != null && workerThread.isAlive()){
-      workerThread.stop();
+      workerRunning.set(false);
     }
 
     if(notificationSocket != null && !notificationSocket.isClosed()){
@@ -79,7 +100,7 @@ public class TcpPLCConnection {
     }
   }
 
-  public void addNotificationListener(Consumer<String> onNotification){
+  public void addNotificationListener(Consumer<Notification> onNotification){
     notificationListeners.add(onNotification);
   }
 }

@@ -1,12 +1,12 @@
 package fischertechnik_gateway;
 
-import fischertechnik_gateway.machines.Direction;
+import fischertechnik_gateway.util.Direction;
 import fischertechnik_gateway.machines.conveyorBelt.ConveyorBelt;
 import org.junit.jupiter.api.Test;
 
 // TODO: this is not a test, since no asserts
 public class ConveyorBeltTest {
-  ConveyorBelt conveyorBelt = new ConveyorBelt("Conveyor01");
+  ConveyorBelt conveyorBelt = new ConveyorBelt("Conveyor01", command -> {});
 
   @Test
   public void testMoveOutCommand(){

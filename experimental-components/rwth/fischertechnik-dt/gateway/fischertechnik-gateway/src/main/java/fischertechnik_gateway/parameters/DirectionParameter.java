@@ -1,8 +1,8 @@
-package fischertechnik_gateway.machines.parameters;
+package fischertechnik_gateway.parameters;
 
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.monticore.symboltable.serialization.json.UserJsonString;
-import fischertechnik_gateway.machines.Direction;
+import fischertechnik_gateway.util.Direction;
 
 public class DirectionParameter implements Parameter {
   private final Direction direction;
