@@ -6,4 +6,6 @@ With Gradle 7.6, start this visualization dashboard via
 
 Open http://localhost:4200/gui/TopicVisualization to see charts of the MQTT Topics and http://localhost:4200/gui/Start for a graphical representation of the current state.
 
-To replay the sample MQTT data, install [MQTT Recorder](https://github.com/rpdswtk/mqtt_recorder) and execute `mqtt-recorder --file backend/data/simple_process.csv --mode replay --host localhost` 
+To replay the sample MQTT data, install [MQTT Recorder](https://github.com/rpdswtk/mqtt_recorder) and execute
+`mqtt-recorder --file backend/data/simple_process.csv --mode replay --host localhost` or
+`python -m mqtt_recorder --file backend/data/simple_process.csv --mode replay --host localhost`
