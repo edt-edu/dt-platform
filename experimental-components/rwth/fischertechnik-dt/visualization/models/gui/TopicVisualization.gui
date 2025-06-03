@@ -1,0 +1,21 @@
+package gui;
+
+import mc.fenix.charts.GemLineChart;
+import mc.fenix.basic.GemText;
+
+import FischertechnikVisualization.BooleanTopic;
+import FischertechnikVisualization.DoubleTopic;
+
+page TopicVisualization(List<BooleanTopic> booleanTopics, List<DoubleTopic> doubleTopics){
+    @GemText(value="Boolean topics");
+    @iterate(BooleanTopic booleanTopic : booleanTopics){
+        @GemText(value=booleanTopic.topicName);
+        @GemLineChart(data=getBooleanLineChartData(booleanTopic), minValue=-1, maxValue=2);
+    }
+
+    @GemText(value="Double topics");
+    @iterate(DoubleTopic doubleTopic : doubleTopics){
+        @GemText(value=doubleTopic.topicName);
+        @GemLineChart(data=getDoubleLineChartData(doubleTopic));
+    }
+}

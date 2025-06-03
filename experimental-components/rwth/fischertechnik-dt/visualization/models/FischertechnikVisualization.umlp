@@ -4,4 +4,14 @@ umlp FischertechnikVisualization {
   class SomeClass {
     String someAttribute;
   }
+
+  class DoubleTopic {
+    String topicName;
+    List<Double> values;
+  }
+
+  class BooleanTopic {
+    String topicName;
+    List<Boolean> values;
+  }
 }
