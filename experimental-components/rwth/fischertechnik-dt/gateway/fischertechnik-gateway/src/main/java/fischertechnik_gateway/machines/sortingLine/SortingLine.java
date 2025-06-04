@@ -1,5 +1,6 @@
 package fischertechnik_gateway.machines.sortingLine;
 
+import fischertechnik_gateway.message.CommandStatus;
 import fischertechnik_gateway.util.Color;
 import fischertechnik_gateway.machines.Machine;
 import fischertechnik_gateway.message.Command;
@@ -11,24 +12,24 @@ public class SortingLine extends Machine {
     super(topic, commandConsumer);
   }
 
-  public Detect detect(){
+  public CommandStatus<SortingLine, Detect> detect() {
     Detect res = new Detect(topic, System.currentTimeMillis(), msgId++);
     commandConsumer.accept(res);
-	setStatus("RUNNING");
-    return res;
+    setStatus("RUNNING");
+    return new CommandStatus<>(this, res, "RUNNING");
   }
 
-  public Eject eject(Color color){
+  public CommandStatus<SortingLine, Eject> eject(Color color) {
     Eject res = new Eject(topic, System.currentTimeMillis(), msgId++, color);
     commandConsumer.accept(res);
-	setStatus("RUNNING");
-    return res;
+    setStatus("RUNNING");
+    return new CommandStatus<>(this, res, "RUNNING");
   }
 
-  public Stop stop(){
+  public CommandStatus<SortingLine, Stop> stop() {
     Stop res = new Stop(topic, System.currentTimeMillis(), msgId++);
     commandConsumer.accept(res);
-	setStatus("RUNNING");
-    return res;
+    setStatus("RUNNING");
+    return new CommandStatus<>(this, res, "RUNNING");
   }
 }
