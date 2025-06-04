@@ -94,6 +94,9 @@ public class TcpPLCConnection {
     }
 
     String s = command.toJson().toString();
+    if(!s.endsWith("\n")){
+      s = s + "\n";
+    }
 
     synchronized (commandSocket){
       IOUtils.copy(new StringReader(s), commandSocket.getOutputStream(), StandardCharsets.UTF_8);
