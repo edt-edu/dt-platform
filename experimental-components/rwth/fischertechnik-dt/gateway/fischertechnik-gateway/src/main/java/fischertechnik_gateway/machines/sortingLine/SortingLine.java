@@ -13,23 +13,14 @@ public class SortingLine extends Machine {
   }
 
   public CommandStatus<SortingLine, Detect> detect() {
-    Detect res = new Detect(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Detect(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<SortingLine, Eject> eject(Color color) {
-    Eject res = new Eject(topic, System.currentTimeMillis(), msgId++, color);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Eject(topic, System.currentTimeMillis(), msgId++, color));
   }
 
   public CommandStatus<SortingLine, Stop> stop() {
-    Stop res = new Stop(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
 }

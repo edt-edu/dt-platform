@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Release extends Command {
   public Release(String topicName, double timestamp, int outputId) {
-    super(topicName, timestamp, createMsg(outputId));
+    super(topicName, timestamp, createMsg(outputId), outputId);
   }
 
   private static Message createMsg(int outputId) {

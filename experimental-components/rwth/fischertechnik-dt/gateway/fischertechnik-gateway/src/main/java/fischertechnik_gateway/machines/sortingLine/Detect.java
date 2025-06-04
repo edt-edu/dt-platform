@@ -10,7 +10,7 @@ import java.util.List;
 public class Detect extends Command {
 
   public Detect(String topicName, double timestamp, int outputId) {
-    super(topicName, timestamp, createMsg(outputId));
+    super(topicName, timestamp, createMsg(outputId), outputId);
   }
 
   private static Message createMsg(int outputId) {

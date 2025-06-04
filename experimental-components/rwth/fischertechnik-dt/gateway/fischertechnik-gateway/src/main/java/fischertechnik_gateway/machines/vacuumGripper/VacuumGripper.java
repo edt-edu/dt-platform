@@ -13,58 +13,34 @@ public class VacuumGripper extends Machine {
   }
 
   public CommandStatus<VacuumGripper, GoToPosition> gotoposition(PositionThreeD position) {
-    GoToPosition res = new GoToPosition(topic, System.currentTimeMillis(), msgId++, position);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new GoToPosition(topic, System.currentTimeMillis(), msgId++, position));
   }
 
   public CommandStatus<VacuumGripper, Grip> grip() {
-    Grip res = new Grip(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Grip(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<VacuumGripper, Move> move(PositionThreeD start, PositionThreeD end) {
-    Move res = new Move(topic, System.currentTimeMillis(), msgId++, start, end);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Move(topic, System.currentTimeMillis(), msgId++, start, end));
   }
 
   public CommandStatus<VacuumGripper, Pick> pick(PositionThreeD position) {
-    Pick res = new Pick(topic, System.currentTimeMillis(), msgId++, position);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Pick(topic, System.currentTimeMillis(), msgId++, position));
   }
 
   public CommandStatus<VacuumGripper, Place> place(PositionThreeD position) {
-    Place res = new Place(topic, System.currentTimeMillis(), msgId++, position);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Place(topic, System.currentTimeMillis(), msgId++, position));
   }
 
   public CommandStatus<VacuumGripper, Release> release() {
-    Release res = new Release(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Release(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<VacuumGripper, Setup> setup() {
-    Setup res = new Setup(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Setup(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<VacuumGripper, Stop> stop() {
-    Stop res = new Stop(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
 }

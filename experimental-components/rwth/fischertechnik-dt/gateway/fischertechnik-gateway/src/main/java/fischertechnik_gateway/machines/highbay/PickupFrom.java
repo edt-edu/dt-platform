@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PickupFrom extends Command {
     public PickupFrom(String topicName, double timestamp, int outputId, int row, int column) {
-        super(topicName, timestamp, createMsg(outputId, row, column));
+        super(topicName, timestamp, createMsg(outputId, row, column), outputId);
     }
 
     private static Message createMsg(int outputId, int row, int column) {

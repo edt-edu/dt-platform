@@ -13,30 +13,18 @@ public class ConveyorBelt extends Machine {
   }
 
   public CommandStatus<ConveyorBelt, MoveOut> moveOut(Direction direction) {
-    MoveOut moveOut = new MoveOut(topic, System.currentTimeMillis(), msgId++, direction);
-    commandConsumer.accept(moveOut);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, moveOut, "RUNNING");
+    return sendCommand(this, new MoveOut(topic, System.currentTimeMillis(), msgId++, direction));
   }
 
   public CommandStatus<ConveyorBelt, MoveNbSteps> moveNbSteps(int number, Direction direction) {
-    MoveNbSteps moveNbSteps = new MoveNbSteps(topic, System.currentTimeMillis(), msgId++, number, direction);
-    commandConsumer.accept(moveNbSteps);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, moveNbSteps, "RUNNING");
+    return sendCommand(this, new MoveNbSteps(topic, System.currentTimeMillis(), msgId++, number, direction));
   }
 
   public CommandStatus<ConveyorBelt, MoveToSensor> moveToSensor(Direction direction) {
-    MoveToSensor moveToSensor = new MoveToSensor(topic, System.currentTimeMillis(), msgId++, direction);
-    commandConsumer.accept(moveToSensor);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, moveToSensor, "RUNNING");
+    return sendCommand(this, new MoveToSensor(topic, System.currentTimeMillis(), msgId++, direction));
   }
 
   public CommandStatus<ConveyorBelt, Stop> stop() {
-    Stop stop = new Stop(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(stop);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, stop, "RUNNING");
+    return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
 }

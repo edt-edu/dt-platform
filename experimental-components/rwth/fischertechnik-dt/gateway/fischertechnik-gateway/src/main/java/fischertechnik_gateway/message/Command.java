@@ -8,11 +8,13 @@ public class Command {
   private final String topicName;
   private final double timestamp;
   private final Message message;
+  private final int outputId;
 
-  public Command(String topicName, double timestamp, Message message) {
+  public Command(String topicName, double timestamp, Message message, int outputId) {
     this.topicName = topicName;
     this.timestamp = timestamp;
     this.message = message;
+    this.outputId = outputId;
   }
 
   public JsonObject toJson(){
@@ -24,5 +26,9 @@ public class Command {
     res.putMember("message",  message.toJson());
 
     return res;
+  }
+
+  public int getOutputId() {
+    return outputId;
   }
 }

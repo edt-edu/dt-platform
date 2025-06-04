@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Punch extends Command {
   public Punch(String topicName, double timestamp, int outputId) {
-    super(topicName, timestamp, createMsg(outputId));
+    super(topicName, timestamp, createMsg(outputId), outputId);
   }
 
   private static Message createMsg(int outputId) {

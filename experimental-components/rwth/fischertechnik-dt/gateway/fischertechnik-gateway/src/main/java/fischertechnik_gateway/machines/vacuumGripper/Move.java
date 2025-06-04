@@ -15,7 +15,7 @@ public class Move extends Command {
   private final PositionThreeD end;
 
   public Move(String topicName, double timestamp, int outputId, PositionThreeD start, PositionThreeD end) {
-    super(topicName, timestamp, createMsg(outputId, start, end));
+    super(topicName, timestamp, createMsg(outputId, start, end), outputId);
     this.start = start;
     this.end = end;
   }

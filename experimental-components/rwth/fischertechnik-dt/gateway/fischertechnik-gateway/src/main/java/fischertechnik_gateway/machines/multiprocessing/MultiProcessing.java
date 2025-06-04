@@ -12,24 +12,15 @@ public class MultiProcessing extends Machine {
   }
 
   public CommandStatus<MultiProcessing, Process1> process1() {
-    Process1 res = new Process1(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Process1(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<MultiProcessing, Setup> setup() {
-    Setup res = new Setup(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Setup(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<MultiProcessing, Stop> stop() {
-    Stop res = new Stop(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
 }
 

@@ -13,7 +13,7 @@ public class Eject extends Command {
   private final Color color;
 
   public Eject(String topicName, double timestamp, int outputId, Color color) {
-    super(topicName, timestamp, createMsg(outputId, color));
+    super(topicName, timestamp, createMsg(outputId, color), outputId);
     this.color = color;
   }
 

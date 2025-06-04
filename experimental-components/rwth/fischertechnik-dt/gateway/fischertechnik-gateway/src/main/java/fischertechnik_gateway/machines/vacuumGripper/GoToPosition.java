@@ -14,7 +14,7 @@ public class GoToPosition extends Command {
   private final PositionThreeD position;
 
   public GoToPosition(String topicName, double timestamp, int outputId, PositionThreeD position) {
-    super(topicName, timestamp, createMsg(outputId, position));
+    super(topicName, timestamp, createMsg(outputId, position), outputId);
     this.position = position;
   }
 

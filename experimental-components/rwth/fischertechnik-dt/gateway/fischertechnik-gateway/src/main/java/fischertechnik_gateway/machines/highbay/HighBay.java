@@ -12,23 +12,14 @@ public class HighBay extends Machine {
     }
 
     public CommandStatus<HighBay, Setup> setup() {
-        Setup res = new Setup(topic, System.currentTimeMillis(), msgId++);
-        commandConsumer.accept(res);
-        setStatus("RUNNING");
-        return new CommandStatus<>(this, res, "RUNNING");
+        return sendCommand(this, new Setup(topic, System.currentTimeMillis(), msgId++));
     }
 
     public CommandStatus<HighBay, StoreTo> storeTo(int row, int column) {
-        StoreTo res = new StoreTo(topic, System.currentTimeMillis(), msgId++, row, column);
-        commandConsumer.accept(res);
-        setStatus("RUNNING");
-        return new CommandStatus<>(this, res, "RUNNING");
+        return sendCommand(this, new StoreTo(topic, System.currentTimeMillis(), msgId++, row, column));
     }
 
     public CommandStatus<HighBay, PickupFrom> pickupFrom(int row, int column) {
-        PickupFrom res = new PickupFrom(topic, System.currentTimeMillis(), msgId++, row, column);
-        commandConsumer.accept(res);
-        setStatus("RUNNING");
-        return new CommandStatus<>(this, res, "RUNNING");
+        return sendCommand(this, new PickupFrom(topic, System.currentTimeMillis(), msgId++, row, column));
     }
 }

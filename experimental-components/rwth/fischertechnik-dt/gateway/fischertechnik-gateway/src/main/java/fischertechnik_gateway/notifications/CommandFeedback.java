@@ -3,11 +3,15 @@ package fischertechnik_gateway.notifications;
 import fischertechnik_gateway.message.JsonType;
 
 public class CommandFeedback extends Notification {
-    protected final long commandId;
+    protected final int commandId;
 
-  protected CommandFeedback(String status, String info, long commandId) {
+  protected CommandFeedback(String status, String info, int commandId) {
     super(JsonType.COMMAND_FEEDBACK, status, info);
     this.commandId = commandId;
+  }
+
+  public int getCommandId() {
+    return commandId;
   }
 
   @Override

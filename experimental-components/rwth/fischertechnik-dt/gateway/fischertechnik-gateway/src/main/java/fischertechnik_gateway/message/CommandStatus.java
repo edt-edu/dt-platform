@@ -2,7 +2,7 @@ package fischertechnik_gateway.message;
 
 import fischertechnik_gateway.machines.Machine;
 
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Captures all information about the current status of a Command
@@ -34,9 +34,13 @@ public class CommandStatus<MachineType extends Machine, CommandType extends Comm
     return machine;
   }
 
-  public void waitForDone() throws InterruptedException {
-    while(!Objects.equals(status, "DONE")){
-      Thread.sleep(10L);
+  public void waitForStatus(Pattern target) throws InterruptedException {
+    while (!target.matcher(status).matches()){
+      Thread.sleep(1L);
     }
+  }
+
+  public void waitForDone() throws InterruptedException {
+    waitForStatus(Pattern.compile("DONE"));
   }
 }

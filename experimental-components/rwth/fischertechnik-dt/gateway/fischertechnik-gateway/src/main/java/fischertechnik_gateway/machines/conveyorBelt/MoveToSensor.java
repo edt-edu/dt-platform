@@ -13,7 +13,7 @@ public class MoveToSensor extends Command {
   private final Direction direction;
 
   public MoveToSensor(String topicName, double timestamp, int outputId, Direction direction) {
-    super(topicName, timestamp, createMsg(outputId, direction));
+    super(topicName, timestamp, createMsg(outputId, direction), outputId);
     this.direction = direction;
   }
 

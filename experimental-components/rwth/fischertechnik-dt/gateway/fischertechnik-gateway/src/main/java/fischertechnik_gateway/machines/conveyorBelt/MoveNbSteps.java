@@ -15,7 +15,7 @@ public class MoveNbSteps extends Command {
   private final Direction direction;
 
   public MoveNbSteps(String topicName, double timestamp, int outputId, int number, Direction direction) {
-    super(topicName, timestamp, createMsg(outputId, number, direction));
+    super(topicName, timestamp, createMsg(outputId, number, direction), outputId);
     this.number = number;
     this.direction = direction;
   }

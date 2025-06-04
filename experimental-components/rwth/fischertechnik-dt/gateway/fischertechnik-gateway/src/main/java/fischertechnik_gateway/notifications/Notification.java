@@ -25,7 +25,7 @@ public abstract class Notification {
       return new CommandFeedback(
           status,
           info,
-          message.getLongMember("commandId")
+          message.getIntegerMember("commandId")
       );
     } else if (jsonType.equals("MACHINE_FEEDBACK")) {
       return new MachineFeedback(

@@ -52,7 +52,9 @@ public class Demo {
             }
           }
         } else if (notification.isCommandFeedback()) {
-          System.out.println("[DEBUG] notification handling not implemented for commandFeedback");
+          for (Machine machine : machines) {
+            machine.updateCommandStatus(notification.asCommandFeedback());
+          }
         }
       });
 

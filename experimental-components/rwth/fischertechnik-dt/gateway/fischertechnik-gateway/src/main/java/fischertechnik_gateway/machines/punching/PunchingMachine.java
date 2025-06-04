@@ -11,17 +11,11 @@ public class PunchingMachine extends Machine {
     super(topic, commandConsumer);
   }
 
-  public  CommandStatus<PunchingMachine, Punch> punch() {
-    Punch res = new Punch(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+  public CommandStatus<PunchingMachine, Punch> punch() {
+    return sendCommand(this, new Punch(topic, System.currentTimeMillis(), msgId++));
   }
 
   public CommandStatus<PunchingMachine, Stop> stop() {
-    Stop res = new Stop(topic, System.currentTimeMillis(), msgId++);
-    commandConsumer.accept(res);
-    setStatus("RUNNING");
-    return new CommandStatus<>(this, res, "RUNNING");
+    return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
 }
