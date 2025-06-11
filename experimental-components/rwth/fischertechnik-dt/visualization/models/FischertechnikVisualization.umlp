@@ -14,4 +14,24 @@ umlp FischertechnikVisualization {
     String topicName;
     List<Boolean> values;
   }
+
+  class Statechart {
+    String name;
+    List<State> states;
+    List<Transition> transitions;
+  }
+
+  class State {
+    String label;
+    boolean initialState;
+    boolean finalState;
+    Optional<String> color;
+  }
+
+  class Transition {
+    State source;
+    State target;
+    Optional<String> label;
+    Optional<String> color;
+  }
 }
