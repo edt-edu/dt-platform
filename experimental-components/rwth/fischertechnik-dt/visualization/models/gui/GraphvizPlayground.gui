@@ -1,0 +1,17 @@
+package gui;
+
+import components.GraphvizRenderer;
+import mc.fenix.input.GemTextareaInput;
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+
+page GraphvizPlayground(String input = ""){
+  @GemRow(height="90vh", components=[
+    @GemColumn(components=[
+      @GemTextareaInput(entry=input)
+    ]),
+    @GemColumn(components=[
+      @GraphvizRenderer(dotFileContent=input)
+    ])
+  ]);
+}

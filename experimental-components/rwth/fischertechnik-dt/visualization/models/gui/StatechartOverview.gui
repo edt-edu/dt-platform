@@ -1,0 +1,11 @@
+package gui;
+
+import mc.fenix.basic.GemText;
+import FischertechnikVisualization.Statechart;
+
+page StatechartOverview(List<Statechart> statecharts){
+  @iterate(Statechart s : statecharts){
+    @GemText(value=s.name);
+    @StatechartRenderer(statechart=s);
+  }
+}

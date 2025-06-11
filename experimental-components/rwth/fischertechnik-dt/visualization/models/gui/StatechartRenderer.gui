@@ -1,0 +1,8 @@
+package gui;
+
+import FischertechnikVisualization.Statechart;
+import components.GraphvizRenderer;
+
+component StatechartRenderer(Statechart statechart){
+  @GraphvizRenderer(dotFileContent=null/*hwc*/);
+}

@@ -54,6 +54,7 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
         multiMqttCallback.addCallback(gripperGateway);
 
         multiMqttCallback.addCallback(setupDataTraces());
+        initStatechart();
     }
 
     protected MqttCallback setupDataTraces(){
@@ -128,5 +129,32 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
         }
 
         return updateDatatraceCallback;
+    }
+
+    protected void initStatechart(){
+        Statechart sc = FischertechnikVisualizationManager.statechartBuilder()
+            .name("SomeStatechart").build().get();
+
+        State a = FischertechnikVisualizationManager.stateBuilder()
+            .label("A").initialState(true).build().get();
+
+        State b = FischertechnikVisualizationManager.stateBuilder()
+            .label("B").color(Optional.of("red")).build().get();
+
+        State c = FischertechnikVisualizationManager.stateBuilder()
+            .label("C").finalState(true).build().get();
+
+        sc.addStates(a);
+        sc.addStates(b);
+        sc.addStates(c);
+
+        Transition aToB = FischertechnikVisualizationManager.transitionBuilder()
+            .source(a).target(b).label(Optional.of("hello")).build().get();
+
+        Transition bToC = FischertechnikVisualizationManager.transitionBuilder()
+            .source(b).target(c).color(Optional.of("green")).build().get();
+
+        sc.addTransitions(aToB);
+        sc.addTransitions(bToC);
     }
 }
