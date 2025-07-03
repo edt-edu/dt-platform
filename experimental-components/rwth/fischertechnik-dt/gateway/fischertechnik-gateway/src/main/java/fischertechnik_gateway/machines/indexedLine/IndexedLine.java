@@ -23,15 +23,15 @@ public class IndexedLine extends Machine {
     return sendCommand(this, new Mill(topic, System.currentTimeMillis(), msgId++));
   }
 
-  public CommandStatus<IndexedLine, MoveToDrill> MoveToDrill() {
+  public CommandStatus<IndexedLine, MoveToDrill> moveToDrill() {
     return sendCommand(this, new MoveToDrill(topic, System.currentTimeMillis(), msgId++));
   }
 
-  public CommandStatus<IndexedLine, MoveToMill> MoveToMill() {
+  public CommandStatus<IndexedLine, MoveToMill> moveToMill() {
     return sendCommand(this, new MoveToMill(topic, System.currentTimeMillis(), msgId++));
   }
 
-  public CommandStatus<IndexedLine, MoveToOutput> MoveToOutput() {
+  public CommandStatus<IndexedLine, MoveToOutput> moveToOutput() {
     return sendCommand(this, new MoveToOutput(topic, System.currentTimeMillis(), msgId++));
   }
 
