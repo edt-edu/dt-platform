@@ -15,6 +15,26 @@ public class IndexedLine extends Machine {
     return sendCommand(this, new Process1(topic, System.currentTimeMillis(), msgId++));
   }
 
+  public CommandStatus<IndexedLine, Drill> drill() {
+    return sendCommand(this, new Drill(topic, System.currentTimeMillis(), msgId++));
+  }
+
+  public CommandStatus<IndexedLine, Mill> mill() {
+    return sendCommand(this, new Mill(topic, System.currentTimeMillis(), msgId++));
+  }
+
+  public CommandStatus<IndexedLine, MoveToDrill> MoveToDrill() {
+    return sendCommand(this, new MoveToDrill(topic, System.currentTimeMillis(), msgId++));
+  }
+
+  public CommandStatus<IndexedLine, MoveToMill> MoveToMill() {
+    return sendCommand(this, new MoveToMill(topic, System.currentTimeMillis(), msgId++));
+  }
+
+  public CommandStatus<IndexedLine, MoveToOutput> MoveToOutput() {
+    return sendCommand(this, new MoveToOutput(topic, System.currentTimeMillis(), msgId++));
+  }
+
   public CommandStatus<IndexedLine, Stop> stop() {
     return sendCommand(this, new Stop(topic, System.currentTimeMillis(), msgId++));
   }
