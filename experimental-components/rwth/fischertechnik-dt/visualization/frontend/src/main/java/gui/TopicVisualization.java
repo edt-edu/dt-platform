@@ -32,9 +32,14 @@ public class TopicVisualization extends TopicVisualizationTOP {
     System.out.print("Should show points");
     System.out.println(points);
 
+    List<Double> converted = new ArrayList<>();
+    for (Integer p : points) {
+      converted.add(p.doubleValue());
+    }
+
     res.addEntries(
         new GemLineChartEntryBuilder()
-            .data(points)
+            .data(converted)
             .label(topic.getTopicName()) // Set the label for the data series
             .build().get()
     );
@@ -50,13 +55,13 @@ public class TopicVisualization extends TopicVisualizationTOP {
     GemLineChartDataBuilder res = new GemLineChartDataBuilder();
     List<String> lables = new ArrayList<>();
 
-    List<Integer> points = new ArrayList<>();
+    List<Double> points = new ArrayList<>();
     int s = topic.sizeValues();
     int start = Math.max(0, s - 100);
     int counter = start;
     List<Double> last100Values = topic.getValuesList().subList(start, s);
     for (Double d : last100Values) {
-      points.add(d.intValue());
+      points.add(d);
       lables.add("" + (counter++));
     }
 

@@ -23,34 +23,9 @@ def domainName = project.findProperty("domainModel") ?: "Domain"
 
 genGUI {
   domainModels = ["${domainName}"]
+  hwcDir.from(file("src/main/ts/gui"))
 }
 
-def prebuildTasks = [
-        npmInstall, generate
-]
-
-task buildApp(type: NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["build"]
-}
-
-task buildAppNoGen(type: NpxTask) {
-  command = "ng"
-  args = ["build"]
-}
-
-task testApp(type: NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["test"]
-}
-
-task runApp(type: NpxTask) {
-  dependsOn(prebuildTasks)
-  command = "ng"
-  args = ["serve"]
-}
 task run {
   dependsOn(runApp)
 }
