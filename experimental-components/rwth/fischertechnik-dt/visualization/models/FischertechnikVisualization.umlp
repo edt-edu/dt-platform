@@ -1,5 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+import java.time.LocalDateTime;
+
 umlp FischertechnikVisualization {
   class SomeClass {
     String someAttribute;
@@ -7,12 +9,22 @@ umlp FischertechnikVisualization {
 
   class DoubleTopic {
     String topicName;
-    List<Double> values;
+    List<DoubleValue> values;
   }
 
   class BooleanTopic {
     String topicName;
-    List<Boolean> values;
+    List<BooleanValue> values;
+  }
+
+  class BooleanValue {
+    LocalDateTime timestamp;
+    boolean content;
+  }
+
+  class DoubleValue {
+    LocalDateTime timestamp;
+    double content;
   }
 
   class Statechart {

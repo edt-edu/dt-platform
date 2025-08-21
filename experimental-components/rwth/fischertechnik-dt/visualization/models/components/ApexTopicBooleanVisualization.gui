@@ -1,0 +1,11 @@
+package components;
+
+import mc.fenix.charts.GemLineChart;
+import mc.fenix.basic.GemText;
+
+import FischertechnikVisualization.BooleanTopic;
+import FischertechnikVisualization.DoubleTopic;
+
+component ApexTopicBooleanVisualization(BooleanTopic topic){
+
+}

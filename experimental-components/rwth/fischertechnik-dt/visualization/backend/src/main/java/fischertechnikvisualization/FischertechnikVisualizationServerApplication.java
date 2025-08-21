@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
@@ -75,10 +76,22 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
                     JsonObject obj = gson.fromJson(msg, JsonObject.class);
                     if (booleanTopicMap.containsKey(s)) {
                         BooleanTopic trace = booleanTopicMap.get(s);
-                        trace.addValues(trace.sizeValues(), obj.get("value").getAsBoolean());
+                        trace.addValues(
+                            trace.sizeValuess(),
+                            FischertechnikVisualizationManager.booleanValueBuilder()
+                                .content(obj.get("value").getAsBoolean())
+                                .timestamp(LocalDateTime.now())
+                                .build().get()
+                        );
                     } else if(doubleTopicMap.containsKey(s)){
                         DoubleTopic trace = doubleTopicMap.get(s);
-                        trace.addValues(trace.sizeValues(), obj.get("value").getAsDouble());
+                        trace.addValues(
+                            trace.sizeValuess(),
+                            FischertechnikVisualizationManager.doubleValueBuilder()
+                                .content(obj.get("value").getAsDouble())
+                                .timestamp(LocalDateTime.now())
+                                .build().get()
+                        );
                     }
                 } catch (Exception e){
                     Log.warn("Can not add msg on topic '" + s + "' to shadows: " + msg);
