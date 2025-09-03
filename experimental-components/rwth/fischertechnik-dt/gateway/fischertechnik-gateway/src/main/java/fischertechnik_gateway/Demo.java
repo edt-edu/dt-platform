@@ -60,14 +60,14 @@ public class Demo {
 
       connection.connect();
 
-      Thread.sleep(20000L);
+      // Thread.sleep(20000L);
 
-      ConveyorBelt conveyor1 = new ConveyorBelt("ConveyorBelt01", defaultHandler);
-      SortingLine sortingLine1 = new SortingLine("SortingLine01", defaultHandler);
-      VacuumGripper vacuumGripper1 = new VacuumGripper("VacuumGripper01", defaultHandler);
-      VacuumGripper vacuumGripper2 = new VacuumGripper("VacuumGripper02", defaultHandler);
-      MultiProcessing multiProcessing1 = new MultiProcessing("MultiProcessing01", defaultHandler);
-      HighBay highbay1 = new HighBay("HighBay01", defaultHandler);
+      ConveyorBelt conveyor1 = new ConveyorBelt("I1ConveyorBelt01", defaultHandler);
+      SortingLine sortingLine1 = new SortingLine("I1SortingLine01", defaultHandler);
+      VacuumGripper vacuumGripper1 = new VacuumGripper("I1VacuumGripper01", defaultHandler);
+      VacuumGripper vacuumGripper2 = new VacuumGripper("I1VacuumGripper02", defaultHandler);
+      MultiProcessing multiProcessing1 = new MultiProcessing("I1MultiProcessing01", defaultHandler);
+      HighBay highbay1 = new HighBay("I1HighBay01", defaultHandler);
 
       machines.add(conveyor1);
       machines.add(sortingLine1);
@@ -76,66 +76,51 @@ public class Demo {
       machines.add(multiProcessing1);
       machines.add(highbay1);
 
-      vacuumGripper1.setup();
-      vacuumGripper1.waitForIdle();
-      vacuumGripper2.setup();
-      vacuumGripper2.waitForIdle();
-      multiProcessing1.setup();
-      highbay1.setup();
-      // multiProcessing1.waitForIdle();
+      multiProcessing1.setup().waitForDone();
+      vacuumGripper1.setup().waitForDone();
+      vacuumGripper2.setup().waitForDone();
+      highbay1.setup().waitForDone();
 
       if (true) {
         System.out.println("Starting");
         // Move token through the sorting line
-        sortingLine1.eject(Color.RED);
-        sortingLine1.waitForIdle();
+        sortingLine1.eject(Color.RED).waitForDone();
 
         // Move the token to the conveyor
         PositionThreeD sortingOutputRed = new PositionThreeD(2275, 1400, 1225);
-        PositionThreeD conveyorBack = new PositionThreeD(1800, 1050, 1850);
+        PositionThreeD conveyorBack = new PositionThreeD(1800, 1050, 1225);
 
-        vacuumGripper2.move(
-                sortingOutputRed,
-                conveyorBack
-        );
-        vacuumGripper2.waitForIdle();
+        vacuumGripper2.move(sortingOutputRed, conveyorBack).waitForDone();
       }
 
       conveyor1.moveToSensor(Direction.FORWARD);
 
-      PositionThreeD safetyPositionConveyorFront = new PositionThreeD(2675, 0, 0);
-      PositionThreeD conveyorFront = new PositionThreeD(2675, 1300, 900);
-      PositionThreeD highbayInputOutput = new PositionThreeD(1030, 300, 800);
-      PositionThreeD inputMultiprocessing = new PositionThreeD(2010, 950, 1850);
-      PositionThreeD safetyInputMultiprocessing = new PositionThreeD(2010, 0, 0);
-      PositionThreeD outputMultiprocessing = new PositionThreeD(1450, 1150, 2000);
-      PositionThreeD safetyOutputMultiprocessing = new PositionThreeD(outputMultiprocessing.getRotation(), 0, 0);
+      PositionThreeD safetyPositionConveyorFront = new PositionThreeD(1180, 0, 0);
+      PositionThreeD conveyorFront = new PositionThreeD(1180, 1300, 1750);
+      PositionThreeD highbayInputOutput = new PositionThreeD(2520, 400, 1000);
+      PositionThreeD safetyInputMultiprocessing = new PositionThreeD(270, 0, 0);
+      PositionThreeD inputMultiprocessing = new PositionThreeD(270, 1000, 240);
+      PositionThreeD safetyOutputMultiprocessing = new PositionThreeD(3000, 0, 0);
+      PositionThreeD outputMultiprocessing = new PositionThreeD(3000, 1200, 1350);
 
       if(true) {
-        vacuumGripper1.gotoposition(safetyPositionConveyorFront);
-        vacuumGripper1.waitForIdle();
-        vacuumGripper1.move(conveyorFront, inputMultiprocessing);
-        vacuumGripper1.waitForIdle();
-        vacuumGripper1.gotoposition(safetyInputMultiprocessing);
-        vacuumGripper1.waitForIdle();
+        vacuumGripper1.gotoposition(safetyPositionConveyorFront).waitForDone();
+        vacuumGripper1.move(conveyorFront, inputMultiprocessing).waitForDone();
+        vacuumGripper1.gotoposition(safetyInputMultiprocessing).waitForDone();
+        vacuumGripper1.gotoposition(safetyPositionConveyorFront).waitForDone();
 
-        multiProcessing1.process1();
-        multiProcessing1.waitForIdle();
+        multiProcessing1.process1().waitForDone();
 
-        vacuumGripper1.gotoposition(safetyOutputMultiprocessing);
-        vacuumGripper1.waitForIdle();
+        vacuumGripper1.gotoposition(safetyOutputMultiprocessing).waitForDone();
 
-        highbay1.pickupFrom(1, 1);
-        Thread.sleep(1000L * 30); // TODO: highbay status seems to be broken
-        highbay1.waitForIdle();
+        highbay1.pickupFrom(1, 1).waitForDone();
+//        Thread.sleep(1000L * 30); // TODO: highbay status seems to be broken
+//        highbay1.waitForIdle();
 
-        vacuumGripper1.move(outputMultiprocessing, highbayInputOutput);
-        vacuumGripper1.waitForIdle();
-        vacuumGripper1.gotoposition(safetyOutputMultiprocessing);
-        vacuumGripper1.waitForIdle();
+        vacuumGripper1.move(outputMultiprocessing, highbayInputOutput).waitForDone();
+        vacuumGripper1.gotoposition(safetyOutputMultiprocessing).waitForDone();
 
-        highbay1.storeTo(1, 1);
-        highbay1.waitForIdle();
+        highbay1.storeTo(1, 1).waitForDone();
       }
     } finally {
       connection.close();
