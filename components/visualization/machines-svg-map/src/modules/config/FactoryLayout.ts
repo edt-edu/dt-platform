@@ -4,7 +4,9 @@ export enum MachineKind {
     MPO = "MPO",
     CB = "CB",
     SLC = "SLC",
-    HBW = "HBW"
+    HBW = "HBW",
+    CB_MPS_SLI = "CB_MPS_SLI",
+    SL_SLI = "SL_SLI"
 }
 
 export class MachinePosition {

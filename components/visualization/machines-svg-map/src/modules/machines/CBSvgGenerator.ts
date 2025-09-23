@@ -8,13 +8,13 @@ export class CBSvgGenerator implements IMachineGenerator{
 
   woodBase = new RectShape(260,186,0,0);
   plasticBase = new RectShape(257, 186, 0,0);
-  conveyor = new RectShape(this.woodBase.xSize+10, 50, 0, 20);
+  conveyor = new RectShape(this.woodBase.xSize+10, 50, 0, 5);
 
 
   electronicCard =  new RectShape(108,80, 75,100); // to be verified
   
-  sensor1 = new RectShape(20, 100, 30, -10);
-  sensor2 = new RectShape(20, 100, 220, -10);
+  sensor1 = new RectShape(20, 80, 30, -10);
+  sensor2 = new RectShape(20, 80, 220, -10);
 
   id_postfix = '';
 
