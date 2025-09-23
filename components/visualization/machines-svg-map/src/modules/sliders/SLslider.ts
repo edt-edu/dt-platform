@@ -35,7 +35,7 @@ export class SLslider implements IMachineGenerator {
         //Second rectanlge
         var zoneGroup = machineGroup.group();
         zoneGroup.id("firstRectanle" + this.id_postfix);
-        const mainShape = zoneGroup.rect(110,32);
+        const mainShape = zoneGroup.rect(130,32);
         mainShape.move(0, 0);
         mainShape.fill('gray');
     }
@@ -45,7 +45,7 @@ export class SLslider implements IMachineGenerator {
         var zoneGroup = machineGroup.group();
         zoneGroup.id("circleForm" + this.id_postfix);
         const mainShape = zoneGroup.circle(32);
-        mainShape.move(93, 0);
+        mainShape.move(113, 0);
         mainShape.fill('gray');
     }
 
@@ -54,7 +54,7 @@ export class SLslider implements IMachineGenerator {
         var zoneGroup = machineGroup.group();
         zoneGroup.id("arrivalPosition" + this.id_postfix);
         const mainShape = zoneGroup.circle(28);
-        mainShape.move(95, 2);
+        mainShape.move(115, 2);
         mainShape.fill('lightblue').attr({ 'fill-opacity': 0.75 });
     }
 }
