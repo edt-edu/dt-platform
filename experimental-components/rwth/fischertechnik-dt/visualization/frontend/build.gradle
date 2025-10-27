@@ -3,31 +3,5 @@
 plugins {
   id 'java'
   id "com.github.node-gradle.node" version "5.0.0"
-  id 'de.rwth.se.umlp-tool-frontend' version "$mc_version"
+  id 'de.rwth.se.montigem-frontend' version "$mc_version"
 }
-
-node {
-  download = true
-  version = "18.13.0"
-  nodeProxySettings = ProxySettings.OFF
-  nodeProjectDir = file("${buildDir}/frontendGen")
-}
-nodeSetup.dependsOn(frontendSetup)
-
-dependencies {
-  domainSources project(":backend")
-  implementation project(":backend")
-}
-
-def domainName = project.findProperty("domainModel") ?: "Domain"
-
-genGUI {
-  domainModels = ["${domainName}"]
-  hwcDir.from(file("src/main/ts/gui"))
-}
-
-task run {
-  dependsOn(runApp)
-}
-
-assemble.dependsOn(buildApp)

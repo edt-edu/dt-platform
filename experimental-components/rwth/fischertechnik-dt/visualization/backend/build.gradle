@@ -1,7 +1,7 @@
 plugins {
   id 'java'
   id 'java-library'
-  id 'de.rwth.se.umlp-tool-backend' version "$mc_version"
+  id 'de.rwth.se.montigem-backend' version "$mc_version"
 
   id 'application'
   id 'io.spring.dependency-management' version '1.0.15.RELEASE'
@@ -26,12 +26,6 @@ application {
 
 jib {
   container.mainClass = application.mainClass.get()
-}
-
-task runServer {
-  dependsOn(bootRun {
-    systemProperty "spring.shell.interactive.enabled", "false"
-  })
 }
 
 dependencies {
@@ -71,10 +65,4 @@ test {
     showStandardStreams = true
     events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
   }
-}
-
-// Task is created by umlp-backend plugin (with very sensible default values)
-generateUmlpBackend{
-  input = file("../models/")
-  useSpring = true
 }
