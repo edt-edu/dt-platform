@@ -20,7 +20,7 @@ import java.util.*;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class}, scanBasePackages = {"umlp.backendrte.service.websocket",
-        "umlp.backendrte.service.rest", "service"})
+        "umlp.backendrte.service.rest", "service", "fischertechnikvisualization"})
 public class FischertechnikVisualizationServerApplication extends FischertechnikVisualizationServerApplicationTOP {
 
     public static void main(String[] args) {

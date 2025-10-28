@@ -50,6 +50,7 @@ public class StatechartRenderer extends StatechartRendererTOP {
 
       if (transition.getColor().isPresent()) {
         attributes.add("color=\"" + transition.getColor().get() + "\"");
+        attributes.add("fontcolor=\"" + transition.getColor().get() + "\"");
       }
 
       if (!attributes.isEmpty()) {
