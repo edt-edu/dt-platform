@@ -1,0 +1,29 @@
+package gui.layout;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemText;
+import mc.fenix.basic.GemImage;
+
+page BaseLayout (GUIViewElement title, GUIViewElement content, GUIViewElement navigation) {
+  mainApp@GemColumn(height = "100vh", components = [
+    header@GemRow(hAlign = "space-evenly", height = "2rem" ,components = [
+      logoLeftContainer@GemColumn(vAlign = "bottom", hAlign = "center",
+        component = logoLeft@GemText(
+          weight = "bold",
+          size = "1.5rem",
+          color = "#00549F",
+          value = "Fischertechnik Digital Twin Demo"
+        )
+      ),
+      logoRight@GemImage(height = "70px", source = "assets/images/logo/rwth_se_rgb.png")
+    ]),
+    body@GemRow(components = [
+      nav@GemColumn(width="13vw", component = navigation),
+      main@GemColumn(component = content)
+    ]),
+    footer@GemRow(hAlign = "center", components = [
+      @GemText(value = "Made from models; Chair of Software Engineering.")
+    ])
+  ]);
+}

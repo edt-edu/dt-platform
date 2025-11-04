@@ -1,0 +1,19 @@
+:host ::ng-deep .navCol {
+  border-right: solid;
+}
+
+:host ::ng-deep .digitalShadows {
+  border-left: solid;
+}
+
+:host ::ng-deep .topicVis {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+:host ::ng-deep graphviz-renderer > div {
+  width: 50vw;
+  height: 87vh;
+  overflow: auto;
+}
