@@ -1,0 +1,43 @@
+package gui;
+
+import mc.fenix.arrange.GemColumn;
+import mc.fenix.arrange.GemRow;
+import mc.fenix.basic.GemIcon;
+import mc.fenix.basic.GemButton;
+import mc.fenix.navigation.GemNavItem;
+import mc.fenix.basic.GemText;
+
+import gui.layout.BaseLayout;
+import gui.StatechartOverview;
+import gui.TopicVisualization;
+
+import FischertechnikVisualization.Statechart;
+import FischertechnikVisualization.App;
+
+page FTDashboard(List<Statechart> statecharts, App app){
+  @BaseLayout(
+    // Left: Sidebar from DTLayout with navigation to other sites
+    navigation = navCol@GemColumn(width="12vw", height="calc(100vh - 4rem)", components=[
+      @GemNavItem(title = "FT Visualisation", target = "/gui/Start"),
+      @GemNavItem(title = "Mission Dashboard", target = "/gui/FTDashboard")
+    ]),
+    content = @GemRow(components=[
+        // Center
+         @GemColumn(width="50vw", components=[
+            // Title
+            @GemText(height="2rem", color="#00549F", size="20pt", value="Mission Statechart of VacuumGripper 1"),
+            @StatechartOverview(statecharts=statecharts)
+         ]),
+        // Right
+        digitalShadows@GemColumn(components=[
+          // Title
+          @GemText(height="2rem", color="#00549F", size="20pt", value="Digital Shadows"),
+          // Chart 1 - 4 with topic as title
+          topicVis@TopicVisualization(
+            booleanTopics=app.booleanTopic,
+            doubleTopics=app.doubleTopic
+          )
+        ])
+    ])
+  );
+}

@@ -51,7 +51,7 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
 
         String gripperMachineId = "PLC/Island 1/VacuumGripper/VacuumGripper02"; // TODO: name is probably wrong
         GripperGateway gripperGateway = new GripperGateway(gripperMachineId);
-        gripperGateway.connectMqttClient(gripperMachineId + "/#", client);
+        gripperGateway.connectMqttClient("#", client);
         multiMqttCallback.addCallback(gripperGateway);
 
         multiMqttCallback.addCallback(setupDataTraces());
@@ -112,33 +112,47 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
            "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/output/vacuumActRotRight",
            "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/output/vacuumActValve",
            "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/output/vacuumActVerticalDown",
-           "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/output/vacuumActVerticalUp"
+           "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/output/vacuumActVerticalUp",
+           // Rennes topics
+           "PLC/RevPi01/VacuumGripper/VacuumGripper01/measurements/input/vacuumActValve"
        );
 
        List<String> doubleTopics = List.of(
            "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/input/vacuumSensArmEncoderCounter",
            "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/input/vacuumSensRotEncoderCounter",
-           "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/input/vacuumSensVerticalEncoderCounter"
+           "PLC/Island 1/VacuumGripper/VacuumGripper02/measurements/input/vacuumSensVerticalEncoderCounter",
+           // Rennes topics
+           "PLC/RevPi01/VacuumGripper/VacuumGripper01/measurements/input/vacuumSensRotEncoderCounter",
+           "PLC/RevPi01/VacuumGripper/VacuumGripper01/measurements/input/vacuumSensArmEncoderCounter",
+           "PLC/RevPi01/VacuumGripper/VacuumGripper01/measurements/input/vacuumSensVerticalEncoderCounter"
        );
 
         for (String booleanTopic : booleanTopics) {
+            BooleanTopic bt = FischertechnikVisualizationManager.booleanTopicBuilder()
+                .topicName(booleanTopic)
+                .build().get();
             booleanTopicMap.put(
                 booleanTopic,
-                FischertechnikVisualizationManager.booleanTopicBuilder()
-                    .topicName(booleanTopic)
-                    .build().get()
+                bt
             );
 
-
+            if(booleanTopic.contains("RevPi01")){
+                FischertechnikVisualizationManager.getApp().addBooleanTopic(bt);
+            }
         }
 
         for (String doubleTopic : doubleTopics) {
+            DoubleTopic dt = FischertechnikVisualizationManager.doubleTopicBuilder()
+                .topicName(doubleTopic)
+                .build().get();
             doubleTopicMap.put(
                 doubleTopic,
-                FischertechnikVisualizationManager.doubleTopicBuilder()
-                    .topicName(doubleTopic)
-                    .build().get()
+                dt
             );
+
+            if(doubleTopic.contains("RevPi01")){
+                FischertechnikVisualizationManager.getApp().addDoubleTopic(dt);
+            }
         }
 
         return updateDatatraceCallback;
@@ -146,28 +160,163 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
 
     protected void initStatechart(){
         Statechart sc = FischertechnikVisualizationManager.statechartBuilder()
-            .name("SomeStatechart").build().get();
+            .name("VGRSystemStates").build().get();
 
-        State a = FischertechnikVisualizationManager.stateBuilder()
-            .label("A").initialState(true).build().get();
+        // Top-level states (flattened, includes move's substates)
+        State idle = FischertechnikVisualizationManager.stateBuilder()
+            .label("idle").initialState(true).build().get();
 
-        State b = FischertechnikVisualizationManager.stateBuilder()
-            .label("B").color(Optional.of("red")).build().get();
+        State setup = FischertechnikVisualizationManager.stateBuilder()
+            .label("setup").build().get();
 
-        State c = FischertechnikVisualizationManager.stateBuilder()
-            .label("C").finalState(true).build().get();
+        State move = FischertechnikVisualizationManager.stateBuilder()
+            .label("move").build().get();
 
-        sc.addStates(a);
-        sc.addStates(b);
-        sc.addStates(c);
+        State stop = FischertechnikVisualizationManager.stateBuilder()
+            .label("stop").build().get();
 
-        Transition aToB = FischertechnikVisualizationManager.transitionBuilder()
-            .source(a).target(b).label(Optional.of("hello")).build().get();
+        // move substates (flattened)
+        State prepare_move = FischertechnikVisualizationManager.stateBuilder()
+            .label("prepare_move").build().get();
 
-        Transition bToC = FischertechnikVisualizationManager.transitionBuilder()
-            .source(b).target(c).color(Optional.of("green")).build().get();
+        State setup_before_move = FischertechnikVisualizationManager.stateBuilder()
+            .label("setup_before_move").build().get();
 
-        sc.addTransitions(aToB);
-        sc.addTransitions(bToC);
+        State moveStep01_gotoPickPosition = FischertechnikVisualizationManager.stateBuilder()
+            .label("moveStep01_gotoPickPosition").build().get();
+
+        State moveStep02_pickToken = FischertechnikVisualizationManager.stateBuilder()
+            .label("moveStep02_pickToken").build().get();
+
+        State moveStep03_gotoDropPos = FischertechnikVisualizationManager.stateBuilder()
+            .label("moveStep03_gotoDropPos").build().get();
+
+        State moveStep04_dropToken = FischertechnikVisualizationManager.stateBuilder()
+            .label("moveStep04_dropToken").build().get();
+
+        State move_done = FischertechnikVisualizationManager.stateBuilder()
+            .label("move_done").build().get();
+
+        // Add all states to the statechart
+        sc.addStates(idle);
+        sc.addStates(setup);
+        sc.addStates(move);
+        sc.addStates(stop);
+
+        sc.addStates(prepare_move);
+        sc.addStates(setup_before_move);
+        sc.addStates(moveStep01_gotoPickPosition);
+        sc.addStates(moveStep02_pickToken);
+        sc.addStates(moveStep03_gotoDropPos);
+        sc.addStates(moveStep04_dropToken);
+        sc.addStates(move_done);
+
+        // Transitions (label contains name + key guard/accept info from SysML for traceability)
+        Transition prep_move_to_setup = FischertechnikVisualizationManager.transitionBuilder()
+            .source(prepare_move)
+            .target(setup_before_move) // SysML: then setup_before_move (prep_move -> setup_before_move)
+            .label(Optional.of("prep_move_to_setup")).build().get();
+
+        Transition setup_before_move_to_step_1 = FischertechnikVisualizationManager.transitionBuilder()
+            .source(setup_before_move)
+            .target(moveStep01_gotoPickPosition)
+            .label(Optional.of("setup_before_move_to_step_1")).build().get();
+
+        Transition prep_move_to_step1 = FischertechnikVisualizationManager.transitionBuilder()
+            .source(prepare_move)
+            .target(moveStep01_gotoPickPosition)
+            .label(Optional.of("prep_move_to_step1")).build().get();
+
+        Transition move_step_1_to_move_step_2 = FischertechnikVisualizationManager.transitionBuilder()
+            .source(moveStep01_gotoPickPosition)
+            .target(moveStep02_pickToken)
+            .label(Optional.of("move_step_1_to_move_step_2")).build().get();
+
+        Transition move_step_2_to_move_step_3 = FischertechnikVisualizationManager.transitionBuilder()
+            .source(moveStep02_pickToken)
+            .target(moveStep03_gotoDropPos)
+            .label(Optional.of("move_step_2_to_move_step_3")).build().get();
+
+        Transition move_step_3_to_move_step_4 = FischertechnikVisualizationManager.transitionBuilder()
+            .source(moveStep03_gotoDropPos)
+            .target(moveStep04_dropToken)
+            .label(Optional.of("move_step_3_to_move_step_4")).build().get();
+
+        Transition move_step_4_to_move_done = FischertechnikVisualizationManager.transitionBuilder()
+            .source(moveStep04_dropToken)
+            .target(move_done)
+            .label(Optional.of("move_step_4_to_move_done")).build().get();
+
+        // Top-level transitions between major states (with accept/guards/actions summarized in labels)
+        Transition idle_to_setup = FischertechnikVisualizationManager.transitionBuilder()
+            .source(idle)
+            .target(setup)
+            .label(Optional.of("idle_to_setup")).build().get();
+
+        Transition move_to_setup = FischertechnikVisualizationManager.transitionBuilder()
+            .source(move)
+            .target(setup)
+            .label(Optional.of("move_to_setup")).build().get();
+
+        Transition setup_to_idle = FischertechnikVisualizationManager.transitionBuilder()
+            .source(setup)
+            .target(idle)
+            .label(Optional.of("setup_to_idle")).build().get();
+
+        Transition idle_to_move = FischertechnikVisualizationManager.transitionBuilder()
+            .source(idle)
+            .target(move)
+            .label(Optional.of("idle_to_move")).build().get();
+
+        Transition setup_to_move = FischertechnikVisualizationManager.transitionBuilder()
+            .source(setup)
+            .target(move)
+            .label(Optional.of("setup_to_move")).build().get();
+
+        Transition move_to_idle = FischertechnikVisualizationManager.transitionBuilder()
+            .source(move)
+            .target(idle)
+            .label(Optional.of("move_to_idle")).build().get();
+
+        Transition idle_to_stop = FischertechnikVisualizationManager.transitionBuilder()
+            .source(idle)
+            .target(stop)
+            .label(Optional.of("idle_to_stop")).build().get();
+
+        Transition setup_to_stop = FischertechnikVisualizationManager.transitionBuilder()
+            .source(setup)
+            .target(stop)
+            .label(Optional.of("setup_to_stop")).build().get();
+
+        Transition move_to_stop = FischertechnikVisualizationManager.transitionBuilder()
+            .source(move)
+            .target(stop)
+            .label(Optional.of("move_to_stop")).build().get();
+
+        Transition stop_to_idle = FischertechnikVisualizationManager.transitionBuilder()
+            .source(stop)
+            .target(idle)
+            .label(Optional.of("stop_to_idle")).build().get();
+
+        // Add transitions to the statechart
+        sc.addTransitions(prep_move_to_setup);
+        sc.addTransitions(setup_before_move_to_step_1);
+        sc.addTransitions(prep_move_to_step1);
+        sc.addTransitions(move_step_1_to_move_step_2);
+        sc.addTransitions(move_step_2_to_move_step_3);
+        sc.addTransitions(move_step_3_to_move_step_4);
+        sc.addTransitions(move_step_4_to_move_done);
+
+        sc.addTransitions(idle_to_setup);
+        sc.addTransitions(move_to_setup);
+        sc.addTransitions(setup_to_idle);
+        sc.addTransitions(idle_to_move);
+        sc.addTransitions(setup_to_move);
+        sc.addTransitions(move_to_idle);
+
+        sc.addTransitions(idle_to_stop);
+        sc.addTransitions(setup_to_stop);
+        sc.addTransitions(move_to_stop);
+        sc.addTransitions(stop_to_idle);
     }
 }

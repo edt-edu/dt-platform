@@ -9,13 +9,11 @@ import components.ApexTopicVisualization;
 import components.ApexTopicBooleanVisualization;
 
 page TopicVisualization(List<BooleanTopic> booleanTopics, List<DoubleTopic> doubleTopics){
-    @GemText(value="Boolean topics");
     @iterate(BooleanTopic booleanTopic : booleanTopics){
         @GemText(value=booleanTopic.topicName);
         @ApexTopicBooleanVisualization(topic=booleanTopic);
     }
 
-    @GemText(value="Double topics");
     @iterate(DoubleTopic doubleTopic : doubleTopics){
         @GemText(value=doubleTopic.topicName);
         @ApexTopicVisualization(topic=doubleTopic);

@@ -5,3 +5,7 @@ plugins {
   id "com.github.node-gradle.node" version "5.0.0"
   id 'de.rwth.se.montigem-frontend' version "$mc_version"
 }
+
+dependencies {
+  implementation("de.monticore.lang:guidsl:$mc_version")
+}
