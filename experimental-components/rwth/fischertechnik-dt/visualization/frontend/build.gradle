@@ -6,6 +6,12 @@ plugins {
   id 'de.rwth.se.montigem-frontend' version "$mc_version"
 }
 
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
 dependencies {
   implementation("de.monticore.lang:guidsl:$mc_version")
 }

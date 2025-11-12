@@ -1,6 +1,6 @@
 # Fischertechnik visualization
 
-With Gradle 7.6, start this visualization dashboard via
+With Gradle 8.5 and Java 21, start this visualization dashboard via
 `gradle frontend:run` and
 `gradle backend:bootRun`
 

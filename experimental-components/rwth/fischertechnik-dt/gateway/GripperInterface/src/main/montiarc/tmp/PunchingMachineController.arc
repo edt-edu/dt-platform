@@ -3,17 +3,17 @@ package tmp;
 component PunchingMachineController {
 
   // Sensor data
-  port in boolean phototransistorInputOutput,
-       in boolean phototransistorPunchingMachine,
-       in boolean punchingMachineTopPos,
-       in boolean punchingMachineBottomPos;
+  port sync in boolean phototransistorInputOutput,
+       sync in boolean phototransistorPunchingMachine,
+       sync in boolean punchingMachineTopPos,
+       sync in boolean punchingMachineBottomPos;
 
-  port out boolean moveConveyorForward,
-       out boolean moveConveyorBackward,
-       out boolean movePunchingMachineUp,
-       out boolean movePunchingMachineDown;
+  port sync out boolean moveConveyorForward,
+       sync out boolean moveConveyorBackward,
+       sync out boolean movePunchingMachineUp,
+       sync out boolean movePunchingMachineDown;
 
-  <<sync>> automaton {
+  automaton {
     initial state S;
     state GoodsAtInputOutput;
     state GoodsAtPunchingMachine;
@@ -26,12 +26,12 @@ component PunchingMachineController {
     S -> S [phototransistorInputOutput == false &&
             phototransistorPunchingMachine == false &&
             punchingMachineTopPos == true &&
-            punchingMachineBottomPos == false] / { };
+            punchingMachineBottomPos == false] / { }
 
     S -> GoodsAtInputOutput [phototransistorInputOutput == true &&
                              phototransistorPunchingMachine == false &&
                              punchingMachineTopPos == true &&
-                             punchingMachineBottomPos == false] / { };
+                             punchingMachineBottomPos == false] / { }
 
     GoodsAtInputOutput -> ConveyorForward [phototransistorInputOutput == false &&
                                            phototransistorPunchingMachine == false &&
@@ -41,7 +41,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineUp = false;
       movePunchingMachineDown = false;
-    };
+    }
 
     ConveyorForward -> ConveyorForward [phototransistorInputOutput == false &&
                                         phototransistorPunchingMachine == false &&
@@ -51,7 +51,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineUp = false;
       movePunchingMachineDown = false;
-    };
+    }
 
     ConveyorForward -> GoodsAtPunchingMachine [phototransistorInputOutput == false &&
                                                phototransistorPunchingMachine == true &&
@@ -61,7 +61,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineUp = false;
       movePunchingMachineDown = false;
-    };
+    }
 
     GoodsAtPunchingMachine -> PunchingMachineDown [phototransistorInputOutput == false &&
                                                    phototransistorPunchingMachine == true &&
@@ -71,7 +71,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = true;
       movePunchingMachineUp = false;
-    };
+    }
 
     PunchingMachineDown -> PunchingMachineDown [phototransistorInputOutput == false &&
                                                 phototransistorPunchingMachine == true &&
@@ -81,7 +81,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = true;
       movePunchingMachineUp = false;
-    };
+    }
 
     PunchingMachineDown -> PunchingMachineUp [phototransistorInputOutput == false &&
                                               phototransistorPunchingMachine == true &&
@@ -91,7 +91,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = true;
-    };
+    }
 
     PunchingMachineUp -> PunchingMachineUp [phototransistorInputOutput == false &&
                                             phototransistorPunchingMachine == true &&
@@ -101,7 +101,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = true;
-    };
+    }
 
     PunchingMachineUp -> GoodsAtPunchingMachine [phototransistorInputOutput == false &&
                                                  phototransistorPunchingMachine == true &&
@@ -111,7 +111,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
 
     GoodsAtPunchingMachine -> ConveyorBack [phototransistorInputOutput == false &&
                                             phototransistorPunchingMachine == true &&
@@ -121,7 +121,7 @@ component PunchingMachineController {
       moveConveyorBackward = true;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
 
     ConveyorBack -> ConveyorBack [phototransistorInputOutput == false &&
                                   phototransistorPunchingMachine == false &&
@@ -131,7 +131,7 @@ component PunchingMachineController {
       moveConveyorBackward = true;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
 
     ConveyorBack -> GoodsAtInputOutput [phototransistorInputOutput == true &&
                                         phototransistorPunchingMachine == false &&
@@ -141,7 +141,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
 
     GoodsAtInputOutput -> GoodsAtInputOutput [phototransistorInputOutput == true &&
                                               phototransistorPunchingMachine == false &&
@@ -151,7 +151,7 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
 
     GoodsAtInputOutput -> S [phototransistorInputOutput == false &&
                              phototransistorPunchingMachine == false &&
@@ -161,6 +161,6 @@ component PunchingMachineController {
       moveConveyorBackward = false;
       movePunchingMachineDown = false;
       movePunchingMachineUp = false;
-    };
+    }
   }
 }

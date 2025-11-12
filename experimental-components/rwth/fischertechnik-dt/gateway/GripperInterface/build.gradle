@@ -1,16 +1,15 @@
 plugins {
   id 'java'
-  id("cd2pojo") version "7.7.0-SNAPSHOT"
-  id("montiarc-jsim") version "7.7.0-SNAPSHOT"
-
+  id("cd2pojo") version "$mc_version"
+  id("montiarc-jsim") version "$mc_version"
 }
 
 group = 'de.se-rwth.fischertechnik'
-version = '7.9.0-SNAPSHOT'
+version = "$mc_version"
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(11)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -27,11 +26,12 @@ repositories {
 dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 
-    implementation("montiarc.libraries:simulator-rte:7.7.0-SNAPSHOT")
+    implementation("montiarc.libraries:simulator-rte:$mc_version")
+    // testImplementation "org.junit.jupiter:junit-jupiter:$junit_version"
+    // testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junit_version
+    // testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junit_version
 
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation "montiarc.libraries:simulator-test-rte:7.7.0-SNAPSHOT"
+    // testImplementation "montiarc.libraries:simulator-test-rte:$mc_version"
     testImplementation "org.assertj:assertj-core:3.24.2"
 }
 
