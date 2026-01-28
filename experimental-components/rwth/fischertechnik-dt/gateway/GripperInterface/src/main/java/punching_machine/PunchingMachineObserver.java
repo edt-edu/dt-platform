@@ -4,9 +4,9 @@ public interface PunchingMachineObserver {
 
   // Outputs of the machine --------------
 
-  default void onPhototransistorGoodsInOut(boolean bool){ }
+  default void onLightBarrierGoodsInOut(boolean bool){ }
 
-  default void onPhototransistorPunchingMachine(boolean bool){ }
+  default void onLightBarrierPunchingMachine(boolean bool){ }
 
   default void onSwitchPunchingMachineUp(boolean bool){ }
 

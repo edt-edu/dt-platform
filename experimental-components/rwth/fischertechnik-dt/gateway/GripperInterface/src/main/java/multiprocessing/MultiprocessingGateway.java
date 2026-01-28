@@ -1,123 +1,99 @@
 package multiprocessing;
 
-import org.eclipse.paho.client.mqttv3.*;
+import utils.AbstractGateway;
+import utils.MachineId;
+import utils.MachineIdBuilder;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 
-public class MultiprocessingGateway implements MqttCallback {
+public class MultiprocessingGateway extends AbstractGateway<MultiprocessingObserver> {
 
-  protected final String machineId;
-  protected List<MultiprocessingObserver> observers = new ArrayList<>();
+    public MultiprocessingGateway(MachineIdBuilder machineIdBuilder) {
+        super(machineIdBuilder, MachineIdBuilder.ComponentType.MULTI_PROCESSING, Map.of());
+        this.addMethods(Map.of(
+                // Sensors of the machine
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "TurntablePosVacuum"),
+                (observer, msg) -> observer.onRefSwitchTurnTableAtVacuum(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "TurntablePosBelt"),
+                (observer, msg) -> observer.onRefSwitchTurnTableAtBelt(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "TurntablePosSaw"),
+                (observer, msg) -> observer.onRefSwitchTurnTableAtSaw(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "EndConveyor"),
+                (observer, msg) -> observer.onLightBarrierConveyorEnd(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Oven"),
+                (observer, msg) -> observer.onLightBarrierOven(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "VacuumGripperAtTurntable"),
+                (observer, msg) -> observer.onRefSwitchVacuumAtTurnTable(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "VacuumGripperAtOven"),
+                (observer, msg) -> observer.onRefSwitchVacuumAtOven(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "FeederIn"),
+                (observer, msg) -> observer.onRefSwitchFeederInside(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "FeederOut"),
+                (observer, msg) -> observer.onRefSwitchFeederOutside(msg.getBooleanMember("value"))
+        ));
 
-  public MultiprocessingGateway(String machineId) {
-        this.machineId = machineId;
+        this.addMethods(Map.of(
+                // Actuators of the machine
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "RotClockwise"),
+                (observer, msg) -> observer.onMoveTurnTableClockwise(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "RotCounterclockwise"),
+                (observer, msg) -> observer.onMoveTurnTableCounterclockwise(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "ConveyorForward"),
+                (observer, msg) -> observer.onMoveConveyorForward(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Saw"),
+                (observer, msg) -> observer.onEnableSaw(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "OvenInward"),
+                (observer, msg) -> observer.onMoveOvenFeederRetract(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "OvenOutward"),
+                (observer, msg) -> observer.onMoveOvenFeederExtend(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "GripperToOven"),
+                (observer, msg) -> observer.onMoveVacuumToOven(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "GripperToTurntable"),
+                (observer, msg) -> observer.onMoveVacuumToTurnTable(msg.getBooleanMember("value"))
+        ));
+
+        this.addMethods(Map.of(
+                //Base Actuators of the machine
+                //TODO: do not follow naming convention of other gateways multiProcessingOvenLight instead of multiProcessingActOvenLight make custom naming
+                /*this.machineId.getTopic(MachineId.ValueType.Actuator, "OvenLight"),
+                (observer, msg) -> observer.onEnableOvenLight(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Compressor"),
+                (observer, msg) -> observer.onEnableCompressor(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "ValveVacuum"),
+                (observer, msg) -> observer.onEnableValveVacuum(msg.getBooleanMember("value")),
+                */
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "LowerValve"),
+                (observer, msg) -> observer.onEnableValveMoveVacuum(msg.getBooleanMember("value"))
+
+                // TODO: this has the same problem as the first ones
+                /*
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "ValveOvenDoor"),
+                (observer, msg) -> observer.onEnableValveMoveOvenDoor(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "ValveFeeder"),
+                (observer, msg) -> observer.onEnableValveMoveFeeder(msg.getBooleanMember("value"))
+                */
+       ));
+
     }
 
-  @Override
-  public void connectionLost(Throwable throwable) {
-    //Called when the client lost the connection to the broker
-  }
-
-  @Override
-  public void messageArrived(String topic, MqttMessage message) {
-    if(topic != null) {
-
-      String msgStr = new String(message.getPayload(), StandardCharsets.UTF_8);
-
-      // Outputs of the machine
-
-      if (topic.equals("/" + machineId + "/ref-switch-rotation-at-vacuum")) {
-        observers.forEach(o -> o.onRefSwitchRotationAtVacuum(Integer.parseInt(msgStr)));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-rotation-at-belt")) {
-        observers.forEach(o -> o.onRefSwitchRotationAtBelt(Integer.parseInt(msgStr)));
-
-      } else if (topic.equals("/" + machineId + "/light-barrier-conveyor-end")) {
-        observers.forEach(o -> o.onLightBarrierConveyorEnd(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-turn-table-at-saw")) {
-        observers.forEach(o -> o.onRefSwitchTurnTableAtSaw(Integer.parseInt(msgStr)));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-vacuum-at-turn-table")) {
-        observers.forEach(o -> o.onRefSwitchVacuumAtTurnTable(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-feeder-inside")) {
-        observers.forEach(o -> o.onRefSwitchFeederInside(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-feeder-outside")) {
-        observers.forEach(o -> o.onRefSwitchFeederOutside(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/ref-switch-vacuum-at-oven")) {
-        observers.forEach(o -> o.onRefSwitchVacuumAtOven(Integer.parseInt(msgStr)));
-
-      } else if (topic.equals("/" + machineId + "/light-barrier-oven")) {
-        observers.forEach(o -> o.onLightBarrierOven(msgStr.equals("true")));
-
-
-        // Inputs of the machine
-
-      } else if (topic.equals("/" + machineId + "/move-turn-table-clockwise")) {
-        observers.forEach(o -> o.onMoveTurnTableClockwise(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-turn-table-counterclockwise")) {
-        observers.forEach(o -> o.onMoveTurnTableCounterclockwise(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-conveyor-forward")) {
-        observers.forEach(o -> o.onMoveConveyorForward(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-saw")) {
-        observers.forEach(o -> o.onEnableSaw(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-oven-feeder-retract")) {
-        observers.forEach(o -> o.onMoveOvenFeederRetract(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-oven-feeder-extend")) {
-        observers.forEach(o -> o.onMoveOvenFeederExtend(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-vacuum-to-oven")) {
-        observers.forEach(o -> o.onMoveVacuumToOven(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/move-vacuum-to-turn-table")) {
-        observers.forEach(o -> o.onMoveVacuumToTurnTable(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-oven-light")) {
-        observers.forEach(o -> o.onEnableOvenLight(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-compressor")) {
-        observers.forEach(o -> o.onEnableCompressor(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-valve-vacuum")) {
-        observers.forEach(o -> o.onEnableValveVacuum(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-valve-move-vacuum")) {
-        observers.forEach(o -> o.onEnableValveMoveVacuum(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-valve-move-oven-door")) {
-        observers.forEach(o -> o.onEnableValveMoveOvenDoor(msgStr.equals("true")));
-
-      } else if (topic.equals("/" + machineId + "/enable-valve-move-feeder")) {
-        observers.forEach(o -> o.onEnableValveMoveFeeder(msgStr.equals("true")));
-      }
-    }
-  }
-
-  @Override
-  public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
-      //Called when an outgoing publish is complete
-  }
-
-  public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    client.subscribe(topic, 2);
-  }
-
-  public void addObserver(MultiprocessingObserver observer){
-    observers.add(observer);
-  }
-
-  public void removeObserver(MultiprocessingObserver observer){
-    observers.remove(observer);
-  }
 }

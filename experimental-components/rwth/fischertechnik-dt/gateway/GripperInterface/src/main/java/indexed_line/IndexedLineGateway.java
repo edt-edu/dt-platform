@@ -1,111 +1,77 @@
 package indexed_line;
 
-import org.eclipse.paho.client.mqttv3.*;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-public class IndexedLineGateway implements MqttCallback{
-
-  protected final String machineId;
-  protected List<IndexedLineObserver> observers = new ArrayList<>();
-
-  public IndexedLineGateway(String machineId) {
-    this.machineId = machineId;
-  }
+import utils.AbstractGateway;
+import utils.MachineId;
+import utils.MachineIdBuilder;
 
 
-  @Override
-  public void connectionLost(Throwable throwable) {
-    //Called when the client lost the connection to the broker
-  }
+import java.util.Map;
 
-  @Override
-  public void messageArrived(String topic, MqttMessage message) throws Exception {
-    if(topic != null) {
+public class IndexedLineGateway extends AbstractGateway<IndexedLineObserver> {
 
-      String msgStr = new String(message.getPayload(), StandardCharsets.UTF_8);
+    public IndexedLineGateway(MachineIdBuilder machineIdBuilder) {
+        super(machineIdBuilder, MachineIdBuilder.ComponentType.INDEXED_LINE, Map.of());
+        this.addMethods(Map.of(
+                // Sensors of the machine
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Slider1Front"),
+                (observer, msg) -> observer.onRefSwitchSlider1Front(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Slider1Rear"),
+                (observer, msg) -> observer.onRefSwitchSlider1Rear(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Slider2Front"),
+                (observer, msg) -> observer.onRefSwitchSlider2Front(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Slider2Rear"),
+                (observer, msg) -> observer.onRefSwitchSlider2Rear(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "SensSlider1"),
+                (observer, msg) -> observer.onLightBarrierSlider1(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Milling"),
+                (observer, msg) -> observer.onLightBarrierMillingMachine(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Loading"),
+                (observer, msg) -> observer.onLightBarrierLoadingStation(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Drilling"),
+                (observer, msg) -> observer.onLightBarrierDrillingMachine(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "Swap"),
+                (observer, msg) -> observer.onLightBarrierConveyorSwap(msg.getBooleanMember("value"))
+        ));
 
-      // Outputs of the machine
-
-      if(topic.equals("/" + machineId + "/button-slider-1-front")){
-        observers.forEach(o -> o.onButtonSlider1Front(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/button-slider-1-rear")){
-        observers.forEach(o -> o.onButtonSlider1Rear(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/button-slider-2-front")){
-        observers.forEach(o -> o.onButtonSlider2Front(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/button-slider-2-rear")){
-        observers.forEach(o -> o.onButtonSlider2Rear(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/phototransistor-slider-1")){
-        observers.forEach(o -> o.onPhototransistorSlider1(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/phototransistor-milling-machine")){
-        observers.forEach(o -> o.onPhototransistorMillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/phototransistor-loading-station")){
-        observers.forEach(o -> o.onPhototransistorLoadingStation(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/phototransistor-drilling-machine")){
-        observers.forEach(o -> o.onPhototransistorDrillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/phototransistor-conveyor-swap")){
-        observers.forEach(o -> o.onPhototransistorConveyorSwap(msgStr.equals("true")));
-      }
-
-      // Inputs of the machine
-
-      else if(topic.equals("/" + machineId + "/move-slider-1-backward")){
-        observers.forEach(o -> o.onMoveSlider1Backward(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-slider-1-forward")){
-        observers.forEach(o -> o.onMoveSlider1Forward(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-slider-2-backward")){
-        observers.forEach(o -> o.onMoveSlider2Backward(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-slider-2-forward")){
-        observers.forEach(o -> o.onMoveSlider2Forward(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-conveyor-feed")){
-        observers.forEach(o -> o.onMoveConveyorFeed(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-conveyor-milling-machine")){
-        observers.forEach(o -> o.onMoveConveyorMillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-milling-machine")){
-        observers.forEach(o -> o.onMoveMillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-conveyor-drilling-machine")){
-        observers.forEach(o -> o.onMoveConveyorDrillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-drilling-machine")){
-        observers.forEach(o -> o.onMoveDrillingMachine(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-conveyor-swap")){
-        observers.forEach(o -> o.onMoveConveyorSwap(msgStr.equals("true")));
-      }
+        this.addMethods(Map.of(
+                // Actuators of the machine
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Slider1Forward"),
+                (observer, msg) -> observer.onMoveSlider1Forward(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Slider1Backward"),
+                (observer, msg) -> observer.onMoveSlider1Backward(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Slider2Forward"),
+                (observer, msg) -> observer.onMoveSlider2Forward(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Slider2Backward"),
+                (observer, msg) -> observer.onMoveSlider2Backward(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "FeedConveyor"),
+                (observer, msg) -> observer.onMoveConveyorFeed(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "MillingConveyor"),
+                (observer, msg) -> observer.onMoveConveyorMillingMachine(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "DrillingConveyor"),
+                (observer, msg) -> observer.onMoveConveyorDrillingMachine(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "SwapConveyor"),
+                (observer, msg) -> observer.onMoveConveyorSwap(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Drilling"),
+                (observer, msg) -> observer.onMoveDrillingMachine(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Actuator, "Milling"),
+                (observer, msg) -> observer.onMoveMillingMachine(msg.getBooleanMember("value"))
+        ));
     }
-  }
-
-  @Override
-  public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
-    //Called when an outgoing publish is complete
-  }
-
-  public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    client.subscribe(topic, 2);
-  }
-
-  public void addObserver(IndexedLineObserver observer){
-    observers.add(observer);
-  }
-
-  public void removeObserver(IndexedLineObserver observer){
-    observers.remove(observer);
-  }
 }

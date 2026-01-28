@@ -4,9 +4,9 @@ public interface ConveyorObserver {
 
   // Outputs of the machine --------------
 
-  default void onPhototransistorFeedStation(boolean bool){ }
+  default void onLightBarrierFeedStation(boolean bool){ }
 
-  default void onPhototransistorSwapStation(boolean bool){ }
+  default void onLightBarrierSwapStation(boolean bool){ }
 
   default void onPulseButton(boolean bool){ }
 

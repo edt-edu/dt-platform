@@ -13,6 +13,35 @@ umlp FischertechnikVisualization {
     String someAttribute;
   }
 
+  <<singleton>>
+  class VacuumGripperState {
+    int rotationDeg = 0;
+    boolean refSwitchRotation = false;
+    int verticalPercentage = 0;
+    boolean refSwitchVertical = false;
+    int horizontalPercentage = 0;
+    boolean refSwitchHorizontal = false;
+    boolean pumpRunning = false;
+    boolean valveEnabled = false;
+  }
+
+  <<singleton>>
+  class ConveyorState{
+    boolean moveToFeed = false;
+    boolean moveToSwap = false;
+    boolean feedDetectorOn = false;
+    boolean swapDetectorOn = false;
+  }
+
+  <<singleton>>
+  class SortingLineState{
+    boolean pumpRunning = false;
+    boolean pusherIndicator1On = false;
+    boolean pusherIndicator2On = false;
+    boolean pusherIndicator3On = false;
+    int speedIndicatorPercentage = 0;
+  }
+
   class DoubleTopic {
     String topicName;
     List<DoubleValue> values;

@@ -4,21 +4,21 @@ public interface MultiprocessingObserver {
 
     // Outputs of the machine --------------
 
-    default void onRefSwitchRotationAtVacuum(int refSwitchRotationAtVacuum){ }
+    default void onRefSwitchTurnTableAtVacuum(boolean bool){ }
 
-    default void onRefSwitchRotationAtBelt(int refSwitchRotationAtBelt){ }
+    default void onRefSwitchTurnTableAtBelt(boolean bool){ }
+
+    default void onRefSwitchTurnTableAtSaw(boolean bool){ }
 
     default void onLightBarrierConveyorEnd(boolean bool){ }
-
-    default void onRefSwitchTurnTableAtSaw(int refSwitchTurnTableAtSaw){ }
-
-    default void onRefSwitchVacuumAtTurnTable(boolean bool){ }
 
     default void onRefSwitchFeederInside(boolean bool){ }
 
     default void onRefSwitchFeederOutside(boolean bool){ }
 
-    default void onRefSwitchVacuumAtOven(int refSwitchVacuumAtOven){ }
+    default void onRefSwitchVacuumAtTurnTable(boolean bool){ }
+
+    default void onRefSwitchVacuumAtOven(boolean bool){ }
 
     default void onLightBarrierOven(boolean bool){ }
 

@@ -4,7 +4,7 @@ public interface SortingLineObserver {
 
   // Outputs of the machine --------------
 
-  default void onPulseCounter(int pulseCounter){ }
+  default void onPulseCounter(boolean pulseCounter){ }
 
   default void onLightBarrierInlet(boolean bool){ }
 
@@ -24,9 +24,9 @@ public interface SortingLineObserver {
 
   default void onEnableCompressor(boolean bool){ }
 
-  default void onEnableValveFirstEjector(boolean bool){ }
+  default void onEnableValveWhiteEjector(boolean bool){ }
 
-  default void onEnableValveSecondEjector(boolean bool){ }
+  default void onEnableValveRedEjector(boolean bool){ }
 
-  default void onEnableValveThirdEjector(boolean bool){ }
+  default void onEnableValveBlueEjector(boolean bool){ }
 }

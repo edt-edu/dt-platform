@@ -1,4 +1,4 @@
-package vacuum_gripper;
+package utils;
 
 import org.eclipse.paho.client.mqttv3.*;
 
@@ -9,7 +9,7 @@ public class MultiMqttCallback implements MqttCallback{
 
   protected List<MqttCallback> callbacks = new ArrayList<>();
 
-  // add callback to vacuum_gripper.MultiMqttCallback list
+  // add callback to MultiMqttCallback list
   public void addCallback(MqttCallback mqttCallback) {
     callbacks.add(mqttCallback);
   }
