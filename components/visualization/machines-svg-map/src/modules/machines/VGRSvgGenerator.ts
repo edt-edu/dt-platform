@@ -21,6 +21,10 @@ export class VGRSvgGenerator implements IMachineGenerator{
   constructor(id_postfix: string) {
     this.id_postfix = id_postfix;
   }
+  
+  getDimentionsString(): string {
+    return `W: ${this.woodBase.xSize}mm H: ${this.woodBase.ySize}mm`;
+  }
 
   generateAll(machineGroup: G) {  
     this.generateAllStatic(machineGroup);

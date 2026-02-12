@@ -8,7 +8,7 @@
     "prepublish": "tsc",
     "build:ts": "tsc -p .",
     "watch": "tsc -w -p .",
-    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg",
+    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions",
     "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,6 +24,7 @@
   "type": "module",
   "dependencies": {
     "@svgdotjs/svg.js": "^3.2.0",
+    "commander": "^14.0.3",
     "snapsvg": "^0.5.1",
     "svgdom": "^0.1.19",
     "xml-formatter": "^3.6.2"

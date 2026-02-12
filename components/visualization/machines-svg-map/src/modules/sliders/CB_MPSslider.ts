@@ -10,6 +10,10 @@ export class CB_MPSslider implements IMachineGenerator {
     constructor(id_postfix: string) {
         this.id_postfix = id_postfix;
     }
+  
+    getDimentionsString(): string {
+        throw new Error('Method not implemented.');
+    }
 
     generateAll(machineGroup: G) {
         this.generateAllStatic(machineGroup);

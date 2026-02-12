@@ -1,22 +1,57 @@
 
+import { parseArgs } from 'node:util';
 import { SvgGenerator } from './modules/SvgGenerator.js';
 
+const { values, positionals } = parseArgs({
+  options: {
+    addPositions: {
+      type: 'boolean',
+      default: false,
+    },
+    addDimensions: {
+      type: 'boolean',
+      default: false,
+    },
+    help: {
+      type: 'boolean',
+      short: 'h',
+    },
+  },
+  allowPositionals: true,
+});
 
-const [, , fileName, outFilename] = process.argv;
+function showHelp() {
+  console.log(`
+Usage:
+  node index.js <configFile> <outputFile> [options]
 
-if (!fileName) {
-  console.error('Please provide a conf filename as an argument (e.g., node index.js  myconf.json myconf.svg)');
+Arguments:
+  configFile        configuration JSON file
+  outputFile        output SVG file
+
+Options:
+  --addPositions    add element positions
+  --addDimensions   add element dimensions
+  -h, --help        show this help
+`);
+}
+
+if (values.help) {
+  showHelp();
+  process.exit(0);
+}
+
+const [fileName, outFilename] = positionals;
+
+if (!fileName || !outFilename) {
+  showHelp();
   process.exit(1);
 }
 
-if (!outFilename) {
-  console.error('Please provide an output filename as an argument (e.g., node myconf.json myconf.svg)');
-  process.exit(1);
-}
+console.log(`reading ${fileName} -> ${outFilename}`);
 
-console.log('reading '+fileName + ' -> '+outFilename);
-const svgGenerator = new SvgGenerator();
+const svgGenerator = new SvgGenerator(values.addPositions ?? false, values.addDimensions ?? false);
+
 svgGenerator.generateFromConfigFile(fileName);
 svgGenerator.writeToFile(outFilename);
-
 //generateSVG(fileName);

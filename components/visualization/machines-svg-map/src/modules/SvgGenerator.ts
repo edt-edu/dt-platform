@@ -25,11 +25,15 @@ export class SvgGenerator {
 
   canvasXSize!: number;
   canvasYSize!: number;
+  addPositions: boolean;  
+  addDimensions: boolean
 
-  constructor() {
+  constructor(  addPositions: boolean,  addDimensions: boolean) {
     const window = createSVGWindow()
     const document = window.document
 
+    this.addPositions = addPositions;
+    this.addDimensions = addDimensions;
     // register window and document
     registerWindow(window, document)
 
@@ -109,6 +113,18 @@ export class SvgGenerator {
     }
   }
 
+  generateLocationString(machinePosition: MachinePosition, dimensionString: string, group: G) {
+    const positiongroup = group.group();
+    positiongroup.id(group.id() + '_positionGroup');
+    positiongroup.translate(machinePosition.x, machinePosition.y)
+    if (this.addPositions) {
+      positiongroup.text(`x: ${machinePosition.x}mm, y: ${machinePosition.y}mm`).move(0, -20).font({ size: 10 }).fill('black');
+    }
+    if (this.addDimensions) {
+      positiongroup.text(dimensionString).move(0, -35).font({ size: 10 }).fill('black');
+    }
+  }
+
   /** tool function allowing to pretty print the svg xml */
   formatXml(xml: string) {
     var formatted = '', indent = '';
@@ -150,23 +166,35 @@ export class SvgGenerator {
   generateFromLayout(fLayout: FactoryLayout) {
     for (let index = 0; index < fLayout.positions.length; index++) {
       const machine = fLayout.positions[index];
-      const group = this.svg.group();
+      const parentgroup = this.svg.group();
+      parentgroup.id(machine.id + '_parentGroup');
+      const group = parentgroup.group(); 
       group.id(machine.id);
       switch (machine.kind) {
         case MachineKind.CB:
-          new CBSvgGenerator('_' + machine.id).generateAll(group);
+          const cbGenerator = new CBSvgGenerator('_' + machine.id);
+          cbGenerator.generateAll(group);
+          this.generateLocationString(machine, cbGenerator.getDimentionsString(), parentgroup);
           break;
         case MachineKind.HBW:
-          new HBWSvgGenerator('_' + machine.id).generateAll(group);
+          const hbwGenerator = new HBWSvgGenerator('_' + machine.id);
+          hbwGenerator.generateAll(group);
+          this.generateLocationString(machine, hbwGenerator.getDimentionsString(), parentgroup);
           break;
         case MachineKind.SLC:
-          new SLCSvgGenerator('_' + machine.id).generateAll(group);
+          const slcGenerator = new SLCSvgGenerator('_' + machine.id);
+          slcGenerator.generateAll(group);
+          this.generateLocationString(machine, slcGenerator.getDimentionsString(), parentgroup);
           break;
         case MachineKind.MPO:
-          new MPOSvgGenerator('_' + machine.id).generateAll(group);
+          const mpoGenerator = new MPOSvgGenerator('_' + machine.id);
+          mpoGenerator.generateAll(group);
+          this.generateLocationString(machine, mpoGenerator.getDimentionsString(), parentgroup);
           break;
         case MachineKind.VGR:
-          new VGRSvgGenerator('_' + machine.id).generateAll(group);
+          const vgrGenerator = new VGRSvgGenerator('_' + machine.id);
+          vgrGenerator.generateAll(group);
+          this.generateLocationString(machine, vgrGenerator.getDimentionsString(), parentgroup);
           break;
         case MachineKind.CB_MPS_SLI:
           new CB_MPSslider('_' + machine.id).generateAll(group);

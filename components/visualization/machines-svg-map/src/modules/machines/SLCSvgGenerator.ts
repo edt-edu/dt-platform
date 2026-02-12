@@ -37,6 +37,10 @@ export class SLCSvgGenerator implements IMachineGenerator{
     this.id_postfix = id_postfix;
   }
 
+  getDimentionsString(): string {
+    return `W: ${this.woodBase.xSize}mm H: ${this.woodBase.ySize}mm`;
+  }
+
   generateAll(machineGroup: G) {  
     this.generateAllStatic(machineGroup);
   }
