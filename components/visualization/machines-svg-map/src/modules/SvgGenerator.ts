@@ -27,27 +27,27 @@ export class SvgGenerator {
   canvasXSize!: number;
   canvasYSize!: number;
   addPositions: boolean;  
-  addDimensions: boolean
+  addDimensions: boolean;
+  accessibleZoneOpacity: number;
 
-  constructor(  addPositions: boolean,  addDimensions: boolean) {
+  constructor(  addPositions: boolean,  addDimensions: boolean, accessibleZoneOpacity: number) {
     const window = createSVGWindow()
     const document = window.document
 
     this.addPositions = addPositions;
     this.addDimensions = addDimensions;
+    this.accessibleZoneOpacity = accessibleZoneOpacity;
     // register window and document
     registerWindow(window, document)
 
   }
-
-
 
   createSVGCanvas(xSize: number, ySize: number) {
     this.svg = SVG().size(xSize, ySize).viewbox(0, 0, xSize, ySize);
     const style = this.svg.style();
     style.rule(".accessZone", {
       fill: 'lightblue',
-      'fill-opacity': 0.1
+      'fill-opacity': this.accessibleZoneOpacity
     }
     );
     style.rule(".woodBase", {

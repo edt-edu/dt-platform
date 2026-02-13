@@ -12,6 +12,10 @@ const { values, positionals } = parseArgs({
       type: 'boolean',
       default: false,
     },
+    accessibleZoneOpacity: {
+      type: 'string',   
+      default: '0.5',
+    },
     help: {
       type: 'boolean',
       short: 'h',
@@ -32,6 +36,7 @@ Arguments:
 Options:
   --addPositions    add element positions
   --addDimensions   add element dimensions
+  --accessibleZoneOpacity <value>  set the opacity for the accessible zones (default: 0.5)
   -h, --help        show this help
 `);
 }
@@ -50,7 +55,14 @@ if (!fileName || !outFilename) {
 
 console.log(`reading ${fileName} -> ${outFilename}`);
 
-const svgGenerator = new SvgGenerator(values.addPositions ?? false, values.addDimensions ?? false);
+const accessibleZoneOpacity = Number(values.accessibleZoneOpacity);
+
+if (Number.isNaN(accessibleZoneOpacity) || accessibleZoneOpacity < 0 || accessibleZoneOpacity > 1) {
+  console.error('Opacity must be a decimal between 0 and 1');
+  process.exit(1);
+}
+
+const svgGenerator = new SvgGenerator(values.addPositions ?? false, values.addDimensions ?? false, accessibleZoneOpacity);
 
 svgGenerator.generateFromConfigFile(fileName);
 svgGenerator.writeToFile(outFilename);

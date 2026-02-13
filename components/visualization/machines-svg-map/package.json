@@ -8,7 +8,7 @@
     "prepublish": "tsc",
     "build:ts": "tsc -p .",
     "watch": "tsc -w -p .",
-    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions",
+    "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions --accessibleZoneOpacity 0.5",
     "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
