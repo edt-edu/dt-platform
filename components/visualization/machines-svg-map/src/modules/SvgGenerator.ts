@@ -106,11 +106,17 @@ export class SvgGenerator {
     const xNbTicks = xSize / 100;
     for (let index = 0; index < xNbTicks; index++) {
       rulersGroup.line(index * 100, 0, index * 100, 10).stroke({ width: 1, color: 'black' });
+      if(index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index *10}cm`).move(index * 100 + 2, -5).font({ size: 10 }).fill('black');
+      }
     }
     rulersGroup.line(0, 0, 0, ySize).stroke({ width: 1, color: 'black' });
     const yNbTicks = ySize / 100;
     for (let index = 0; index < yNbTicks; index++) {
       rulersGroup.line(0, index * 100, 10, index * 100).stroke({ width: 1, color: 'black' });
+      if(index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index *10}cm`).move(5, index * 100 - 5).font({ size: 10 }).fill('black');
+      }
     }
   }
 
