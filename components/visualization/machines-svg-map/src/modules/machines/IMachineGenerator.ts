@@ -21,6 +21,8 @@ export interface IMachineGenerator {
      */
     generateAllStatic(machineGroup: G) : void;
 
-    getDimentionsString() : string;
+    getWidth() : number;
+        
+    getLength() : number;
 
 }

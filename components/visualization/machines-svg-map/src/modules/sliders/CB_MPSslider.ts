@@ -11,7 +11,10 @@ export class CB_MPSslider implements IMachineGenerator {
         this.id_postfix = id_postfix;
     }
   
-    getDimentionsString(): string {
+    getWidth(): number {
+        throw new Error('Method not implemented.');
+    }
+    getLength(): number {
         throw new Error('Method not implemented.');
     }
 
