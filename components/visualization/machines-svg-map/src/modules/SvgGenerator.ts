@@ -47,7 +47,7 @@ export class SvgGenerator {
     const style = this.svg.style();
     style.rule(".accessZone", {
       fill: 'lightblue',
-      'fill-opacity': 0.5
+      'fill-opacity': 0.1
     }
     );
     style.rule(".woodBase", {
@@ -122,7 +122,7 @@ export class SvgGenerator {
       positiongroup.text(`x: ${machinePosition.x}mm, y: ${machinePosition.y}mm`).move(0, -20).font({ size: 10 }).fill('black');
     }
     if (this.addDimensions) {
-      positiongroup.text(`W: ${machineGenerator.getWidth()}mm H: ${machineGenerator.getLength()}mm`).move(0, -35).font({ size: 10 }).fill('black');
+      positiongroup.text(`W: ${machineGenerator.getWidth()}mm L: ${machineGenerator.getLength()}mm`).move(0, -35).font({ size: 10 }).fill('black');
     }
   }
 
