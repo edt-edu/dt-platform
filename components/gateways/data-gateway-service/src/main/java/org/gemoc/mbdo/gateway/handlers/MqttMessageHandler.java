@@ -93,7 +93,7 @@ public class MqttMessageHandler implements MessageHandler {
                 .mqttKafkaRecordings()) {
             if (MqttTopic.isMatched(recording.mqttSourceTopic(), topic)) {
                 String kafkaTopic = recording.kafkaTargetTopic();
-                mqttToKafkaService.processAndSendMessage(kafkaTopic, topic, payload);
+                mqttToKafkaService.processAndSendMessage(recording.name(), kafkaTopic, topic, payload);
             }
         }
     }

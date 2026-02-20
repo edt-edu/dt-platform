@@ -31,11 +31,11 @@ public class MqttToKafkaService {
         this.producer = new KafkaProducer<>(properties);
     }
 
-    public void processAndSendMessage(@NotNull String kafkaTopic, String topic, String payload) {
+    public void processAndSendMessage(@NotNull String source, @NotNull String kafkaTopic, String topic, String payload) {
 
         // Extract key from topic
         String[] elements = topic.split("/");
-        String key = elements.length > 0 ? elements[elements.length - 1] : topic;
+        String key = (elements.length > 0 ? elements[elements.length - 1] : topic);
 
         log.debug("kafka record: kafkaTopic={}, key={}, payload={}", kafkaTopic, key, payload);
 
@@ -49,6 +49,7 @@ public class MqttToKafkaService {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
 
         // Add "key" field to JSON payload (string literal)
+        jsonObject.addProperty("source", source);
         jsonObject.addProperty("key", key);
 
         String updatedPayload = jsonObject.toString();
