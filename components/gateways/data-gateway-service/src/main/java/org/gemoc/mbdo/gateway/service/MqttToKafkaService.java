@@ -11,9 +11,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,9 +20,14 @@ public class MqttToKafkaService {
     private KafkaProducer<String, String> producer = null;
 
     public MqttToKafkaService(GatewayService gatewayService) {
+        String kafkaBrokerUrl = gatewayService.getGatewayServiceConfiguration().kafkaBrokerUrl();
+        if (kafkaBrokerUrl == null || kafkaBrokerUrl.isBlank()) {
+            log.warn("Kafka broker URL is not configured. MqttToKafkaService will be initialized without a Kafka producer.");
+            return;
+        }
 
         Properties properties = new Properties();
-        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, gatewayService.getGatewayServiceConfiguration().kafkaBrokerUrl());
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokerUrl);
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
@@ -32,6 +35,10 @@ public class MqttToKafkaService {
     }
 
     public void processAndSendMessage(@NotNull String source, @NotNull String kafkaTopic, String topic, String payload) {
+        if (producer == null) {
+            log.warn("Kafka producer is not initialized. Skipping MQTT->Kafka forwarding for source={} and topic={}", source, topic);
+            return;
+        }
 
         // Extract key from topic
         String[] elements = topic.split("/");
@@ -55,9 +62,9 @@ public class MqttToKafkaService {
         String updatedPayload = jsonObject.toString();
 
         // Send to Kafka (optionally reuse the same key as Kafka record key)
-        ProducerRecord<String, String> record =
+        ProducerRecord<String, String> producerRecord =
                 new ProducerRecord<>(kafkaTopic, key, updatedPayload);
 
-        producer.send(record);
+        producer.send(producerRecord);
     }
 }
