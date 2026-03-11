@@ -6,27 +6,19 @@ public interface ThreeDGripperObserver {
 
   default void onRefSwitchClaw(boolean bool){ }
 
-  default void onEncCounterClaw(int encCounterClaw){ }
+  default void onEncoderClawPos(int encCounterClaw){ }
 
   default void onRefSwitchGripper(boolean bool){ }
 
-  default void onEncCounterGripper(int encCounterGripper){ }
+  default void onEncoderGripperPos(int encCounterGripper){ }
 
   default void onRefSwitchVertical(boolean bool){ }
 
   default void onRefSwitchRotation(boolean bool){ }
 
-  default void onMotorVerticalEnc1(boolean bool){ }
+  default void onEncoderVerticalPos(int motorVerticalPos){ }
 
-  default void onMotorVerticalEnc2(boolean bool){ }
-
-  default void onMotorRotationEnc1(boolean bool){ }
-
-  default void onMotorRotationEnc2(boolean bool){ }
-
-  default void onMotorVerticalPos(int motorVerticalPos){ }
-
-  default void onMotorRotationPos(int motorRotationPos){ }
+  default void onEncoderRotationPos(int motorRotationPos){ }
 
   // Inputs of the machine ----------------
 

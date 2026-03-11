@@ -38,6 +38,13 @@ export class MPOSvgGenerator implements IMachineGenerator{
   constructor(id_postfix: string) {
     this.id_postfix = id_postfix;
   }
+  
+  getWidth(): number {
+    return this.woodBase.xSize;
+  }
+  getLength(): number {
+    return this.woodBase.ySize;
+  }
 
   generateAll(machineGroup: G) {
       

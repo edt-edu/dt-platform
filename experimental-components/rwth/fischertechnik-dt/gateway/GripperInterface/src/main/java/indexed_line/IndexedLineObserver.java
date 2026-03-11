@@ -4,23 +4,23 @@ public interface IndexedLineObserver {
 
   // Outputs of the machine --------------
 
-  default void onButtonSlider1Front(boolean bool){ }
+  default void onRefSwitchSlider1Front(boolean bool){ }
 
-  default void onButtonSlider1Rear(boolean bool){ }
+  default void onRefSwitchSlider1Rear(boolean bool){ }
 
-  default void onButtonSlider2Front(boolean bool){ }
+  default void onRefSwitchSlider2Front(boolean bool){ }
 
-  default void onButtonSlider2Rear(boolean bool){ }
+  default void onRefSwitchSlider2Rear(boolean bool){ }
 
-  default void onPhototransistorSlider1(boolean bool){ }
+  default void onLightBarrierSlider1(boolean bool){ }
 
-  default void onPhototransistorMillingMachine(boolean bool){ }
+  default void onLightBarrierMillingMachine(boolean bool){ }
 
-  default void onPhototransistorLoadingStation(boolean bool){ }
+  default void onLightBarrierLoadingStation(boolean bool){ }
 
-  default void onPhototransistorDrillingMachine(boolean bool){ }
+  default void onLightBarrierDrillingMachine(boolean bool){ }
 
-  default void onPhototransistorConveyorSwap(boolean bool){ }
+  default void onLightBarrierConveyorSwap(boolean bool){ }
 
   // Inputs of the machine ----------------
 

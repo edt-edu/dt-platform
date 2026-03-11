@@ -2,18 +2,22 @@ package fischertechnikvisualization;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import conveyor.ConveyorGateway;
+import conveyor.ConveyorObserver;
 import de.se_rwth.commons.logging.Log;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import sorting_line.SortingLineGateway;
+import utils.MachineIdBuilder;
+import utils.MultiMqttCallback;
 import vacuum_gripper.GripperGateway;
-import vacuum_gripper.MultiMqttCallback;
+import vacuum_gripper.GripperObserver;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,12 +53,106 @@ public class FischertechnikVisualizationServerApplication extends Fischertechnik
         client.setCallback(multiMqttCallback);
         client.connect();
 
-        String gripperMachineId = "PLC/Island 1/VacuumGripper/VacuumGripper02"; // TODO: name is probably wrong
-        GripperGateway gripperGateway = new GripperGateway(gripperMachineId);
-        gripperGateway.connectMqttClient("#", client);
-        multiMqttCallback.addCallback(gripperGateway);
+        // Create gateways
+        GripperGateway gripperGateway = new GripperGateway(new MachineIdBuilder().withIslandNumber(2).withComponentId(5));
+        Log.println("Created GripperGateway with machine ID: " + gripperGateway.getBuiltMachineId());
+        gripperGateway.connectMqttClient(client);
 
+        ConveyorGateway conveyorGateway = new ConveyorGateway(new MachineIdBuilder().withIslandNumber(2).withComponentId(2));
+        Log.println("Created ConveyorGateway with machine ID: " + conveyorGateway.getBuiltMachineId());
+        conveyorGateway.connectMqttClient(client);
+
+        SortingLineGateway sortingLineGateway = new SortingLineGateway(new MachineIdBuilder().withIslandNumber(2).withComponentId(2));
+        Log.println("Created SortingLineGateway with machine ID: " + sortingLineGateway.getBuiltMachineId());
+
+        // Connect gateways to the multiMqttCallback
+        multiMqttCallback.addCallback(gripperGateway);
+        multiMqttCallback.addCallback(conveyorGateway);
+        multiMqttCallback.addCallback(sortingLineGateway);
         multiMqttCallback.addCallback(setupDataTraces());
+
+        // Add observers to the gripperGateway
+        gripperGateway.addObserver(new GripperObserver() {
+            final VacuumGripperState gripperState = FischertechnikVisualizationManager.getVacuumGripperState();
+
+            @Override
+            public void onRefSwitchVertical(boolean value) {
+                gripperState.setRefSwitchVertical(value);
+                Log.println("Vertical switch changed to: " + value);
+            }
+
+            @Override
+            public void onRefSwitchHorizontal(boolean value) {
+                gripperState.setRefSwitchHorizontal(value);
+                Log.println("Horizontal switch changed to: " + value);
+            }
+
+            @Override
+            public void onRefSwitchRotation(boolean value) {
+                gripperState.setRefSwitchRotation(value);
+                Log.println("Rotation switch changed to: " + value);
+            }
+
+            @Override
+            public void onEncoderVerticalPos(int value) {
+                //TODO: check normalization
+                gripperState.setVerticalPercentage(value / 20);
+                Log.println("Vertical motor position changed to: " + value);
+            }
+
+            @Override
+            public void onEncoderHorizontalPos(int value) {
+                //TODO: check normalization
+                gripperState.setHorizontalPercentage(value / 20);
+                Log.println("Horizontal motor position changed to: " + value);
+            }
+
+            @Override
+            public void onEncoderRotationPos(int value) {
+                //TODO: check normalization
+                gripperState.setRotationDeg(value / 10);
+                Log.println("Rotation motor position changed to: " + value);
+            }
+
+            @Override
+            public void onEnableCompressor(boolean value) {
+                gripperState.setPumpRunning(value);
+                Log.println("Enabling compressor changed to: " + value);
+            }
+
+            @Override
+            public void onEnableValve(boolean value) {
+                gripperState.setValveEnabled(value);
+                Log.println("Enabling valve changed to: " + value);
+            }
+        });
+
+        conveyorGateway.addObserver(new ConveyorObserver() {
+            final ConveyorState conveyorState = FischertechnikVisualizationManager.getConveyorState();
+
+            @Override
+            public void onLightBarrierFeedStation(boolean value) {
+                conveyorState.setFeedDetectorOn(value);
+                Log.println("Conveyor left switch changed to: " + value);
+            }
+
+            @Override
+            public void onLightBarrierSwapStation(boolean value) {
+                conveyorState.setSwapDetectorOn(value);
+                Log.println("Conveyor right switch changed to: " + value);
+            }
+
+            @Override
+            public void onMoveConveyorForward(boolean value) {
+                conveyorState.setMoveToSwap(value);
+            }
+
+            @Override
+            public void onMoveConveyorBackward(boolean value) {
+                conveyorState.setMoveToFeed(value);
+            }
+        });
+
         initStatechart();
     }
 

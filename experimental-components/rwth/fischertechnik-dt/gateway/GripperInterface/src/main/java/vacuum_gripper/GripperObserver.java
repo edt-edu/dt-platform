@@ -10,23 +10,11 @@ public interface GripperObserver {
 
   default void onRefSwitchRotation(boolean bool){ }
 
-  default void onMotorVerticalEnc1(boolean bool){ }
+  default void onEncoderVerticalPos(int motorVerticalPos){ }
 
-  default void onMotorVerticalEnc2(boolean bool){ }
+  default void onEncoderHorizontalPos(int motorHorizontalPos){ }
 
-  default void onMotorHorizontalEnc1(boolean bool){ }
-
-  default void onMotorHorizontalEnc2(boolean bool){ }
-
-  default void onMotorRotationEnc1(boolean bool){ }
-
-  default void onMotorRotationEnc2(boolean bool){ }
-
-  default void onMotorVerticalPos(int motorVerticalPos){ }
-
-  default void onMotorHorizontalPos(int motorHorizontalPos){ }
-
-  default void onMotorRotationPos(int motorRotationPos){ }
+  default void onEncoderRotationPos(int motorRotationPos){ }
 
   // Inputs of the machine ----------------
 

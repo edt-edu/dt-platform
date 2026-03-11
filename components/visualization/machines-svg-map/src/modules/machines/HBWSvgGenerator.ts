@@ -32,6 +32,13 @@ export class HBWSvgGenerator  implements IMachineGenerator{
   generateAll(machineGroup: G) {  
     this.generateAllStatic(machineGroup);
   }
+  
+  getWidth(): number {
+    return this.woodBase.xSize;
+  }
+  getLength(): number {
+    return this.woodBase.ySize;
+  }
 
   generateAllStatic(machineGroup: G) {
     this.generateWoodBase(machineGroup);

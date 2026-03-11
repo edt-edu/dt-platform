@@ -10,6 +10,13 @@ export class SLslider implements IMachineGenerator {
     constructor(id_postfix: string) {
         this.id_postfix = id_postfix;
     }
+  
+    getWidth(): number {
+        throw new Error('Method not implemented.');
+    }
+    getLength(): number {
+        throw new Error('Method not implemented.');
+    }
 
     generateAll(machineGroup: G) {
         this.generateAllStatic(machineGroup);

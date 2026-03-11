@@ -16,6 +16,7 @@ import { CB_MPSslider } from './sliders/CB_MPSslider.js';
 import { SLslider } from './sliders/SLslider.js';
 
 import { FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
+import { IMachineGenerator } from './machines/IMachineGenerator.js';
 
 
 export class SvgGenerator {
@@ -25,24 +26,28 @@ export class SvgGenerator {
 
   canvasXSize!: number;
   canvasYSize!: number;
+  addPositions: boolean;  
+  addDimensions: boolean;
+  accessibleZoneOpacity: number;
 
-  constructor() {
+  constructor(  addPositions: boolean,  addDimensions: boolean, accessibleZoneOpacity: number) {
     const window = createSVGWindow()
     const document = window.document
 
+    this.addPositions = addPositions;
+    this.addDimensions = addDimensions;
+    this.accessibleZoneOpacity = accessibleZoneOpacity;
     // register window and document
     registerWindow(window, document)
 
   }
-
-
 
   createSVGCanvas(xSize: number, ySize: number) {
     this.svg = SVG().size(xSize, ySize).viewbox(0, 0, xSize, ySize);
     const style = this.svg.style();
     style.rule(".accessZone", {
       fill: 'lightblue',
-      'fill-opacity': 0.5
+      'fill-opacity': this.accessibleZoneOpacity
     }
     );
     style.rule(".woodBase", {
@@ -101,11 +106,29 @@ export class SvgGenerator {
     const xNbTicks = xSize / 100;
     for (let index = 0; index < xNbTicks; index++) {
       rulersGroup.line(index * 100, 0, index * 100, 10).stroke({ width: 1, color: 'black' });
+      if(index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index *10}cm`).move(index * 100 + 2, -5).font({ size: 10 }).fill('black');
+      }
     }
     rulersGroup.line(0, 0, 0, ySize).stroke({ width: 1, color: 'black' });
     const yNbTicks = ySize / 100;
     for (let index = 0; index < yNbTicks; index++) {
       rulersGroup.line(0, index * 100, 10, index * 100).stroke({ width: 1, color: 'black' });
+      if(index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index *10}cm`).move(5, index * 100 - 5).font({ size: 10 }).fill('black');
+      }
+    }
+  }
+
+  generateLocationString(machinePosition: MachinePosition, machineGenerator: IMachineGenerator, group: G) {
+    const positiongroup = group.group();
+    positiongroup.id(group.id() + '_positionGroup');
+    positiongroup.translate(machinePosition.x, machinePosition.y)
+    if (this.addPositions) {
+      positiongroup.text(`x: ${machinePosition.x}mm, y: ${machinePosition.y}mm`).move(0, -20).font({ size: 10 }).fill('black');
+    }
+    if (this.addDimensions) {
+      positiongroup.text(`W: ${machineGenerator.getWidth()}mm L: ${machineGenerator.getLength()}mm`).move(0, -35).font({ size: 10 }).fill('black');
     }
   }
 
@@ -150,23 +173,36 @@ export class SvgGenerator {
   generateFromLayout(fLayout: FactoryLayout) {
     for (let index = 0; index < fLayout.positions.length; index++) {
       const machine = fLayout.positions[index];
-      const group = this.svg.group();
+      const parentgroup = this.svg.group();
+      parentgroup.id(machine.id + '_parentGroup');
+      const group = parentgroup.group(); 
       group.id(machine.id);
+      var machineGenerator: IMachineGenerator;
       switch (machine.kind) {
         case MachineKind.CB:
-          new CBSvgGenerator('_' + machine.id).generateAll(group);
+          machineGenerator = new CBSvgGenerator('_' + machine.id);
+          machineGenerator.generateAll(group);
+          this.generateLocationString(machine, machineGenerator, parentgroup);
           break;
         case MachineKind.HBW:
-          new HBWSvgGenerator('_' + machine.id).generateAll(group);
+          machineGenerator = new HBWSvgGenerator('_' + machine.id);
+          machineGenerator.generateAll(group);
+          this.generateLocationString(machine, machineGenerator, parentgroup);
           break;
         case MachineKind.SLC:
-          new SLCSvgGenerator('_' + machine.id).generateAll(group);
+          machineGenerator = new SLCSvgGenerator('_' + machine.id);
+          machineGenerator.generateAll(group);
+          this.generateLocationString(machine, machineGenerator, parentgroup);
           break;
         case MachineKind.MPO:
-          new MPOSvgGenerator('_' + machine.id).generateAll(group);
+          machineGenerator = new MPOSvgGenerator('_' + machine.id);
+          machineGenerator.generateAll(group);
+          this.generateLocationString(machine, machineGenerator, parentgroup);
           break;
         case MachineKind.VGR:
-          new VGRSvgGenerator('_' + machine.id).generateAll(group);
+          machineGenerator = new VGRSvgGenerator('_' + machine.id);
+          machineGenerator.generateAll(group);
+          this.generateLocationString(machine, machineGenerator, parentgroup);
           break;
         case MachineKind.CB_MPS_SLI:
           new CB_MPSslider('_' + machine.id).generateAll(group);

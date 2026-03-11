@@ -1,115 +1,63 @@
 package vacuum_gripper;
 
 import org.eclipse.paho.client.mqttv3.*;
+import utils.AbstractGateway;
+import utils.MachineId;
+import utils.MachineIdBuilder;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
+public class GripperGateway extends AbstractGateway<GripperObserver> {
 
-public class GripperGateway implements MqttCallback {
-  
-  protected final String machineId;
-  protected List<GripperObserver> observers = new ArrayList<>();
-
-  public GripperGateway(String machineId) {
-    this.machineId = machineId;
-  }
-
-
-  @Override
-  public void connectionLost(Throwable throwable) {
-    //Called when the client lost the connection to the broker
-  }
-
-  @Override
-  public void messageArrived(String topic, MqttMessage message) throws Exception {
-    if(topic != null) {
-
-      String msgStr = new String(message.getPayload(), StandardCharsets.UTF_8);
-
-      // Outputs of the machine
-
-      if(topic.equals("/" + machineId + "/ref-switch-vertical")){
-        observers.forEach(o -> o.onRefSwitchVertical(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/ref-switch-horizontal")){
-        observers.forEach(o -> o.onRefSwitchHorizontal(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/ref-switch-rotation")){
-        observers.forEach(o -> o.onRefSwitchRotation(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-vertical-enc-1")){
-        observers.forEach(o -> o.onMotorVerticalEnc1(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-vertical-enc-2")){
-        observers.forEach(o -> o.onMotorVerticalEnc2(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-horizontal-enc-1")){
-        observers.forEach(o -> o.onMotorHorizontalEnc1(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-horizontal-enc-2")){
-        observers.forEach(o -> o.onMotorHorizontalEnc2(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-rotation-enc-1")){
-        observers.forEach(o -> o.onMotorRotationEnc1(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-rotation-enc-2")){
-        observers.forEach(o -> o.onMotorRotationEnc2(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/motor-vertical-pos")){
-        observers.forEach(o -> o.onMotorVerticalPos(Integer.parseInt(msgStr)));
-
-      }else if(topic.equals("/" + machineId + "/motor-horizontal-pos")){
-        observers.forEach(o -> o.onMotorHorizontalPos(Integer.parseInt(msgStr)));
-
-      }else if(topic.equals("/" + machineId + "/motor-rotation-pos")){
-        observers.forEach(o -> o.onMotorRotationPos(Integer.parseInt(msgStr)));
-      }
-
-      // Inputs of the machine
-
-      else if(topic.equals("/" + machineId + "/move-vertical-up")){
-        observers.forEach(o -> o.onMoveVerticalUp(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-vertical-down")){
-        observers.forEach(o -> o.onMoveVerticalDown(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-horizontal-up")){
-        observers.forEach(o -> o.onMoveHorizontalUp(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-horizontal-down")){
-        observers.forEach(o -> o.onMoveHorizontalDown(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-rotation-clockwise")){
-        observers.forEach(o -> o.onMoveRotationClockwise(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/move-rotation-counterclockwise")){
-        observers.forEach(o -> o.onMoveRotationCounterclockwise(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/enable-compressor")){
-        observers.forEach(o -> o.onEnableCompressor(msgStr.equals("true")));
-
-      }else if(topic.equals("/" + machineId + "/enable-valve")){
-        observers.forEach(o -> o.onEnableValve(msgStr.equals("true")));
-      }
+    public GripperGateway(MachineIdBuilder machineIdBuilder) {
+        super(machineIdBuilder, MachineIdBuilder.ComponentType.VACUUM_GRIPPER, Map.of());
+        this.addMethods(Map.of(
+                // Sensors of the machine
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "VerticalEndUp"),
+                (observer, msg) -> observer.onRefSwitchVertical(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "ArmEndIn"),
+                (observer, msg) -> observer.onRefSwitchHorizontal(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "RotEnd"),
+                (observer, msg) -> observer.onRefSwitchRotation(msg.getBooleanMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "VerticalEncoderCounter"),
+                (observer, msg) -> observer.onEncoderVerticalPos(msg.getIntegerMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "ArmEncoderCounter"),
+                (observer, msg) -> observer.onEncoderHorizontalPos(msg.getIntegerMember("value")),
+                //
+                this.machineId.getTopic(MachineId.ValueType.Sensor, "RotEncoderCounter"),
+                (observer, msg) -> observer.onEncoderRotationPos(msg.getIntegerMember("value"))
+        ));
+        this.addMethods(Map.of(
+                //Actuators of the machine
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "VerticalUp"),
+                (observer, msg) -> observer.onMoveVerticalUp(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "VerticalDown"),
+                (observer, msg) -> observer.onMoveVerticalDown(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "ArmIn"),
+                (observer, msg) -> observer.onMoveHorizontalDown(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "ArmOut"),
+                (observer, msg) -> observer.onMoveHorizontalUp(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "RotLeft"),
+                (observer, msg) -> observer.onMoveRotationCounterclockwise(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "RotRight"),
+                (observer, msg) -> observer.onMoveRotationClockwise(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "CompressorOn"),
+                (observer, msg) -> observer.onEnableCompressor(msg.getBooleanMember("value")),
+                //
+                machineId.getTopic(MachineId.ValueType.Actuator, "Valve"),
+                (observer, msg) -> observer.onEnableValve(msg.getBooleanMember("value"))
+        ));
     }
-  }
-
-  @Override
-  public void deliveryComplete(IMqttDeliveryToken deliveryToken) {
-    //Called when an outgoing publish is complete
-  }
-
-  public void connectMqttClient(String topic, MqttClient client) throws MqttException {
-    client.subscribe(topic, 2);
-  }
-
-  public void addObserver(GripperObserver observer){
-    observers.add(observer);
-  }
-
-  public void removeObserver(GripperObserver observer){
-    observers.remove(observer);
-  }
 }
