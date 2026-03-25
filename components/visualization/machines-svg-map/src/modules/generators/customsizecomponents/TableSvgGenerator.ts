@@ -4,85 +4,40 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../../RectShape.js';
 import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class TableSvgGenerator implements IComponentGenerator{
+export class TableSvgGenerator implements IComponentGenerator {
 
-  woodBase = new RectShape(260,186,0,0);
-  plasticBase = new RectShape(257, 186, 0,0);
-  conveyor = new RectShape(this.woodBase.xSize+10, 50, 0, 5);
-
-
-  electronicCard =  new RectShape(108,80, 75,100); // to be verified
-  
-  sensor1 = new RectShape(20, 80, 30, -10);
-  sensor2 = new RectShape(20, 80, 220, -10);
+  tableBase = new RectShape(260, 186, 0, 0);
 
   id_postfix = '';
 
-  constructor(id_postfix: string) {
+  constructor(id_postfix: string, width: number, length: number) {
     this.id_postfix = id_postfix;
+    this.tableBase.xSize = length;
+    this.tableBase.ySize = width;
   }
 
   generateAll(machineGroup: G) {
     this.generateAllStatic(machineGroup);
   }
-  
+
   getWidth(): number {
-    return this.woodBase.xSize;
+    return this.tableBase.xSize;
   }
   getLength(): number {
-    return this.woodBase.ySize;
+    return this.tableBase.ySize;
   }
 
   generateAllStatic(machineGroup: G) {
     this.generateWoodBase(machineGroup);
-    this.generatePlasticBase(machineGroup);
-    this.generateElectronicCard(machineGroup);
-    this.generateConveyor(machineGroup);
-    this.generateSensorZones(machineGroup);
-  }
-
-  generateConveyor(machineGroup: G) {
-    // arm accessible zone
-    var zoneGroup = machineGroup.group();
-    zoneGroup.id("conveyorZone"+this.id_postfix)
-    const mainShape = zoneGroup.rect(this.conveyor.xSize, this.conveyor.ySize ).addClass('conveyorZone');
-    ///*.fill('lightblue').attr({ 'fill-opacity': 0.5 })*/;
-    mainShape.move(this.conveyor.xPos, this.conveyor.yPos);
-    
-  }
-  generateSensorZones(machineGroup: G) {
-    const crossSize = 5;
-    const sensorsGroup = machineGroup.group();
-    sensorsGroup.rect(this.sensor1.xSize, this.sensor1.ySize)
-      .move(this.sensor1.xPos, this.sensor1.yPos)
-      .addClass("lightBarrier");
-    sensorsGroup.rect(this.sensor2.xSize, this.sensor2.ySize)
-      .move(this.sensor2.xPos, this.sensor2.yPos)
-      .addClass("lightBarrier")
   }
 
   generateWoodBase(machineGroup: G) {
-    const woodBaseGroup = machineGroup.group();
-    woodBaseGroup.id('woodBase'+this.id_postfix)
-    woodBaseGroup.rect(this.woodBase.xSize, this.woodBase.ySize).addClass('woodBase');
+    const tableBaseGroup = machineGroup.group();
+    tableBaseGroup.id('tableBase' + this.id_postfix)
+    tableBaseGroup.rect(this.tableBase.xSize, this.tableBase.ySize).addClass('tableBase');
     //.fill('burlywood').stroke('black');
-    var refPoint = woodBaseGroup.rect(5, 5).fill('red');
-    refPoint.id('referencePoint'+this.id_postfix);
+    var refPoint = tableBaseGroup.rect(5, 5).fill('red');
+    refPoint.id('referencePoint' + this.id_postfix);
   }
 
-  generatePlasticBase(machineGroup: G) {
-    const plasticBaseGroup = machineGroup.group();
-    plasticBaseGroup.id('plasticBase'+this.id_postfix)
-    plasticBaseGroup.rect(this.plasticBase.xSize, this.plasticBase.ySize)
-      .move(this.plasticBase.xPos, this.plasticBase.yPos).addClass('plasticBase');
-    //.fill('burlywood').stroke('black');
-  }
-
-  generateElectronicCard(machineGroup: G) {
-    const group = machineGroup.group();
-    group.id('electronicCard'+this.id_postfix)
-    group.rect(this.electronicCard.xSize, this.electronicCard.ySize)
-      .move(this.electronicCard.xPos, this.electronicCard.yPos).addClass('electronicCard');
-    //.fill('burlywood').stroke('black');
-  }
 }

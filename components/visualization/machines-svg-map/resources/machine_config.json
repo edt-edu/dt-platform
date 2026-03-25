@@ -4,6 +4,17 @@
   "ySize": 2000,
   "positions": [
     {
+      "x": 0,
+      "y": 0,
+      "length": 1400,
+      "width": 710,
+      "degrees": 0,
+      "type": "CUSTOMSIZECOMPONENT",
+      "kind": "TABLE",
+      "name": "Table1",
+      "id": "table1"
+    },
+    {
       "x": 670,
       "y": 940,
       "degrees": 180,

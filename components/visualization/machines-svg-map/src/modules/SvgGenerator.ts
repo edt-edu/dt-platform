@@ -16,7 +16,7 @@ import { MPOSvgGenerator } from './generators/machines/MPOSvgGenerator.js';
 import { StraightSlideSvgGenerator } from './generators/components/StraightSlideSvgGenerator.js';
 import { RHSlideSvgGenerator } from './generators/components/RHSlideSvgGenerator.js';
 
-import { ComponentKind, CustomSizeComponentKind, ElementType, FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
+import { ComponentKind, CustomSizeComponentKind, CustomSizeComponentPosition, ElementType, FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
 import { IComponentGenerator } from './generators/IComponentGenerator.js';
 import { TableSvgGenerator } from './generators/customsizecomponents/TableSvgGenerator.js';
 import { plainToInstance } from 'class-transformer';
@@ -24,6 +24,7 @@ import { validateSync } from 'class-validator';
 
 
 type GeneratorConstructor = new (id: string) => IComponentGenerator;
+type CustomSizeComponentGeneratorConstructor = new (id: string, width: number, length: number) => IComponentGenerator;
 const MACHINE_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
   [MachineKind.CB]: CBSvgGenerator,
   [MachineKind.HBW]: HBWSvgGenerator,
@@ -35,7 +36,7 @@ const COMPONENT_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
   [ComponentKind.S_SLI]: StraightSlideSvgGenerator,
   [ComponentKind.RH_SLI]: RHSlideSvgGenerator,
 };
-const CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
+const CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY: Record<string, CustomSizeComponentGeneratorConstructor> = {
   [CustomSizeComponentKind.TABLE]: TableSvgGenerator,
 };
 
@@ -61,7 +62,7 @@ export class SvgGenerator {
     registerWindow(window, document)
 
 
-    
+
   }
 
   createSVGCanvas(xSize: number, ySize: number) {
@@ -75,6 +76,14 @@ export class SvgGenerator {
     style.rule(".woodBase", {
       fill: 'burlywood',
       'stroke': 'black'
+    });
+
+    style.rule(".tableBase", {
+      fill: 'burlywood',
+      'fill-opacity': 0,
+      'stroke': 'black',
+      'stroke-width': 1,
+      'stroke-dasharray': '5, 5'
     });
     style.rule(".plasticBase", {
       fill: 'darkgray',
@@ -100,11 +109,11 @@ export class SvgGenerator {
       fill: 'green',
       'stroke': 'black'
     })
-    style.rule(".slider", { // todo some color change or arrow for direction of the slider ?
+    style.rule(".slider", { // todo some color change or arrow for direction of the slide ?
       fill: 'dimgray',
       'stroke': 'black'
     })
-    style.rule(".ejector", { // todo some color change or arrow for direction of the slider ?
+    style.rule(".ejector", { // todo some color change or arrow for direction of the slide ?
       fill: 'lightgray',
       'stroke': 'black'
     })
@@ -173,14 +182,14 @@ export class SvgGenerator {
     const content = readFileSync(fileName, 'utf-8')
     const rawObject = JSON.parse(content);
 
-    const factoryLayout = plainToInstance(FactoryLayout, rawObject as FactoryLayout) ;
+    const factoryLayout = plainToInstance(FactoryLayout, rawObject as FactoryLayout);
 
     const errors = validateSync(factoryLayout, { whitelist: true, forbidNonWhitelisted: true });
 
     if (errors.length > 0) {
-        console.error("❌ validation error :");
-        const detailedErrors = errors.map(err => err.toString()).join('\n');
-        throw new Error(`Validation failed for ${fileName}:\n${detailedErrors}`);
+      console.error("❌ validation error :");
+      const detailedErrors = errors.map(err => err.toString()).join('\n');
+      throw new Error(`Validation failed for ${fileName}:\n${detailedErrors}`);
     }
 
 
@@ -225,14 +234,17 @@ export class SvgGenerator {
           break;
         case ElementType.CUSTOMSIZECOMPONENT:
           const CustomSizeComponentGeneratorClass = CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY[rawComponent.kind];
-          var generator = new CustomSizeComponentGeneratorClass('_' + rawComponent.id);
+          const component = rawComponent as CustomSizeComponentPosition;
+          var generator = new CustomSizeComponentGeneratorClass('_' + rawComponent.id,
+            component.width,
+            component.length);
           break;
       }
 
       generator.generateAll(group);
 
-      if(rawComponent.elementType === ElementType.MACHINE) {
-              this.generateLocationString(rawComponent as MachinePosition, generator, parentgroup);
+      if (rawComponent.elementType === ElementType.MACHINE) {
+        this.generateLocationString(rawComponent as MachinePosition, generator, parentgroup);
       }
 
       if (rawComponent.degrees != 0) {
