@@ -3,7 +3,11 @@
 import { G } from '@svgdotjs/svg.js'
 import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class CB_MPSslider implements IComponentGenerator {
+/**
+ * Class to generate a Straight Slide
+ * useful for example on exit of the conveyor belt or the MPS conveyor
+ */
+export class StraightSlideSvgGenerator implements IComponentGenerator {
 
     id_postfix = '';
 

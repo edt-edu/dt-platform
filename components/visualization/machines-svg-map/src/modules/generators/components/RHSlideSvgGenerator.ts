@@ -3,7 +3,12 @@
 import { G } from '@svgdotjs/svg.js'
 import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class SLslider implements IComponentGenerator {
+
+/**
+ * Class to generate a Right-Handed Slide
+ * useful for example on exit of the Sorting Line, to move the token to the right and then down
+ */
+export class RHSlideSvgGenerator implements IComponentGenerator {
 
     id_postfix = '';
 

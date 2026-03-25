@@ -17,8 +17,8 @@ export enum MachineKind {
 }
 
 export enum ComponentKind {
-    CB_MPS_SLI = "CB_MPS_SLI",
-    SL_SLI = "SL_SLI"
+    S_SLI = "S_SLI",
+    RH_SLI = "RH_SLI"
 }
 
 export enum CustomSizeComponentKind {

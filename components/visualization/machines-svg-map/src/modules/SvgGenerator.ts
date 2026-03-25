@@ -13,8 +13,8 @@ import { SLCSvgGenerator } from './generators/machines/SLCSvgGenerator.js';
 import { HBWSvgGenerator } from './generators/machines/HBWSvgGenerator.js';
 import { MPOSvgGenerator } from './generators/machines/MPOSvgGenerator.js';
 
-import { CB_MPSslider } from './generators/components/CB_MPSslider.js';
-import { SLslider } from './generators/components/SLslider.js';
+import { StraightSlideSvgGenerator } from './generators/components/StraightSlideSvgGenerator.js';
+import { RHSlideSvgGenerator } from './generators/components/RHSlideSvgGenerator.js';
 
 import { ComponentKind, CustomSizeComponentKind, ElementType, FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
 import { IComponentGenerator } from './generators/IComponentGenerator.js';
@@ -32,8 +32,8 @@ const MACHINE_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
   [MachineKind.VGR]: VGRSvgGenerator,
 };
 const COMPONENT_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
-  [ComponentKind.CB_MPS_SLI]: CB_MPSslider,
-  [ComponentKind.SL_SLI]: SLslider,
+  [ComponentKind.S_SLI]: StraightSlideSvgGenerator,
+  [ComponentKind.RH_SLI]: RHSlideSvgGenerator,
 };
 const CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
   [CustomSizeComponentKind.TABLE]: TableSvgGenerator,

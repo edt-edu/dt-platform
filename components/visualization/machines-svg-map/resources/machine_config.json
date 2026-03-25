@@ -40,13 +40,22 @@
       "id": "mps1"
     },
     {
-      "x": 410,
-      "y": 540,
+      "x": 390,
+      "y": 538,
+      "degrees": 270,
+      "type": "COMPONENT",
+      "kind": "S_SLI",
+      "name": "MPSSlide",
+      "id": "sli3"
+    },
+    {
+      "x": 203,
+      "y": 899,
       "degrees": 0,
-      "type": "MACHINE",
-      "kind": "VGR",
-      "name": "VacuumGripper2",
-      "id": "vgr2"
+      "type": "COMPONENT",
+      "kind": "RH_SLI",
+      "name": "SLSlide",
+      "id": "sli4"
     },
     {
       "x": 810,

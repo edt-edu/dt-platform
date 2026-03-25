@@ -4,6 +4,9 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { RectShape } from '../../RectShape.js';
 import { IComponentGenerator } from '../IComponentGenerator.js';
 
+/**
+ * Class to generate the CB, with its conveyor and the electronic card on top of its board
+ */
 export class CBSvgGenerator implements IComponentGenerator{
 
   woodBase = new RectShape(260,186,0,0);
