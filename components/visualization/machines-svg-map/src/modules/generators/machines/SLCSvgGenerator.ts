@@ -1,14 +1,14 @@
 
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
-import { RectShape } from '../RectShape.js';
-import { IMachineGenerator } from './IMachineGenerator.js';
+import { RectShape } from '../../RectShape.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
 
 /**
  * SVG generator for the Sorting Line with Color
  */
-export class SLCSvgGenerator implements IMachineGenerator{
+export class SLCSvgGenerator implements IComponentGenerator{
  
   woodBase = new RectShape(440, 310, 0, 0);
   plasticBase = new RectShape(380, 258, 0, 12 );

@@ -49,15 +49,6 @@
       "id": "vgr2"
     },
     {
-      "x": 810,
-      "y": 540,
-      "degrees": 0,
-      "type": "MACHINE",
-      "kind": "VGR",
-      "name": "VacuumGripper2",
-      "id": "vgr2"
-    },
-    {
       "x": 595,
       "y": 970,
       "degrees": 90,

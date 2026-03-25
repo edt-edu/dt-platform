@@ -1,25 +1,23 @@
-
 import { G } from '@svgdotjs/svg.js'
 
-export interface IMachineGenerator {
+export interface IComponentGenerator {
  
     
     /**
      * Generate all available graphical elements
      * graphical element are added to the provided group
      *
-     * @param machineGroup group where the svg element will be added
+     * @param componentGroup group where the svg element will be added
      */
-    generateAll(machineGroup: G) : void;
+    generateAll(componentGroup: G) : void;
 
 
     /**
      * Generate all available graphical elements relative to static information
-     * This includes access zones
      * 
-     * @param machineGroup group where the svg element will be added
+     * @param componentGroup group where the svg element will be added
      */
-    generateAllStatic(machineGroup: G) : void;
+    generateAllStatic(componentGroup: G) : void;
 
     getWidth() : number;
         

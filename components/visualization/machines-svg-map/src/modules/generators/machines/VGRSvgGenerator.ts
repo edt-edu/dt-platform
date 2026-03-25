@@ -2,11 +2,11 @@
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 import { REFUSED } from 'dns';
-import { RectShape } from '../RectShape.js';
-import { ShapeHelper } from '../ShapeHelper.js';
-import { IMachineGenerator } from './IMachineGenerator.js';
+import { RectShape } from '../../RectShape.js';
+import { ShapeHelper } from '../../ShapeHelper.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class VGRSvgGenerator implements IMachineGenerator{
+export class VGRSvgGenerator implements IComponentGenerator{
 
   woodBase = new RectShape (257,186, 0,0);
   electronicCard =  new RectShape(86,126, 0,60); // to be verified

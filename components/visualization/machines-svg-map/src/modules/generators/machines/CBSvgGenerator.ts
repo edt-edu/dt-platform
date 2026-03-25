@@ -1,10 +1,10 @@
 
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
-import { RectShape } from '../RectShape.js';
-import { IMachineGenerator } from './IMachineGenerator.js';
+import { RectShape } from '../../RectShape.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class CBSvgGenerator implements IMachineGenerator{
+export class CBSvgGenerator implements IComponentGenerator{
 
   woodBase = new RectShape(260,186,0,0);
   plasticBase = new RectShape(257, 186, 0,0);

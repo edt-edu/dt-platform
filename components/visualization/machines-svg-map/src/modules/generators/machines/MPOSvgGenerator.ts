@@ -1,14 +1,14 @@
 
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
-import { RectShape } from '../RectShape.js';
-import { ShapeHelper } from '../ShapeHelper.js';
-import { IMachineGenerator } from './IMachineGenerator.js';
+import { RectShape } from '../../RectShape.js';
+import { ShapeHelper } from '../../ShapeHelper.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
 /**
  * SVG generator for the Multi Processing station with Oven
  */
-export class MPOSvgGenerator implements IMachineGenerator{
+export class MPOSvgGenerator implements IComponentGenerator{
  
   woodBase = new RectShape(438, 310, 0, 0);
   plasticBase = new RectShape(410, 258, 25, 25 );

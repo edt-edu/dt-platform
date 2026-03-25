@@ -1,9 +1,9 @@
 
 
 import { G } from '@svgdotjs/svg.js'
-import { IMachineGenerator } from './../machines/IMachineGenerator.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class CB_MPSslider implements IMachineGenerator {
+export class CB_MPSslider implements IComponentGenerator {
 
     id_postfix = '';
 
