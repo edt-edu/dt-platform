@@ -1,32 +1,32 @@
 
 
 import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
-import { RectShape } from '../RectShape.js';
-import { ShapeHelper } from '../ShapeHelper.js';
-import { IMachineGenerator } from './IMachineGenerator.js';
+import { RectShape } from '../../RectShape.js';
+import { ShapeHelper } from '../../ShapeHelper.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
 /**
  * SVG generator for the Multi Processing station with Oven
  */
-export class MPOSvgGenerator implements IMachineGenerator{
- 
+export class MPOSvgGenerator implements IComponentGenerator {
+
   woodBase = new RectShape(438, 310, 0, 0);
-  plasticBase = new RectShape(410, 258, 25, 25 );
-  conveyor =  new RectShape(31, 132, 46, 20 );
-  sensorIn =  new RectShape(120, 15, 300, 58 ); 
-  sensorOut =  new RectShape(96, 15, 10, 42 ); 
-  electronicCard =  new RectShape(126,86, 160,196);
-  armAccessiblezone =  new RectShape(260,15, 156, 60);
+  plasticBase = new RectShape(410, 258, 25, 25);
+  conveyor = new RectShape(31, 132, 46, 20);
+  sensorIn = new RectShape(120, 15, 300, 58);
+  sensorOut = new RectShape(96, 15, 10, 42);
+  electronicCard = new RectShape(126, 86, 160, 196);
+  armAccessiblezone = new RectShape(260, 15, 156, 60);
 
-  slider1 =  new RectShape(60,30, 46,105);
+  slide1 = new RectShape(60, 30, 46, 105);
 
-  ovenDoor =  new RectShape(90,30, 322,86);
+  ovenDoor = new RectShape(90, 30, 322, 86);
 
-  ovenSlideAccessibleZone =  new RectShape(30,90, 348,50);
-  ovenBox =  new RectShape(180,106, 252,86);
+  ovenSlideAccessibleZone = new RectShape(30, 90, 348, 50);
+  ovenBox = new RectShape(180, 106, 252, 86);
 
   turnTableAxisXPos = 174;
-  turnTableAxisYPos = 120; 
+  turnTableAxisYPos = 120;
   turnTableAxisMinRadius = 40;
   turnTableAxisMaxRadius = 64;
 
@@ -38,7 +38,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
   constructor(id_postfix: string) {
     this.id_postfix = id_postfix;
   }
-  
+
   getWidth(): number {
     return this.woodBase.xSize;
   }
@@ -47,7 +47,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
   }
 
   generateAll(machineGroup: G) {
-      
+
     this.generateAllStatic(machineGroup);
   }
 
@@ -55,7 +55,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
     this.generateWoodBase(machineGroup);
     this.generatePlasticBase(machineGroup);
     this.generateConveyor(machineGroup);
-    this.generateSliderZones(machineGroup);
+    this.generateSlideZones(machineGroup);
     this.generateElectronicCard(machineGroup);
     this.generateOvenBox(machineGroup);
     this.generateSensorZones(machineGroup);
@@ -69,30 +69,30 @@ export class MPOSvgGenerator implements IMachineGenerator{
   generateConveyor(machineGroup: G) {
     // arm accessible zone
     var zoneGroup = machineGroup.group();
-    zoneGroup.id("conveyorZone"+this.id_postfix)
-    const mainShape = zoneGroup.rect(this.conveyor.xSize, this.conveyor.ySize ).addClass('conveyorZone');
+    zoneGroup.id("conveyorZone" + this.id_postfix)
+    const mainShape = zoneGroup.rect(this.conveyor.xSize, this.conveyor.ySize).addClass('conveyorZone');
     ///*.fill('lightblue').attr({ 'fill-opacity': 0.5 })*/;
     mainShape.move(this.conveyor.xPos, this.conveyor.yPos);
-    
+
   }
 
-  generateSliderZones(machineGroup: G) {
+  generateSlideZones(machineGroup: G) {
     const group = machineGroup.group();
-    group.id('slider'+this.id_postfix)
-    group.rect(this.slider1.xSize, this.slider1.ySize)
-      .move(this.slider1.xPos, this.slider1.yPos).addClass('slider');
+    group.id('slide' + this.id_postfix)
+    group.rect(this.slide1.xSize, this.slide1.ySize)
+      .move(this.slide1.xPos, this.slide1.yPos).addClass('slide');
   }
   generateArmAccessibleZone(machineGroup: G) {
     // arm accessible zone
     var group = machineGroup.group();
-    group.id("ArmArmAccessZone"+this.id_postfix)    
+    group.id("ArmArmAccessZone" + this.id_postfix)
     group.rect(this.armAccessiblezone.xSize, this.armAccessiblezone.ySize)
       .move(this.armAccessiblezone.xPos, this.armAccessiblezone.yPos).addClass('accessZone');
   }
   generateTurntableAccessibleZone(machineGroup: G) {
     // accessible zone
     var armAccessZoneGroup = machineGroup.group();
-    armAccessZoneGroup.id("turntableAccessZone"+this.id_postfix)
+    armAccessZoneGroup.id("turntableAccessZone" + this.id_postfix)
     const mainShape = armAccessZoneGroup.circle(this.turnTableAxisMaxRadius * 2).addClass('accessZone');
     mainShape.move(-(this.turnTableAxisMaxRadius) + this.turnTableAxisXPos, -(this.turnTableAxisMaxRadius) + this.turnTableAxisYPos);
     const mask = armAccessZoneGroup.mask();
@@ -100,7 +100,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
     mask.rect(this.turnTableAxisMaxRadius * 2, this.turnTableAxisMaxRadius * 5).fill('white').move(-(this.turnTableAxisMaxRadius) + this.turnTableAxisXPos, -(this.turnTableAxisMaxRadius) + this.turnTableAxisYPos);
     // part in black will be masked
     mask.circle(this.turnTableAxisMinRadius * 2).fill('black').move(-(this.turnTableAxisMinRadius) + this.turnTableAxisXPos, -(this.turnTableAxisMinRadius) + this.turnTableAxisYPos); // Adjust position and size
-    mask.rect(this.turnTableAxisMaxRadius,this.turnTableAxisMaxRadius).move( this.turnTableAxisXPos-this.turnTableAxisMaxRadius, this.turnTableAxisYPos-this.turnTableAxisMaxRadius);
+    mask.rect(this.turnTableAxisMaxRadius, this.turnTableAxisMaxRadius).move(this.turnTableAxisXPos - this.turnTableAxisMaxRadius, this.turnTableAxisYPos - this.turnTableAxisMaxRadius);
     //mask.polygon([[0, 0], [this.turnTableAxisMaxRadius, 0], [this.turnTableAxisMaxRadius, this.turnTableAxisMaxRadius]]).fill('black').move( this.turnTableAxisXPos, this.turnTableAxisYPos);
     mainShape.maskWith(mask);
   }
@@ -108,15 +108,15 @@ export class MPOSvgGenerator implements IMachineGenerator{
   generateTurntableAxis(machineGroup: G) {
     // accessible zone
     var group = machineGroup.group();
-    group.id("turntableAxis"+this.id_postfix)
+    group.id("turntableAxis" + this.id_postfix)
     const helper = new ShapeHelper();
-    helper.generateAxisCross(group, this.turnTableAxisXPos, this.turnTableAxisYPos,5 );
+    helper.generateAxisCross(group, this.turnTableAxisXPos, this.turnTableAxisYPos, 5);
 
   }
   generateSlideAccessibleZone(machineGroup: G) {
     // arm accessible zone
     var group = machineGroup.group();
-    group.id("ArmArmAccessZone"+this.id_postfix)    
+    group.id("ArmArmAccessZone" + this.id_postfix)
     group.rect(this.ovenSlideAccessibleZone.xSize, this.ovenSlideAccessibleZone.ySize)
       .move(this.ovenSlideAccessibleZone.xPos, this.ovenSlideAccessibleZone.yPos).addClass('accessZone');
   }
@@ -127,7 +127,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
     const helper = new ShapeHelper();
     const crossSize = 7;
     const group = machineGroup.group();
-    group.id('saw'+this.id_postfix);
+    group.id('saw' + this.id_postfix);
     group.polygon(helper.drawStar(this.sawAxisXPos, this.sawAxisYPos, 7, 15, 10)).stroke('black').fill('none');
   }
 
@@ -140,21 +140,21 @@ export class MPOSvgGenerator implements IMachineGenerator{
     sensorsGroup.rect(this.sensorOut.xSize, this.sensorOut.ySize)
       .move(this.sensorOut.xPos, this.sensorOut.yPos)
       .addClass("lightBarrier");
-    
+
   }
 
   generateWoodBase(machineGroup: G) {
     const woodBaseGroup = machineGroup.group();
-    woodBaseGroup.id('woodBase'+this.id_postfix)
+    woodBaseGroup.id('woodBase' + this.id_postfix)
     woodBaseGroup.rect(this.woodBase.xSize, this.woodBase.ySize).addClass('woodBase');
     //.fill('burlywood').stroke('black');
     var refPoint = woodBaseGroup.rect(5, 5).fill('red');
-    refPoint.id('referencePoint'+this.id_postfix);
+    refPoint.id('referencePoint' + this.id_postfix);
   }
 
   generatePlasticBase(machineGroup: G) {
     const plasticBaseGroup = machineGroup.group();
-    plasticBaseGroup.id('plasticBase'+this.id_postfix)
+    plasticBaseGroup.id('plasticBase' + this.id_postfix)
     plasticBaseGroup.rect(this.plasticBase.xSize, this.plasticBase.ySize)
       .move(this.plasticBase.xPos, this.plasticBase.yPos).addClass('plasticBase');
     //.fill('burlywood').stroke('black');
@@ -162,7 +162,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
 
   generateElectronicCard(machineGroup: G) {
     const group = machineGroup.group();
-    group.id('electronicCard'+this.id_postfix)
+    group.id('electronicCard' + this.id_postfix)
     group.rect(this.electronicCard.xSize, this.electronicCard.ySize)
       .move(this.electronicCard.xPos, this.electronicCard.yPos).addClass('electronicCard');
     //.fill('burlywood').stroke('black');
@@ -170,7 +170,7 @@ export class MPOSvgGenerator implements IMachineGenerator{
 
   generateOvenBox(machineGroup: G) {
     const group = machineGroup.group();
-    group.id('electronicCard'+this.id_postfix)
+    group.id('electronicCard' + this.id_postfix)
     group.rect(this.ovenBox.xSize, this.ovenBox.ySize)
       .move(this.ovenBox.xPos, this.ovenBox.yPos) //.addClass('ovenBox');
       .fill('None').stroke('black');

@@ -1,16 +1,20 @@
 
 
 import { G } from '@svgdotjs/svg.js'
-import { IMachineGenerator } from './../machines/IMachineGenerator.js';
+import { IComponentGenerator } from '../IComponentGenerator.js';
 
-export class CB_MPSslider implements IMachineGenerator {
+/**
+ * Class to generate a Straight Slide
+ * useful for example on exit of the conveyor belt or the MPS conveyor
+ */
+export class StraightSlideSvgGenerator implements IComponentGenerator {
 
     id_postfix = '';
 
     constructor(id_postfix: string) {
         this.id_postfix = id_postfix;
     }
-  
+
     getWidth(): number {
         throw new Error('Method not implemented.');
     }
@@ -23,8 +27,8 @@ export class CB_MPSslider implements IMachineGenerator {
     }
 
     generateAllStatic(machineGroup: G) {
-        this.generateSliderTrapeze(machineGroup);
-        this.generateSliderCircle(machineGroup);
+        this.generateSlideTrapeze(machineGroup);
+        this.generateSlideCircle(machineGroup);
         this.generateArrivalPosition(machineGroup);
     }
 
@@ -37,7 +41,7 @@ export class CB_MPSslider implements IMachineGenerator {
         mainShape.fill('lightblue').attr({ 'fill-opacity': 0.75 });
     }
 
-    generateSliderCircle(machineGroup: G) {
+    generateSlideCircle(machineGroup: G) {
         //Circle Form
         var zoneGroup = machineGroup.group();
         zoneGroup.id("circleForm" + this.id_postfix);
@@ -46,7 +50,7 @@ export class CB_MPSslider implements IMachineGenerator {
         mainShape.fill('gray');
     }
 
-    generateSliderTrapeze(machineGroup: G) {
+    generateSlideTrapeze(machineGroup: G) {
         //Trapeze Form
         var zoneGroup = machineGroup.group();
         zoneGroup.id("trapezeForm" + this.id_postfix)
@@ -61,7 +65,7 @@ export class CB_MPSslider implements IMachineGenerator {
         trapeze.move(0, 0);
         trapeze.rotate(180);
         var refPoint = zoneGroup.rect(2, 2).fill('red');
-        refPoint.id('referencePoint'+this.id_postfix);
+        refPoint.id('referencePoint' + this.id_postfix);
     }
 
 }

@@ -6,18 +6,39 @@ import { SVG, Svg, Defs, registerWindow, G } from '@svgdotjs/svg.js'
 
 import { readFileSync, writeFileSync } from 'fs';
 
-import { VGRSvgGenerator } from './machines/VGRSvgGenerator.js';
-import { CBSvgGenerator } from './machines/CBSvgGenerator.js';
-import { SLCSvgGenerator } from './machines/SLCSvgGenerator.js';
-import { HBWSvgGenerator } from './machines/HBWSvgGenerator.js';
-import { MPOSvgGenerator } from './machines/MPOSvgGenerator.js';
 
-import { CB_MPSslider } from './sliders/CB_MPSslider.js';
-import { SLslider } from './sliders/SLslider.js';
+import { VGRSvgGenerator } from './generators/machines/VGRSvgGenerator.js';
+import { CBSvgGenerator } from './generators/machines/CBSvgGenerator.js';
+import { SLCSvgGenerator } from './generators/machines/SLCSvgGenerator.js';
+import { HBWSvgGenerator } from './generators/machines/HBWSvgGenerator.js';
+import { MPOSvgGenerator } from './generators/machines/MPOSvgGenerator.js';
 
-import { FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
-import { IMachineGenerator } from './machines/IMachineGenerator.js';
+import { StraightSlideSvgGenerator } from './generators/components/StraightSlideSvgGenerator.js';
+import { RHSlideSvgGenerator } from './generators/components/RHSlideSvgGenerator.js';
 
+import { ComponentKind, CustomSizeComponentKind, CustomSizeComponentPosition, ElementType, FactoryLayout, MachineKind, MachinePosition } from './config/FactoryLayout.js';
+import { IComponentGenerator } from './generators/IComponentGenerator.js';
+import { TableSvgGenerator } from './generators/customsizecomponents/TableSvgGenerator.js';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
+
+
+type GeneratorConstructor = new (id: string) => IComponentGenerator;
+type CustomSizeComponentGeneratorConstructor = new (id: string, width: number, length: number) => IComponentGenerator;
+const MACHINE_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
+  [MachineKind.CB]: CBSvgGenerator,
+  [MachineKind.HBW]: HBWSvgGenerator,
+  [MachineKind.SLC]: SLCSvgGenerator,
+  [MachineKind.MPO]: MPOSvgGenerator,
+  [MachineKind.VGR]: VGRSvgGenerator,
+};
+const COMPONENT_GENERATOR_REGISTRY: Record<string, GeneratorConstructor> = {
+  [ComponentKind.S_SLI]: StraightSlideSvgGenerator,
+  [ComponentKind.RH_SLI]: RHSlideSvgGenerator,
+};
+const CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY: Record<string, CustomSizeComponentGeneratorConstructor> = {
+  [CustomSizeComponentKind.TABLE]: TableSvgGenerator,
+};
 
 export class SvgGenerator {
 
@@ -26,11 +47,11 @@ export class SvgGenerator {
 
   canvasXSize!: number;
   canvasYSize!: number;
-  addPositions: boolean;  
+  addPositions: boolean;
   addDimensions: boolean;
   accessibleZoneOpacity: number;
 
-  constructor(  addPositions: boolean,  addDimensions: boolean, accessibleZoneOpacity: number) {
+  constructor(addPositions: boolean, addDimensions: boolean, accessibleZoneOpacity: number) {
     const window = createSVGWindow()
     const document = window.document
 
@@ -39,6 +60,8 @@ export class SvgGenerator {
     this.accessibleZoneOpacity = accessibleZoneOpacity;
     // register window and document
     registerWindow(window, document)
+
+
 
   }
 
@@ -53,6 +76,14 @@ export class SvgGenerator {
     style.rule(".woodBase", {
       fill: 'burlywood',
       'stroke': 'black'
+    });
+
+    style.rule(".tableBase", {
+      fill: 'burlywood',
+      'fill-opacity': 0,
+      'stroke': 'black',
+      'stroke-width': 1,
+      'stroke-dasharray': '5, 5'
     });
     style.rule(".plasticBase", {
       fill: 'darkgray',
@@ -78,11 +109,11 @@ export class SvgGenerator {
       fill: 'green',
       'stroke': 'black'
     })
-    style.rule(".slider", { // todo some color change or arrow for direction of the slider ?
+    style.rule(".slide", { // todo some color change or arrow for direction of the slide ?
       fill: 'dimgray',
       'stroke': 'black'
     })
-    style.rule(".ejector", { // todo some color change or arrow for direction of the slider ?
+    style.rule(".ejector", { // todo some color change or arrow for direction of the slide ?
       fill: 'lightgray',
       'stroke': 'black'
     })
@@ -106,21 +137,21 @@ export class SvgGenerator {
     const xNbTicks = xSize / 100;
     for (let index = 0; index < xNbTicks; index++) {
       rulersGroup.line(index * 100, 0, index * 100, 10).stroke({ width: 1, color: 'black' });
-      if(index > 0 && (this.addPositions || this.addDimensions)) {
-        rulersGroup.text(`${index *10}cm`).move(index * 100 + 2, -5).font({ size: 10 }).fill('black');
+      if (index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index * 10}cm`).move(index * 100 + 2, -5).font({ size: 10 }).fill('black');
       }
     }
     rulersGroup.line(0, 0, 0, ySize).stroke({ width: 1, color: 'black' });
     const yNbTicks = ySize / 100;
     for (let index = 0; index < yNbTicks; index++) {
       rulersGroup.line(0, index * 100, 10, index * 100).stroke({ width: 1, color: 'black' });
-      if(index > 0 && (this.addPositions || this.addDimensions)) {
-        rulersGroup.text(`${index *10}cm`).move(5, index * 100 - 5).font({ size: 10 }).fill('black');
+      if (index > 0 && (this.addPositions || this.addDimensions)) {
+        rulersGroup.text(`${index * 10}cm`).move(5, index * 100 - 5).font({ size: 10 }).fill('black');
       }
     }
   }
 
-  generateLocationString(machinePosition: MachinePosition, machineGenerator: IMachineGenerator, group: G) {
+  generateLocationString(machinePosition: MachinePosition, machineGenerator: IComponentGenerator, group: G) {
     const positiongroup = group.group();
     positiongroup.id(group.id() + '_positionGroup');
     positiongroup.translate(machinePosition.x, machinePosition.y)
@@ -149,7 +180,18 @@ export class SvgGenerator {
 
     // load from configuration file 
     const content = readFileSync(fileName, 'utf-8')
-    const factoryLayout: FactoryLayout = JSON.parse(content);
+    const rawObject = JSON.parse(content);
+
+    const factoryLayout = plainToInstance(FactoryLayout, rawObject as FactoryLayout);
+
+    const errors = validateSync(factoryLayout, { whitelist: true, forbidNonWhitelisted: true });
+
+    if (errors.length > 0) {
+      console.error("❌ validation error :");
+      const detailedErrors = errors.map(err => err.toString()).join('\n');
+      throw new Error(`Validation failed for ${fileName}:\n${detailedErrors}`);
+    }
+
 
     this.canvasXSize = factoryLayout.xSize
     this.canvasYSize = factoryLayout.xSize
@@ -166,58 +208,50 @@ export class SvgGenerator {
     //console.log(jsonFactoryLayout);
   }
 
+
+
   /**
    * generate the SVG for the given FactoryLayout configuration
    * @param fLayout  
    */
   generateFromLayout(fLayout: FactoryLayout) {
     for (let index = 0; index < fLayout.positions.length; index++) {
-      const machine = fLayout.positions[index];
+      const rawComponent = fLayout.positions[index];
       const parentgroup = this.svg.group();
-      parentgroup.id(machine.id + '_parentGroup');
-      const group = parentgroup.group(); 
-      group.id(machine.id);
-      var machineGenerator: IMachineGenerator;
-      switch (machine.kind) {
-        case MachineKind.CB:
-          machineGenerator = new CBSvgGenerator('_' + machine.id);
-          machineGenerator.generateAll(group);
-          this.generateLocationString(machine, machineGenerator, parentgroup);
+      parentgroup.id(rawComponent.id + '_parentGroup');
+      const group = parentgroup.group();
+      group.id(rawComponent.id);
+
+      var generator: IComponentGenerator;
+      switch (rawComponent.elementType) {
+        case ElementType.MACHINE:
+          const MachineGeneratorClass = MACHINE_GENERATOR_REGISTRY[rawComponent.kind];
+          var generator = new MachineGeneratorClass('_' + rawComponent.id);
           break;
-        case MachineKind.HBW:
-          machineGenerator = new HBWSvgGenerator('_' + machine.id);
-          machineGenerator.generateAll(group);
-          this.generateLocationString(machine, machineGenerator, parentgroup);
+        case ElementType.COMPONENT:
+          const componentGeneratorClass = COMPONENT_GENERATOR_REGISTRY[rawComponent.kind];
+          var generator = new componentGeneratorClass('_' + rawComponent.id);
           break;
-        case MachineKind.SLC:
-          machineGenerator = new SLCSvgGenerator('_' + machine.id);
-          machineGenerator.generateAll(group);
-          this.generateLocationString(machine, machineGenerator, parentgroup);
+        case ElementType.CUSTOMSIZECOMPONENT:
+          const CustomSizeComponentGeneratorClass = CUSTOMSIZECOMPONENT_GENERATOR_REGISTRY[rawComponent.kind];
+          const component = rawComponent as CustomSizeComponentPosition;
+          var generator = new CustomSizeComponentGeneratorClass('_' + rawComponent.id,
+            component.width,
+            component.length);
           break;
-        case MachineKind.MPO:
-          machineGenerator = new MPOSvgGenerator('_' + machine.id);
-          machineGenerator.generateAll(group);
-          this.generateLocationString(machine, machineGenerator, parentgroup);
-          break;
-        case MachineKind.VGR:
-          machineGenerator = new VGRSvgGenerator('_' + machine.id);
-          machineGenerator.generateAll(group);
-          this.generateLocationString(machine, machineGenerator, parentgroup);
-          break;
-        case MachineKind.CB_MPS_SLI:
-          new CB_MPSslider('_' + machine.id).generateAll(group);
-          break;
-        case MachineKind.SL_SLI:
-          new SLslider('_' + machine.id).generateAll(group);
-          break;
-        default:
-          throw new Error(`Non-existent machine kind : ${machine.kind}`);
       }
-      if (machine.degrees != 0) {
-        group.rotate(machine.degrees, 0, 0);
+
+      generator.generateAll(group);
+
+      if (rawComponent.elementType === ElementType.MACHINE) {
+        this.generateLocationString(rawComponent as MachinePosition, generator, parentgroup);
       }
-      if (machine.x != 0 || machine.y != 0) {
-        group.translate(machine.x, machine.y);
+
+      if (rawComponent.degrees != 0) {
+        group.rotate(rawComponent.degrees, 0, 0);
+      }
+      if (rawComponent.x != 0 || rawComponent.y != 0) {
+        group.translate(rawComponent.x, rawComponent.y);
       }
     }
   }
@@ -234,28 +268,5 @@ export class SvgGenerator {
     const svgString = this.svg.svg();
     writeFileSync(fileName, this.formatXml(svgString));
   }
-
-  /**
-   * for testing purpose: create and print the json of a sample FactoryLayout
-   * @returns 
-   */
-  createSampleFactoryLayout(): FactoryLayout {
-
-    const cb1 = new MachinePosition('cb1', 730, 1010, 180, MachineKind.CB, 'ConveyorBelt1');
-    const slc1 = new MachinePosition('slc1', 150, 1350, 270, MachineKind.SLC, 'SortingLine1');
-    const hbw1 = new MachinePosition('hbw1', 460, 150, 0, MachineKind.HBW, 'HighBayWarehouse1');
-    const mpo1 = new MachinePosition('hbw1', 460, 470, 90, MachineKind.MPO, 'MultiProcessingStation1');
-    const vgr1 = new MachinePosition('vgr1', 750, 810, 180, MachineKind.VGR, 'VacuumGripper1');
-    const vgr2 = new MachinePosition('vgr2', 660, 1020, 90, MachineKind.VGR, 'VacuumGripper2');
-    const factoryLayout = new FactoryLayout('RennesFactory_Setup1', 1500, 2000, [cb1, hbw1, slc1, mpo1, vgr1, vgr2]);
-    // Serialize to JSON
-    const jsonFactoryLayout = JSON.stringify(factoryLayout, null, 2);
-    console.log(jsonFactoryLayout);
-
-    return factoryLayout;
-
-  }
-
-
 
 }
