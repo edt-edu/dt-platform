@@ -15,7 +15,7 @@ export class RHSlideSvgGenerator implements IComponentGenerator {
     constructor(id_postfix: string) {
         this.id_postfix = id_postfix;
     }
-  
+
     getWidth(): number {
         throw new Error('Method not implemented.');
     }
@@ -28,31 +28,31 @@ export class RHSlideSvgGenerator implements IComponentGenerator {
     }
 
     generateAllStatic(machineGroup: G) {
-        this.generateSliderRectangle(machineGroup);
-        this.generateSliderOtherRectangle(machineGroup);
-        this.generateSliderCircle(machineGroup);
+        this.generateSlideRectangle(machineGroup);
+        this.generateSlideOtherRectangle(machineGroup);
+        this.generateSlideCircle(machineGroup);
         this.generateArrivalPosition(machineGroup);
     }
 
-    generateSliderRectangle(machineGroup: G) {
+    generateSlideRectangle(machineGroup: G) {
         //First rectanlge
         var zoneGroup = machineGroup.group();
         zoneGroup.id("firstRectanle" + this.id_postfix);
-        const mainShape = zoneGroup.rect(34,36);
+        const mainShape = zoneGroup.rect(34, 36);
         mainShape.move(0, 0);
         mainShape.fill('gray');
     }
 
-    generateSliderOtherRectangle(machineGroup: G) {
+    generateSlideOtherRectangle(machineGroup: G) {
         //Second rectanlge
         var zoneGroup = machineGroup.group();
         zoneGroup.id("firstRectanle" + this.id_postfix);
-        const mainShape = zoneGroup.rect(130,32);
+        const mainShape = zoneGroup.rect(130, 32);
         mainShape.move(0, 0);
         mainShape.fill('gray');
     }
 
-    generateSliderCircle(machineGroup: G) {
+    generateSlideCircle(machineGroup: G) {
         //Circle Form
         var zoneGroup = machineGroup.group();
         zoneGroup.id("circleForm" + this.id_postfix);

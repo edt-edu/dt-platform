@@ -6,14 +6,26 @@
     {
       "x": 0,
       "y": 0,
-      "length": 1400,
-      "width": 710,
+      "length": 1205,
+      "width": 705,
       "degrees": 0,
       "type": "CUSTOMSIZECOMPONENT",
       "kind": "TABLE",
       "name": "Table1",
       "id": "table1"
     },
+    {
+      "x": 0,
+      "y": 705,
+      "length": 1205,
+      "width": 705,
+      "degrees": 0,
+      "type": "CUSTOMSIZECOMPONENT",
+      "kind": "TABLE",
+      "name": "Table1",
+      "id": "table1"
+    },
+    
     {
       "x": 670,
       "y": 940,
@@ -51,6 +63,24 @@
       "id": "mps1"
     },
     {
+      "x": 670,
+      "y": 941,
+      "degrees": 270,
+      "type": "COMPONENT",
+      "kind": "S_SLI",
+      "name": "CBSlide1",
+      "id": "sli1"
+    },
+    {
+      "x": 413,
+      "y": 879,
+      "degrees": 90,
+      "type": "COMPONENT",
+      "kind": "S_SLI",
+      "name": "CBSlide2",
+      "id": "sli2"
+    },
+    {
       "x": 390,
       "y": 538,
       "degrees": 270,
@@ -69,7 +99,7 @@
       "id": "sli4"
     },
     {
-      "x": 810,
+      "x": 410,
       "y": 540,
       "degrees": 0,
       "type": "MACHINE",

@@ -14,7 +14,7 @@ export class StraightSlideSvgGenerator implements IComponentGenerator {
     constructor(id_postfix: string) {
         this.id_postfix = id_postfix;
     }
-  
+
     getWidth(): number {
         throw new Error('Method not implemented.');
     }
@@ -27,8 +27,8 @@ export class StraightSlideSvgGenerator implements IComponentGenerator {
     }
 
     generateAllStatic(machineGroup: G) {
-        this.generateSliderTrapeze(machineGroup);
-        this.generateSliderCircle(machineGroup);
+        this.generateSlideTrapeze(machineGroup);
+        this.generateSlideCircle(machineGroup);
         this.generateArrivalPosition(machineGroup);
     }
 
@@ -41,7 +41,7 @@ export class StraightSlideSvgGenerator implements IComponentGenerator {
         mainShape.fill('lightblue').attr({ 'fill-opacity': 0.75 });
     }
 
-    generateSliderCircle(machineGroup: G) {
+    generateSlideCircle(machineGroup: G) {
         //Circle Form
         var zoneGroup = machineGroup.group();
         zoneGroup.id("circleForm" + this.id_postfix);
@@ -50,7 +50,7 @@ export class StraightSlideSvgGenerator implements IComponentGenerator {
         mainShape.fill('gray');
     }
 
-    generateSliderTrapeze(machineGroup: G) {
+    generateSlideTrapeze(machineGroup: G) {
         //Trapeze Form
         var zoneGroup = machineGroup.group();
         zoneGroup.id("trapezeForm" + this.id_postfix)
@@ -65,7 +65,7 @@ export class StraightSlideSvgGenerator implements IComponentGenerator {
         trapeze.move(0, 0);
         trapeze.rotate(180);
         var refPoint = zoneGroup.rect(2, 2).fill('red');
-        refPoint.id('referencePoint'+this.id_postfix);
+        refPoint.id('referencePoint' + this.id_postfix);
     }
 
 }

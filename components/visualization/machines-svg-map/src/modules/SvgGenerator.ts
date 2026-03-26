@@ -109,7 +109,7 @@ export class SvgGenerator {
       fill: 'green',
       'stroke': 'black'
     })
-    style.rule(".slider", { // todo some color change or arrow for direction of the slide ?
+    style.rule(".slide", { // todo some color change or arrow for direction of the slide ?
       fill: 'dimgray',
       'stroke': 'black'
     })
