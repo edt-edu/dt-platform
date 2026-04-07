@@ -1,21 +1,20 @@
 package fischertechnik_gateway;
 
 import de.se_rwth.commons.logging.Log;
-import fischertechnik_gateway.machines.highbay.HighBay;
-import fischertechnik_gateway.util.Color;
-import fischertechnik_gateway.util.Direction;
 import fischertechnik_gateway.machines.Machine;
-import fischertechnik_gateway.util.PositionThreeD;
 import fischertechnik_gateway.machines.conveyorBelt.ConveyorBelt;
-import fischertechnik_gateway.message.Command;
+import fischertechnik_gateway.machines.highbay.HighBay;
 import fischertechnik_gateway.machines.multiprocessing.MultiProcessing;
 import fischertechnik_gateway.machines.sortingLine.SortingLine;
-import fischertechnik_gateway.tcp.TcpPLCConnection;
 import fischertechnik_gateway.machines.vacuumGripper.VacuumGripper;
+import fischertechnik_gateway.message.Command;
+import fischertechnik_gateway.tcp.TcpPLCConnection;
+import fischertechnik_gateway.util.Color;
+import fischertechnik_gateway.util.Direction;
+import fischertechnik_gateway.util.NamedPosition;
+import fischertechnik_gateway.util.Position;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,21 +86,21 @@ public class Demo {
         sortingLine1.eject(Color.RED).waitForDone();
 
         // Move the token to the conveyor
-        PositionThreeD sortingOutputRed = new PositionThreeD(2275, 1400, 1225);
-        PositionThreeD conveyorBack = new PositionThreeD(1800, 1050, 1225);
+        Position sortingOutputRed = new NamedPosition("SL_OUTPUT_RED");
+        Position conveyorBack = new NamedPosition("CB");
 
         vacuumGripper2.move(sortingOutputRed, conveyorBack).waitForDone();
       }
 
       conveyor1.moveToSensor(Direction.FORWARD);
 
-      PositionThreeD safetyPositionConveyorFront = new PositionThreeD(1180, 0, 0);
-      PositionThreeD conveyorFront = new PositionThreeD(1180, 1300, 1750);
-      PositionThreeD highbayInputOutput = new PositionThreeD(2520, 400, 1000);
-      PositionThreeD safetyInputMultiprocessing = new PositionThreeD(270, 0, 0);
-      PositionThreeD inputMultiprocessing = new PositionThreeD(270, 1000, 240);
-      PositionThreeD safetyOutputMultiprocessing = new PositionThreeD(3000, 0, 0);
-      PositionThreeD outputMultiprocessing = new PositionThreeD(3000, 1200, 1350);
+      Position safetyPositionConveyorFront = new NamedPosition("OVER_CB");
+      Position conveyorFront = new NamedPosition("CB");
+      Position highbayInputOutput = new NamedPosition("HBW");
+      Position safetyInputMultiprocessing = new NamedPosition("OVER_MPS_INPUT");
+      Position inputMultiprocessing = new NamedPosition("MPS_INPUT");
+      Position safetyOutputMultiprocessing = new NamedPosition("OVER_MPS_OUTPUT");
+      Position outputMultiprocessing = new NamedPosition("MPS_OUTPUT");
 
       if(true) {
         vacuumGripper1.gotoposition(safetyPositionConveyorFront).waitForDone();
@@ -114,8 +113,6 @@ public class Demo {
         vacuumGripper1.gotoposition(safetyOutputMultiprocessing).waitForDone();
 
         highbay1.pickupFrom(1, 1).waitForDone();
-//        Thread.sleep(1000L * 30); // TODO: highbay status seems to be broken
-//        highbay1.waitForIdle();
 
         vacuumGripper1.move(outputMultiprocessing, highbayInputOutput).waitForDone();
         vacuumGripper1.gotoposition(safetyOutputMultiprocessing).waitForDone();
@@ -123,7 +120,11 @@ public class Demo {
         highbay1.storeTo(1, 1).waitForDone();
       }
     } finally {
-      connection.close();
+      try {
+        connection.close();
+      } catch (IOException e) {
+        System.err.println("Failed to close connection: " + e.getMessage());
+      }
     }
   }
 }

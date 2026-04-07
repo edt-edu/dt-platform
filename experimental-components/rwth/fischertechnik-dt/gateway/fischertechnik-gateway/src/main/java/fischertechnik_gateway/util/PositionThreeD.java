@@ -1,6 +1,9 @@
 package fischertechnik_gateway.util;
 
-public class PositionThreeD {
+import fischertechnik_gateway.parameters.Parameter;
+import fischertechnik_gateway.parameters.PositionParameterThreeD;
+
+public class PositionThreeD implements Position {
   private final int horizontal;
   private final int vertical;
   private final int rotation;
@@ -21,5 +24,10 @@ public class PositionThreeD {
 
   public int getVertical() {
     return vertical;
+  }
+
+  @Override
+  public Parameter toParameter(PositionMeaning meaning) {
+    return new PositionParameterThreeD(this, meaning);
   }
 }
