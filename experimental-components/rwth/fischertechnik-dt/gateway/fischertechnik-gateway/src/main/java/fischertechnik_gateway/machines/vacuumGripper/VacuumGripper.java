@@ -1,9 +1,9 @@
 package fischertechnik_gateway.machines.vacuumGripper;
 
 import fischertechnik_gateway.machines.Machine;
-import fischertechnik_gateway.message.CommandStatus;
-import fischertechnik_gateway.util.PositionThreeD;
 import fischertechnik_gateway.message.Command;
+import fischertechnik_gateway.message.CommandStatus;
+import fischertechnik_gateway.util.Position;
 
 import java.util.function.Consumer;
 
@@ -12,7 +12,7 @@ public class VacuumGripper extends Machine {
     super(topic, commandConsumer);
   }
 
-  public CommandStatus<VacuumGripper, GoToPosition> gotoposition(PositionThreeD position) {
+  public CommandStatus<VacuumGripper, GoToPosition> gotoposition(Position position) {
     return sendCommand(this, new GoToPosition(topic, System.currentTimeMillis(), msgId++, position));
   }
 
@@ -20,15 +20,15 @@ public class VacuumGripper extends Machine {
     return sendCommand(this, new Grip(topic, System.currentTimeMillis(), msgId++));
   }
 
-  public CommandStatus<VacuumGripper, Move> move(PositionThreeD start, PositionThreeD end) {
+  public CommandStatus<VacuumGripper, Move> move(Position start, Position end) {
     return sendCommand(this, new Move(topic, System.currentTimeMillis(), msgId++, start, end));
   }
 
-  public CommandStatus<VacuumGripper, Pick> pick(PositionThreeD position) {
+  public CommandStatus<VacuumGripper, Pick> pick(Position position) {
     return sendCommand(this, new Pick(topic, System.currentTimeMillis(), msgId++, position));
   }
 
-  public CommandStatus<VacuumGripper, Place> place(PositionThreeD position) {
+  public CommandStatus<VacuumGripper, Place> place(Position position) {
     return sendCommand(this, new Place(topic, System.currentTimeMillis(), msgId++, position));
   }
 
