@@ -1,5 +1,4 @@
-name: 
-MachineSVGMap Tests
+name: MachineSVGMap Tests
 
 on:
   push:
