@@ -1,0 +1,42 @@
+name: 
+MachineSVGMap Tests
+
+on:
+  push:
+    paths:
+      - ".github/workflows/machinessvgmap-tests.yml"
+      - "components/visualization/machines-svg-map/**"
+
+  pull_request:
+    paths:
+      - ".github/workflows/machinessvgmap-tests.yml"
+      - "components/visualization/machines-svg-map/**"
+
+concurrency:
+  group: machinessvgmap-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  packages: write
+  
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+jobs:
+  test:
+    name: MachineSVGMap Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: components/visualization/machines-svg-map
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build:ts  
+      - run: npm run generate # very simple validation  (TODO a real test suite)
