@@ -48,6 +48,15 @@ for example
 `npm run watch:generate`
 
 
+
+launch the test suite
+
+`npm test`
+
+you can update the golden reference by running
+
+`npm run test:update-golden`
+
 ## Notes about installing the tool
 
 https://git.rwth-aachen.de/help/user/packages/npm_registry/index
@@ -59,14 +68,14 @@ in our case the project Id is :
 
 you can add in your $HOME/.npmrc
 ```
-@mbdo:registry=https://git.rwth-aachen.de/api/v4/groups/109111/-/packages/npm/
-//git.rwth-aachen/api/v4/groups/109111/-/packages/npm/:_authToken=YOUR_ACCESS_TOKEN
+@edt-edu:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_ACCESS_TOKEN
 ```
 or 
 
 ```
-@mbdo:registry=https://git.rwth-aachen.de/api/v4/groups/109111/-/packages/npm/
-//git.rwth-aachen/api/v4/groups/109111/-/packages/npm/:_authToken=${NPM_TOKEN}
+@edt-edu:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
 
 and make sure to export the var
@@ -76,7 +85,7 @@ export NPM_TOKEN=YOUR_ACCESS_TOKEN
 
 
 then
-`npm i @mbdo/machines-svg-map`   should work in your node projects
+`npm i @edt-edu/machines-svg-map`   should work in your node projects
 
 
 
