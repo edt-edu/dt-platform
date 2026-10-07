@@ -47,6 +47,17 @@ jobs:
           test/golden.test.ts
         name: Run golden tests
 
+
+      - name: Publish test results
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: MachineSVGMap tests
+          path: dist/junit.xml
+          reporter: jest-junit
+          list-suites: all
+          list-tests: failed
+
       # Publish results to GitHub Checks / PR comments
       - uses: actions/upload-artifact@v7
         if: always()
