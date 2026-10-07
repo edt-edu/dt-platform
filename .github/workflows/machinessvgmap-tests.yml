@@ -19,10 +19,10 @@ permissions:
   contents: read
   checks: write
   packages: write
-  
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
 jobs:
   test:
     name: MachineSVGMap Tests
@@ -37,5 +37,20 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - run: npm run build:ts  
-      - run: npm run generate # very simple validation  (TODO a real test suite)
+      - run: npm run build:ts
+
+      # Run the golden test suite with JUnit XML output and a spec reporter to stdout for GitHub Actions logs
+      - run: |
+          npx tsx --test \
+          --test-reporter=spec --test-reporter-destination=stdout \
+          --test-reporter=junit --test-reporter-destination=dist/junit.xml \
+          test/golden.test.ts
+        name: Run golden tests
+
+      # Publish results to GitHub Checks / PR comments
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: junit-results
+          path: components/visualization/machines-svg-map/dist/junit.xml
+        continue-on-error: true

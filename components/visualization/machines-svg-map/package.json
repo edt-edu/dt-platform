@@ -10,7 +10,7 @@
     "watch": "tsc -w -p .",
     "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions --accessibleZoneOpacity 0.5",
     "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate' --verbose",
-    "test": "npx tsx test/golden.test.ts",
+    "test": "npx tsx --test test/golden.test.ts",
     "test:update-golden": "rm -f test/__snapshots__/machine_config.golden.svg && npm test"
   },
   "author": "Didier Vojtisek",
