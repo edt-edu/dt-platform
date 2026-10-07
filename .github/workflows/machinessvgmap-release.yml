@@ -1,0 +1,58 @@
+name: Publish MachinesSVGMap package
+
+on:
+  push:
+    tags:
+      - "machinessvgmap_*"
+
+jobs:
+  publish:
+    name: Publish MachinesSVGMap
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    defaults:
+      run:
+        working-directory: components/visualization/machines-svg-map
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: "@edt-edu"
+
+      - name: Validate release version
+        shell: bash
+        run: |
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^machinessvgmap_[0-9]+\.[0-9]+\.[0-9]+(-.*)?$ ]]; then
+            echo "Invalid release tag: ${GITHUB_REF_NAME}"
+            exit 1
+          fi
+
+          TAG_VERSION="${GITHUB_REF_NAME#machinessvgmap_}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+
+          echo "Tag version:     ${TAG_VERSION}"
+          echo "Package version: ${PACKAGE_VERSION}"
+
+          if [[ "${TAG_VERSION}" != "${PACKAGE_VERSION}" ]]; then
+            echo "Tag version does not match package.json version"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run prepublish
+
+      - name: Publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

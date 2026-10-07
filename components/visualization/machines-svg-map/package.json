@@ -1,16 +1,24 @@
 {
-  "name": "@mbdo/machines-svg-map",
-  "version": "1.0.1",
+  "name": "@edt-edu/machines-svg-map",
+  "version": "1.0.2",
   "description": "A SVG map for FischerTechnik Factory Machines configuration",
   "main": "dist/cli.js",
   "types": "dist/cli.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edt-edu/dt-platform.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build:ts": "tsc -p .",
     "watch": "tsc -w -p .",
     "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions --accessibleZoneOpacity 0.5",
     "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate' --verbose",
     "test": "npx tsx --test test/golden.test.ts",
-    "test:update-golden": "rm -f test/__snapshots__/machine_config.golden.svg && npm test"
+    "test:update-golden": "rm -f test/__snapshots__/machine_config.golden.svg && npm test",
+    "prepublish": "tsc"
   },
   "author": "Didier Vojtisek",
   "license": "EPL-2.0",
