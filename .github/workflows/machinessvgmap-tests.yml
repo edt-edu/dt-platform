@@ -53,7 +53,7 @@ jobs:
         uses: dorny/test-reporter@v3
         with:
           name: MachineSVGMap tests
-          path: dist/junit.xml
+          path: components/visualization/machines-svg-map/dist/junit.xml
           reporter: jest-junit
           list-suites: all
           list-tests: failed
