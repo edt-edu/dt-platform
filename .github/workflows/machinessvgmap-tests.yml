@@ -1,0 +1,67 @@
+name: MachineSVGMap Tests
+
+on:
+  push:
+    paths:
+      - ".github/workflows/machinessvgmap-tests.yml"
+      - "components/visualization/machines-svg-map/**"
+
+  pull_request:
+    paths:
+      - ".github/workflows/machinessvgmap-tests.yml"
+      - "components/visualization/machines-svg-map/**"
+
+concurrency:
+  group: machinessvgmap-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  checks: write
+  packages: write
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  test:
+    name: MachineSVGMap Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: components/visualization/machines-svg-map
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build:ts
+
+      # Run the golden test suite with JUnit XML output and a spec reporter to stdout for GitHub Actions logs
+      - run: |
+          npx tsx --test \
+          --test-reporter=spec --test-reporter-destination=stdout \
+          --test-reporter=junit --test-reporter-destination=dist/junit.xml \
+          test/golden.test.ts
+        name: Run golden tests
+
+
+      - name: Publish test results
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@v3
+        with:
+          name: MachineSVGMap tests
+          path: components/visualization/machines-svg-map/dist/junit.xml
+          reporter: jest-junit
+          list-suites: all
+          list-tests: failed
+
+      # Publish results to GitHub Checks / PR comments
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: junit-results
+          path: components/visualization/machines-svg-map/dist/junit.xml
+        continue-on-error: true

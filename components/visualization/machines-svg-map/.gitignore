@@ -1,5 +1,9 @@
 /node_modules/
 /dist/
 
+# Test artefacts
+dist/.golden_test_output.svg
+dist/.golden_test_output.diff.svg
+
 # TypeScript cache
 *.tsbuildinfo
