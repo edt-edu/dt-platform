@@ -10,7 +10,8 @@
     "watch": "tsc -w -p .",
     "generate": "node ./dist/cli.js ./resources/machine_config.json dist/machine_config.svg  --addPositions --addDimensions --accessibleZoneOpacity 0.5",
     "watch:generate": "onchange 'src/**/*.ts' '**/*_config.json' -- sh -c 'npm run build:ts && npm run generate' --verbose",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx tsx test/golden.test.ts",
+    "test:update-golden": "rm -f test/__snapshots__/machine_config.golden.svg && npm test"
   },
   "author": "Didier Vojtisek",
   "license": "EPL-2.0",
@@ -19,6 +20,7 @@
     "@types/snapsvg": "^0.5.8",
     "@types/svgdom": "^0.1.2",
     "onchange": "^7.1.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.4.5"
   },
   "type": "module",
