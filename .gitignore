@@ -1,6 +1,5 @@
 **/.idea/*
 
-.~lock.*
 
 # java/maven/gradle
 .gradle/
@@ -25,7 +24,6 @@ __pycache__/
 .virtualenv/
 *.pyc
 .coverage
-references/physical_dimensions/MachinesSVGMap/package-lock.json
 
 
 */.venv/
