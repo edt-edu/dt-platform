@@ -44,9 +44,6 @@ public class MqttMessageHandler implements MessageHandler {
         String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
         String payload = message.getPayload().toString();
         log.debug("REceived MQTT msg, topic: " + topic + "  message: " + message.getPayload());
-        for (DtEventGroup dtEventGroup : this.gatewayService.getGatewayServiceConfiguration().dtEventGroups()) {
-            log.info("dtEventGroups() loop " + dtEventGroup.name());
-        }
         this.applyCloneRules(topic, payload);
         this.applyMqttToInfluxDBRules(topic, payload);
         this.applyMqttToKafkaRules(topic, payload);

@@ -12,6 +12,10 @@ configuration:
       token: "MyInitialAdminToken0=="
       org: "mbdo"
       bucket: "factory"
+      # optional: points are written asynchronously in batches, sent at batchSize points or after flushIntervalMs
+      # batchSize: 1000
+      # flushIntervalMs: 1000
+      # bufferLimit: 100000 # points kept while InfluxDB is unreachable, the oldest are dropped beyond
   mqttInfluxdbRecordings: # MQTT to influxdb TimeSeries
   # define measures that should be collected in time series DB
     - name: "Physical_Twin_VGR1"
