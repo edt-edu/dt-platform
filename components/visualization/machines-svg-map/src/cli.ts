@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 
 import { parseArgs } from 'node:util';
 import { SvgGenerator } from './modules/SvgGenerator.js';
@@ -27,7 +28,7 @@ const { values, positionals } = parseArgs({
 function showHelp() {
   console.log(`
 Usage:
-  node index.js <configFile> <outputFile> [options]
+  node dist/cli.js <configFile> <outputFile> [options]
 
 Arguments:
   configFile        configuration JSON file

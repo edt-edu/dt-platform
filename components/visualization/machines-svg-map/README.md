@@ -21,6 +21,24 @@ TODO:
 
 - [ ] support for dynamic information
 
+## Usage
+
+### From release installation:
+
+`npm install @edt-edu/machines-svg-map`
+
+`npx --package=@edt-edu/machines-svg-map machines-svg-map <configFile> <outputFile> [options]`
+
+Arguments:
+-  configFile        configuration JSON file
+-  outputFile        output SVG file
+
+Options:
+-  --addPositions    add element positions
+-  --addDimensions   add element dimensions
+-  --accessibleZoneOpacity <value>  set the opacity for the accessible zones (default: 0.5)
+-  -h, --help        show this help
+
 ## Build instructions
 
 
@@ -56,6 +74,11 @@ launch the test suite
 you can update the golden reference by running
 
 `npm run test:update-golden`
+
+
+Run the command line interface:
+
+`node dist/cli.js <configFile> <outputFile> [options]`
 
 ## Notes about installing the tool
 

@@ -4,6 +4,9 @@
   "description": "A SVG map for FischerTechnik Factory Machines configuration",
   "main": "dist/cli.js",
   "types": "dist/cli.d.ts",
+  "bin": {
+    "machines-svg-map": "./dist/cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/edt-edu/dt-platform.git"
