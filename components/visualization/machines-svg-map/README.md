@@ -27,17 +27,22 @@ TODO:
 
 `npm install @edt-edu/machines-svg-map`
 
-`npx --package=@edt-edu/machines-svg-map machines-svg-map <configFile> <outputFile> [options]`
+`npx machines-svg-map <configFile> <outputFile> [options]`
 
 Arguments:
 -  configFile        configuration JSON file
 -  outputFile        output SVG file
 
 Options:
--  --addPositions    add element positions
--  --addDimensions   add element dimensions
--  --accessibleZoneOpacity <value>  set the opacity for the accessible zones (default: 0.5)
--  -h, --help        show this help
+-  `--addPositions`    add element positions
+-  `--addDimensions`   add element dimensions
+-  `--accessibleZoneOpacity <value>`  set the opacity for the accessible zones (default: 0.5)
+-  `-h`, `--help`        show this help
+
+Example:
+- [configuration JSON file](https://github.com/edt-edu/dt-platform/blob/main/components/visualization/machines-svg-map/resources/machine_config.json)
+- SVG output [![SVG corresponding to machine_config.json](https://github.com/edt-edu/dt-platform/blob/main/components/visualization/machines-svg-map/test/__snapshots__/machine_config.golden.svg)](https://github.com/edt-edu/dt-platform/blob/main/components/visualization/machines-svg-map/test/__snapshots__/machine_config.golden.svg)
+
 
 ## Build instructions
 
@@ -46,11 +51,11 @@ Setup environment
 
 install nvm
 
-use node vrsion lts
+use node version lts
 
 `nvm use --lts`
 
-install dependancies
+install dependencies
 
 `npm install`
 
