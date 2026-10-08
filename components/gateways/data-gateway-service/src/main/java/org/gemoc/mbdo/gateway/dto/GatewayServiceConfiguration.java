@@ -16,7 +16,10 @@ public record GatewayServiceConfiguration(
 			String url,
 			String token,
 			String org,
-			String bucket
+			String bucket,
+			Integer batchSize, // points per write request, optional (default 1000)
+			Integer flushIntervalMs, // max time a point waits before its batch is written, optional (default 1000)
+			Integer bufferLimit // points kept while InfluxDB is unreachable, oldest dropped beyond, optional (default 100000)
 			) implements Serializable {}
 	public record MqttInfluxdbRecording(
 			String name,
